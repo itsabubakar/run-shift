@@ -15,14 +15,21 @@ const HomeScreen = (props: Props) => {
     return (
         <View className="flex-1   justify-between">
             <SafeAreaView className='bg-primary pb-10'>
-                <Header />
+                <Header
+                    title='staff'
+                    calendar={true}
+                    filter={true}
+                    moreOptions={true}
+
+                />
             </SafeAreaView>
-            <Calender />
             <View className='flex-1 bg-white'>
+                <Text>Lorem ipsum, Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium iste deleniti voluptates, sit facere cum quaerat tenetur quos tempora consequuntur sunt modi adipisci nisi, quae dolor. Optio voluptas aliquam minima! </Text>
                 <Text>Lorem ipsum, Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium iste deleniti voluptates, sit facere cum quaerat tenetur quos tempora consequuntur sunt modi adipisci nisi, quae dolor. Optio voluptas aliquam minima! </Text>
             </View>
             <StatusBar style="auto" />
         </View>
+
     )
 }
 export default HomeScreen

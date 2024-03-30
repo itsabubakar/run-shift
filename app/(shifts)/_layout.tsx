@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { BackHandler, Linking, StyleSheet, Text, View } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Drawer } from 'expo-router/drawer';
 import Persons from '@/assets/icons/header/Persons';
@@ -15,6 +15,20 @@ import Staff from '@/assets/icons/drawer/Staff';
 import Facilities from '@/assets/icons/drawer/Facilities';
 import Upload from '@/assets/icons/drawer/Upload';
 import Refresh from '@/assets/icons/drawer/Refresh';
+import Scan from '@/assets/icons/drawer/Scan';
+import Settings from '@/assets/icons/drawer/Settings';
+import CalenderFeeds from '@/assets/icons/drawer/CalenderFeeds';
+import Language from '@/assets/icons/drawer/Language';
+import Font from '@/assets/icons/drawer/Font';
+import DarkMode from '@/assets/icons/drawer/DarkMode';
+import Terms from '@/assets/icons/drawer/Terms';
+import Privacy from '@/assets/icons/drawer/Privacy';
+import Contact from '@/assets/icons/drawer/Contact';
+import Bug from '@/assets/icons/drawer/Bug';
+import Rate from '@/assets/icons/drawer/Rate';
+import Desktop from '@/assets/icons/drawer/Desktop';
+import Logout from '@/assets/icons/drawer/Logout';
+import Exit from '@/assets/icons/drawer/Exit';
 type Props = {}
 
 const Layout = (props: Props) => {
@@ -43,26 +57,35 @@ const Layout = (props: Props) => {
                     </View>
                 </View>
 
-                <View className='bg-white rounded-t-md'>
+                <View className='bg-white rounded-t-md' >
                     <DrawerItemList {...props} />
 
                     <DrawerItem
                         icon={({ focused, color, size }) => (
-                            <RunShiftIcon color={color} />
+                            <Desktop color={color} />
                         )}
-                        labelStyle={{ fontFamily: 'PoppinsRegular', fontSize: 14, marginLeft: -14 }} onPress={() => router.push('/')} label={"desktop site"} />
+                        labelStyle={{ fontFamily: 'PoppinsRegular', fontSize: 14, marginLeft: -14 }}
+                        onPress={() => {
+                            Linking.openURL('https://www.runmyshift.com').catch(err => {
+                                console.error('An error occurred', err);
+                            });
+                        }}
+                        label={"desktop site"} />
                     <DrawerItem
                         icon={({ focused, color, size }) => (
-                            <RunShiftIcon color={color} />
+                            <Logout color={color} />
                         )}
                         labelStyle={{ fontFamily: 'PoppinsRegular', fontSize: 14, marginLeft: -14 }}
                         onPress={() => router.replace('/')} label={"Logout"} />
                     <DrawerItem
                         icon={({ focused, color, size }) => (
-                            <RunShiftIcon color={color} />
+                            <Exit color={color} />
                         )}
-                        labelStyle={{ fontFamily: 'PoppinsRegular', fontSize: 14, marginLeft: -14 }}
-                        onPress={() => router.replace('/')} label={"Exit"} />
+                        labelStyle={{ fontFamily: 'PoppinsRegular', fontSize: 14, marginLeft: -14, }}
+                        onPress={() => {
+                            BackHandler.exitApp(); // This exits the app
+                        }}
+                        label={"Exit"} />
                 </View>
 
 
@@ -166,7 +189,7 @@ const Layout = (props: Props) => {
                         drawerLabel: 'scan a qr code',
                         title: 'scan',
                         drawerIcon: ({ color }: any) => (
-                            <ClipBoard color={color} />
+                            <Scan color={color} />
                         )
                     }}
                 />
@@ -176,17 +199,17 @@ const Layout = (props: Props) => {
                         drawerLabel: 'settings',
                         title: 'settings',
                         drawerIcon: ({ color }: any) => (
-                            <ClipBoard color={color} />
+                            <Settings color={color} />
                         )
                     }}
                 />
                 <Drawer.Screen
                     name="calender" // This is the name of the page and must match the url from root
                     options={{
-                        drawerLabel: 'calendar',
+                        drawerLabel: 'calendar feeds',
                         title: 'calendar',
                         drawerIcon: ({ color }: any) => (
-                            <ClipBoard color={color} />
+                            <CalenderFeeds color={color} />
                         )
                     }}
                 />
@@ -196,7 +219,7 @@ const Layout = (props: Props) => {
                         drawerLabel: 'english (uk)',
                         title: 'english (uk)',
                         drawerIcon: ({ color }: any) => (
-                            <ClipBoard color={color} />
+                            <Language color={color} />
                         )
                     }}
                 />
@@ -206,7 +229,7 @@ const Layout = (props: Props) => {
                         drawerLabel: 'font size',
                         title: 'font size',
                         drawerIcon: ({ color }: any) => (
-                            <ClipBoard color={color} />
+                            <Font color={color} />
                         )
                     }}
                 />
@@ -216,7 +239,7 @@ const Layout = (props: Props) => {
                         drawerLabel: 'dark mode',
                         title: 'dark mode',
                         drawerIcon: ({ color }: any) => (
-                            <ClipBoard color={color} />
+                            <DarkMode color={color} />
                         )
                     }}
                 />
@@ -227,7 +250,7 @@ const Layout = (props: Props) => {
                         drawerLabel: 'terms & conditions',
                         title: 'terms & conditions',
                         drawerIcon: ({ color }: any) => (
-                            <ClipBoard color={color} />
+                            <Terms color={color} />
                         )
                     }}
                 />
@@ -237,17 +260,17 @@ const Layout = (props: Props) => {
                         drawerLabel: 'privacy policy',
                         title: 'privacy policy',
                         drawerIcon: ({ color }: any) => (
-                            <ClipBoard color={color} />
+                            <Privacy color={color} />
                         )
                     }}
                 />
                 <Drawer.Screen
                     name="getInTouch" // This is the name of the page and must match the url from root
                     options={{
-                        drawerLabel: 'get intouch',
+                        drawerLabel: 'get in touch',
                         title: 'getInTouch',
                         drawerIcon: ({ color }: any) => (
-                            <ClipBoard color={color} />
+                            <Contact color={color} />
                         )
                     }}
                 />
@@ -257,7 +280,7 @@ const Layout = (props: Props) => {
                         drawerLabel: 'report a bug',
                         title: 'report a bug',
                         drawerIcon: ({ color }: any) => (
-                            <ClipBoard color={color} />
+                            <Bug color={color} />
                         )
                     }}
                 />
@@ -267,7 +290,7 @@ const Layout = (props: Props) => {
                         drawerLabel: 'rate us on google play',
                         title: 'rate us on google play',
                         drawerIcon: ({ color }: any) => (
-                            <ClipBoard color={color} />
+                            <Rate color={color} />
                         )
                     }}
                 />

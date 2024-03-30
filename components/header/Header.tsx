@@ -6,16 +6,22 @@ import { DrawerActions } from '@react-navigation/native'
 import { useNavigation } from 'expo-router'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Path, Svg } from 'react-native-svg'
-type Props = {}
-const Header = (props: Props) => {
+type Props = {
+    title?: string
+    calendar?: boolean
+    filter?: boolean
+    moreOptions?: boolean
+    persons?: boolean
+}
+const Header = ({ title, calendar, filter, moreOptions, persons }: Props) => {
     const navigation = useNavigation()
     const onToggle = () => {
         navigation.dispatch(DrawerActions.openDrawer())
     }
 
     return (
-        <View className='bg-[#175B57] pt-12 max-w-[395px] w-full  mx-auto flex-row px-6 justify-between items-end pb-3'>
-            <TouchableOpacity onPress={onToggle} className='flex-row '>
+        <View className='bg-[#175B57]  py-6 max-w-[395px] w-full  mx-auto flex-row px-6 justify-between items-center pb-10 rounded-b-3xl'>
+            <TouchableOpacity onPress={onToggle} className='flex-row  gap-x-2 items-center'>
                 <Svg width="30" height="30" viewBox="0 0 30 30" fill="none">
                     <Path
                         d="M10 15H10.0112M15.0063 15H15.0162M19.9888 15H20"
@@ -30,25 +36,33 @@ const Header = (props: Props) => {
                         strokeWidth="1.5"
                     />
                 </Svg>
-                <Text style={styles.poppinsRegular} className='text-white text-2xl pl-1'>runshift</Text>
+                <Text style={styles.poppinsRegular} className='text-white text-2xl pl-1'>{title || 'runshift'}</Text>
             </TouchableOpacity>
 
-            <View className='flex-row p gap-x-4'>
-                <TouchableOpacity>
-                    <Calender />
-                </TouchableOpacity>
+            <View className='flex-row gap-x-4'>
+                {
+                    calendar && <TouchableOpacity>
+                        <Calender />
+                    </TouchableOpacity>
+                }
 
-                <TouchableOpacity>
-                    <Persons />
-                </TouchableOpacity>
+                {
+                    persons && <TouchableOpacity>
+                        <Persons />
+                    </TouchableOpacity>
+                }
 
-                <TouchableOpacity>
-                    <Filter />
-                </TouchableOpacity>
+                {
+                    filter && <TouchableOpacity>
+                        <Filter />
+                    </TouchableOpacity>
+                }
 
-                <TouchableOpacity>
-                    <MoreOptions />
-                </TouchableOpacity>
+                {
+                    moreOptions && <TouchableOpacity>
+                        <MoreOptions />
+                    </TouchableOpacity>
+                }
 
             </View>
         </View>

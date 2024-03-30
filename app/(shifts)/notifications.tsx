@@ -11,6 +11,8 @@ const Screen = (props: Props) => {
             </SafeAreaView>
             <View className='flex-1 bg-white'>
                 <Text>Lorem ipsum, Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium iste deleniti voluptates, sit facere cum quaerat tenetur quos tempora consequuntur sunt modi adipisci nisi, quae dolor. Optio voluptas aliquam minima! </Text>
+                <Text>Lorem ipsum, Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium iste deleniti voluptates, sit facere cum quaerat tenetur quos tempora consequuntur sunt modi adipisci nisi, quae dolor. Optio voluptas aliquam minima! </Text>
+                <Text>Lorem ipsum, Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium iste deleniti voluptates, sit facere cum quaerat tenetur quos tempora consequuntur sunt modi adipisci nisi, quae dolor. Optio voluptas aliquam minima! </Text>
             </View>
             <StatusBar style="auto" />
         </View>
