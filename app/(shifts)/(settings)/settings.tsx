@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Slider from '@react-native-community/slider';
+import { Link } from 'expo-router'
 
 const Screen = () => {
     const [isChecked, setChecked] = useState(false)
@@ -94,9 +95,12 @@ const Screen = () => {
                     <View className='w-[90%]'>
                         <Text style={styles.poppinsRegular} className='text-[#21D0C6] text-2xl pb-2 leading-9'>Weather forecast</Text>
                         <Text style={styles.poppinsRegular} className='text-white text-base leading-6'>Display the predicted temperature and weather conditions on the schedule when the forecast information is accessible.</Text>
-                        <TouchableOpacity className='pt-3'>
-                            <Text style={styles.poppinsRegular} className='text-base text-[#21D0C6] underline'>Weather settings</Text>
-                        </TouchableOpacity>
+                        <Link asChild href={'/(shifts)/(settings)/weather'}>
+
+                            <TouchableOpacity className='pt-3'>
+                                <Text style={styles.poppinsRegular} className='text-base text-[#21D0C6] underline'>Weather settings</Text>
+                            </TouchableOpacity>
+                        </Link>
                     </View>
 
                     <CheckBox

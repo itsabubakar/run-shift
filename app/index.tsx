@@ -68,7 +68,7 @@ const index = (props: Props) => {
                         />
                     </View>
                     <Link style={styles.poppinsRegular}
-                        href={'/(shifts)'}
+                        href={'/(shifts)/'}
                         asChild>
                         <TouchableOpacity
                         // onPress={() => setShowError(!showError)}

@@ -24,8 +24,9 @@ const calender = () => {
                         optionck cbcblc bblblc kbsckl bclbslc bcb</Text>
                 </View>
                 <View className='items-end mt-5 px-6 pb-10'>
-                    <TouchableOpacity className='border-secondary border rounded-xl px-6 py-2'>
-                        <Text style={styles.poppinsRegular} className='text-white'>COPY</Text>
+                    <TouchableOpacity className='border-secondary border 
+                    rounded-xl px-6 py-2'>
+                        <Text style={styles.poppinsRegular} className='text-white text-sm'>COPY</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>

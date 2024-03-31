@@ -194,7 +194,7 @@ const Layout = (props: Props) => {
                     }}
                 />
                 <Drawer.Screen
-                    name="settings" // This is the name of the page and must match the url from root
+                    name="(settings)" // This is the name of the page and must match the url from root
                     options={{
                         drawerLabel: 'settings',
                         title: 'settings',

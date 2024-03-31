@@ -1,21 +1,42 @@
 import Header from '@/components/header/Header'
+import Notice from '@/components/noticeBoard/Notice'
 import { StatusBar } from 'expo-status-bar'
-import { View, Text } from 'react-native'
+import { useState } from 'react'
+import { View, StyleSheet, } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 type Props = {}
 const Screen = (props: Props) => {
     return (
         <View className="flex-1   justify-between">
-            <SafeAreaView className='bg-primary pb-10'>
-                <Header />
+            <SafeAreaView className='bg-primary pb-7'>
             </SafeAreaView>
-            <View className='flex-1 bg-white'>
-                <Text>Lorem ipsum, Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium iste deleniti voluptates, sit facere cum quaerat tenetur quos tempora consequuntur sunt modi adipisci nisi, quae dolor. Optio voluptas aliquam minima! </Text>
-                <Text>Lorem ipsum, Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium iste deleniti voluptates, sit facere cum quaerat tenetur quos tempora consequuntur sunt modi adipisci nisi, quae dolor. Optio voluptas aliquam minima! </Text>
-                <Text>Lorem ipsum, Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium iste deleniti voluptates, sit facere cum quaerat tenetur quos tempora consequuntur sunt modi adipisci nisi, quae dolor. Optio voluptas aliquam minima! </Text>
+
+            <Header title='notifications'
+                calendar={true}
+                persons={true}
+                filter={true}
+                moreOptions={true}
+            />
+            <View className='flex-1 justify-between bg-white px-6'>
+                <View>
+                    <Notice />
+                    <Notice />
+                </View>
+
             </View>
             <StatusBar style="auto" />
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    poppinsRegular: {
+        fontFamily: 'PoppinsRegular',
+
+    },
+    poppinsSemiBold: {
+        fontFamily: 'PoppinsSemiBold',
+    },
+})
+
 export default Screen
