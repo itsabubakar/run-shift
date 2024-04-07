@@ -1,7 +1,9 @@
 import Cancel from '@/assets/icons/Cancel'
 import Check from '@/assets/icons/Check'
+import Send from '@/assets/icons/Send'
 import Header from '@/components/header/Header'
 import Notice from '@/components/noticeBoard/Notice'
+import { Link } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { useState } from 'react'
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native'
@@ -22,11 +24,14 @@ const Screen = (props: Props) => {
             />
             <View className='flex-1 justify-between bg-white px-6'>
                 <View>
-                    <Notice />
+                    <Link href={'/(shifts)/(notice)/text'}>
+                        <Notice />
+                    </Link>
                     <Notice />
                 </View>
-                <TouchableOpacity onPress={() => setShowDelete(!showDelete)} className='bg-primary rounded-xl  mb-10'>
-                    <Text style={styles.poppinsRegular} className='text-white p-4'>Your message</Text>
+                <TouchableOpacity className='bg-primary rounded-xl justify-between p-4 items-center flex-row  mb-10'>
+                    <Text style={styles.poppinsRegular} className='text-white '>Your message</Text>
+                    <Send />
                 </TouchableOpacity>
             </View>
             {

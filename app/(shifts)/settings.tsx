@@ -33,7 +33,7 @@ const Screen = () => {
                 </View>
 
                 {/* font size slider */}
-                <View className=' items-start pt-20'>
+                <View className=' items-start pt-[66px]'>
                     <View className='w-[90%]'>
                         <Text style={styles.poppinsRegular} className='text-[#21D0C6] text-2xl pb-2'>Font size</Text>
                         <Text style={styles.poppinsRegular} className='text-white text-base leading-6'>Enhance the text size across the entire app for improved visibility.</Text>

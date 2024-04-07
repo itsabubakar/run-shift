@@ -7,6 +7,7 @@ import { useState } from "react";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 // import CustomCheckBox from "@/components/utils/CustomCheckBox";
 import CheckBox from "@/components/utils/CustomCheckBox";
+import Eye from "@/assets/icons/Eye";
 
 type Props = {}
 const index = (props: Props) => {
@@ -50,6 +51,7 @@ const index = (props: Props) => {
                         />
                         <TouchableOpacity onPress={togglePasswordVisibility}>
                             <Image className="w-[24px] object-cover" source={require('../assets/images/eye.png')} />
+                            {/* <Eye /> */}
                         </TouchableOpacity>
                     </View>
 
@@ -68,7 +70,7 @@ const index = (props: Props) => {
                         />
                     </View>
                     <Link style={styles.poppinsRegular}
-                        href={'/(shifts)/'}
+                        href={'/(shifts)'}
                         asChild>
                         <TouchableOpacity
                         // onPress={() => setShowError(!showError)}

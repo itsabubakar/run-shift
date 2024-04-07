@@ -134,7 +134,7 @@ const Layout = (props: Props) => {
                     }}
                 />
                 <Drawer.Screen
-                    name="noticeBoard" // This is the name of the page and must match the url from root
+                    name="(notice)" // This is the name of the page and must match the url from root
                     options={{
                         drawerLabel: 'notice board',
                         title: 'notice board',
