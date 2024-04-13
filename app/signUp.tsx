@@ -5,7 +5,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Circle, Rect } from 'react-native-svg';
 
 
-
 export default function SignUpScreen() {
     return (
         <SafeAreaView className="flex-1  bg-primary justify-between ">

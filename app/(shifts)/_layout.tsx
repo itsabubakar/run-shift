@@ -295,7 +295,6 @@ const Layout = (props: Props) => {
                     }}
                 />
 
-
             </Drawer>
         </GestureHandlerRootView>
     )

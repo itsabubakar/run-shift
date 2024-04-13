@@ -93,6 +93,7 @@ const index = (props: Props) => {
                     </Link>
                 </View>
 
+
                 {
                     showError && <View className=" h-full absolute w-full flex-col flex-1 bg-[#000000b0]">
                         <View className=" h-[67%]  bottom-0 w-full rounded-t-[20px] justify-center items-center">
