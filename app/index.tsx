@@ -32,9 +32,9 @@ const index = (props: Props) => {
                     <View className='pb-8  w-full max-w-[308px] mx-auto'>
                         <Image className="w-[83px] object-cover" source={require('../assets/images/logo-sm.png')} />
                     </View>
-                    <TextInput style={styles.poppinsRegular} placeholderTextColor="#FFF" className='border border-[#FFF]/25 rounded-2xl py-2 px-3 placeholder:text-lg text-white max-w-[308px] min-w-[308px]' placeholder='Email address' />
+                    <TextInput style={styles.poppinsRegular} placeholderTextColor="#FFF" className='border border-[#FFF]/25 rounded-2xl py-3 px-3 placeholder:text-lg text-white max-w-[308px] min-w-[308px]' placeholder='Email address' />
 
-                    <View className=" border border-[#ffffff]/25 rounded-2xl flex flex-row items-center justify-between w-full mt-5 py-2 px-3 max-w-[308px] min-w-[308px]">
+                    <View className=" border border-[#ffffff]/25 rounded-2xl flex flex-row items-center justify-between w-full mt-5 py-3 px-3 max-w-[308px] min-w-[308px]">
                         <TextInput
                             style={styles.poppinsRegular}
                             placeholderTextColor="#FFF"

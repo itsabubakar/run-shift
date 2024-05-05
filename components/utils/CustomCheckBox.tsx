@@ -1,3 +1,4 @@
+import { check } from '@/assets/images';
 import React, { useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, Text, Image } from 'react-native';
 
@@ -10,7 +11,7 @@ const CustomCheckbox: React.FC<Props> = ({ isChecked, onCheck }: Props) => {
     return (
         <TouchableOpacity style={styles.checkbox} onPress={onCheck}>
             {isChecked && (
-                <Image className='w-[19.98px] h-[14px] object-contain' source={require('../../assets/images/checkbox.png')} />
+                <Image className='w-[19.98px] h-[14px] object-contain' source={check} />
 
             )}
         </TouchableOpacity>
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#ffffff5a',
         borderRadius: 4,
-        opacity: 0.5,
+        // opacity: 0.5,
         backgroundColor: 'transparent', // Checkbox background color
     },
 

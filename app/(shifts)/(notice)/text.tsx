@@ -15,7 +15,7 @@ const Screen = (props: Props) => {
     const [showError, setShowError] = useState(true)
 
     const [showOptions, setShowOptions] = useState(false)
-    const [showDelete, setShowDelete] = useState(true)
+    const [showDelete, setShowDelete] = useState(false)
 
     return (
         <SafeAreaView style={{ flex: 1 }} className={`flex-1   justify-between bg-primary `}>
@@ -36,7 +36,7 @@ const Screen = (props: Props) => {
 
 
 
-                    <View className='flex-1 justify-between   bg-white px-6  flex-1 min-h-[750px]'>
+                    <View className='flex-1 justify-between   bg-white px-6  min-h-[750px]'>
                         <View className=''>
                             <TouchableOpacity onLongPress={() => setShowOptions(!showDelete)}>
 
@@ -96,10 +96,10 @@ const Screen = (props: Props) => {
                 <StatusBar style="auto" />
             </KeyboardAwareScrollView>
             <View className={`bg-white ${showOptions || showDelete ? 'hidden' : 'flex'}`}>
-                <View className='bg-[#27736E]   rounded-xl mx-6  pr-4 justify-between  items-center flex-row  mb-4'>
+                <View className='bg-[#27736E]   rounded-xl mx-6  px-4 justify-between  items-center flex-row  mb-4'>
                     <TextInput
                         style={styles.poppinsRegular}
-                        className='bg-[#27736E] rounded-2xl py-3 px-4 placeholder:text-white text-white  w-4/5 '
+                        className='bg-[#27736E] rounded-2xl py-3 px-5 placeholder:text-white text-white  w-4/5 '
                         placeholderTextColor="#FFF"
                         placeholder='Your message' />
                     <Send />
