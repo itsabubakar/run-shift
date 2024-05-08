@@ -22,7 +22,7 @@ import Check from '@/assets/icons/Check';
 type Props = {}
 const HomeScreen = (props: Props) => {
     const [shifts, setShifts] = useState(false)
-    const [addTimeOff, setAddTimeOff] = useState(true)
+    const [addTimeOff, setAddTimeOff] = useState(false)
 
     const options = [
         { label: 'Holiday', value: '1' },
@@ -39,6 +39,7 @@ const HomeScreen = (props: Props) => {
         setSelectedValue(value);
         // Additional logic on select
     }
+
     const handleDateSelection = (date: Date) => {
         // Handle the selected date here
         console.log(date);
@@ -87,7 +88,6 @@ const HomeScreen = (props: Props) => {
                 }
                 {
                     shifts && <View className='px-6 mt-10 flex-1'>
-                        <Shift />
                         <Shift />
                         <Shift />
 

@@ -1,17 +1,8 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { StyleSheet, Text } from 'react-native';
-
-// Import classNames if not already imported
-// import classNames from 'classnames/bind';
-
-// Import useColorScheme if needed
-// import { useColorScheme } from '@/components/useColorScheme';
-
+import { AuthProvider, useAuth } from '@/context/AuthContext';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -26,13 +17,53 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+const StackLayout = () => {
+  const segments = useSegments()
+  const router = useRouter()
+  const { authState } = useAuth()
+
+
+  useEffect(() => {
+
+
+    // const inAuthGroup = segments[0] === '(shifts)'
+    // if (authState?.authenticated === null && inAuthGroup) {
+    //   router.replace('/')
+    // } else if (authState?.authenticated === true) {
+    //   router.replace('/(shifts)')
+    // }
+  }, [authState])
+
+  return (
+    <AuthProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false
+        }}
+      >
+        <Stack.Screen name="index" />
+        <Stack.Screen options={{ headerShown: false }} name="(shifts)" />
+        <Stack.Screen name="offline" />
+        <Stack.Screen name="signUp" />
+        <Stack.Screen name="login" />
+        <Stack.Screen name="options" />
+      </Stack>
+    </AuthProvider>
+  );
+}
+
+
+
+
 export default function RootLayout() {
+
   const [loaded, error] = useFonts({
     PoppinsRegular: require('../assets/fonts/Poppins-Regular.ttf'),
     PoppinsSemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
   });
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
+
   useEffect(() => {
     if (error) throw error;
   }, [error]);
@@ -41,32 +72,16 @@ export default function RootLayout() {
     if (loaded) {
       SplashScreen.hideAsync();
     }
+
   }, [loaded]);
 
   if (!loaded) {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return <AuthProvider>
+    <StackLayout />
+  </AuthProvider>
 }
 
-function RootLayoutNav() {
 
-  return (
-    <>
-      <Stack
-        screenOptions={{
-          headerShown: false
-        }}
-      >
-
-        <Stack.Screen name="index" />
-        <Stack.Screen options={{ headerShown: false }} name="(shifts)" />
-        <Stack.Screen name="offline" />
-        <Stack.Screen name="signUp" />
-        <Stack.Screen name="login" />
-        <Stack.Screen name="options" />
-      </Stack>
-    </>
-  );
-}

@@ -1,4 +1,4 @@
-import { Link } from "expo-router"
+import { Link, useRouter } from "expo-router"
 import { StatusBar } from "expo-status-bar"
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -8,13 +8,35 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 // import CustomCheckBox from "@/components/utils/CustomCheckBox";
 import CheckBox from "@/components/utils/CustomCheckBox";
 import Eye from "@/assets/icons/Eye";
+import EyeOpen from "@/assets/icons/EyeOpen";
+import EyeClose from "@/assets/icons/EyeClose";
+import { useAuth } from "@/context/AuthContext";
 
 type Props = {}
 const index = (props: Props) => {
     const [isChecked, setChecked] = useState(false)
     const [showError, setShowError] = useState(false)
     const [passwordVisible, setPasswordVisible] = useState(false);
-    const [password, setPassword] = useState('');
+    const [password, setPassword] = useState('admin');
+    const [email, setEmail] = useState('admin')
+
+    const { onLogin, authState } = useAuth()
+    const router = useRouter()
+
+
+
+
+    const onAdminLoginPress = async () => {
+        onLogin!(email, password)
+        router.replace('/(shifts)')
+
+
+    }
+    const onStaffLoginPress = async () => {
+        onLogin!('staff', 'staff')
+        router.replace('/(shifts)')
+
+    }
 
     const togglePasswordVisibility = () => {
         setPasswordVisible(!passwordVisible);
@@ -50,34 +72,42 @@ const index = (props: Props) => {
                             className='  w-[80%] placeholder:text-lg  text-white '
                         />
                         <TouchableOpacity onPress={togglePasswordVisibility}>
-                            <Image className="w-[24px] object-cover" source={require('../assets/images/eye.png')} />
-                            {/* <Eye /> */}
+                            {passwordVisible ? <EyeClose /> : <EyeOpen />}
                         </TouchableOpacity>
                     </View>
 
                     <View className='pt-8 pb-10 max-w-[308px] w-full flex-row items-center justify-between px-2'>
                         <Text style={styles.poppinsRegular} className='text-white text-left text-lg'>Keep me logged in</Text>
-                        {/* <Checkbox
-                            style={styles.checkbox}
-                            value={isChecked}
-                            onValueChange={setChecked}
-                            color={isChecked ? 'undefined' : undefined}
-                        /> */}
+
 
                         <CheckBox
                             isCheck={isChecked}
                             onChecked={() => setChecked(!isChecked)}
                         />
                     </View>
-                    <Link style={styles.poppinsRegular}
-                        href={'/(shifts)'}
-                        asChild>
+                    <View
+                    // href={'/'}
+                    // asChild
+                    >
                         <TouchableOpacity
-                        // onPress={() => setShowError(!showError)}
+                            // onPress={() => setShowError(!showError)}
+                            onPress={onAdminLoginPress}
+
                         >
                             <Text style={styles.poppinsRegular} className='text-center bg-secondary py-4  text-lg rounded-2xl max-w-[308px] min-w-[308px] text-white'>Login</Text>
                         </TouchableOpacity>
-                    </Link>
+                    </View>
+                    <View
+                    // href={'/'}
+                    // asChild
+                    >
+                        <TouchableOpacity
+                            // onPress={() => setShowError(!showError)}
+                            onPress={onStaffLoginPress}
+                        >
+                            <Text style={styles.poppinsRegular} className='text-center bg-secondary py-4  text-lg rounded-2xl max-w-[308px] min-w-[308px] text-white'>Login User</Text>
+                        </TouchableOpacity>
+                    </View>
                     <View className='pt-8 pb-10 max-w-[308px] w-full'>
                         <Link href={'/reset'} style={styles.poppinsRegular} className='text-white text-lg'>Forgotten your password?</Link>
                     </View>
@@ -88,7 +118,6 @@ const index = (props: Props) => {
                     <Link href={'/options'} asChild>
                         <TouchableOpacity>
                             <Image source={require('../assets/images/LoginMenu.png')} />
-
                         </TouchableOpacity>
                     </Link>
                 </View>

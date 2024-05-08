@@ -29,9 +29,11 @@ import Rate from '@/assets/icons/drawer/Rate';
 import Desktop from '@/assets/icons/drawer/Desktop';
 import Logout from '@/assets/icons/drawer/Logout';
 import Exit from '@/assets/icons/drawer/Exit';
+import { useAuth } from '@/context/AuthContext';
 type Props = {}
 
 const Layout = (props: Props) => {
+    const { authState } = useAuth()
 
     function CustomDrawerContent(props: any) {
         const { top, bottom } = useSafeAreaInsets()
@@ -52,7 +54,7 @@ const Layout = (props: Props) => {
 
                     {/* name and email */}
                     <View className=''>
-                        <Text style={styles.poppinsSemiBold} className='text-white text-xl pb-1'>Ifeoluwa </Text>
+                        <Text style={styles.poppinsSemiBold} className='text-white text-xl pb-1'>{authState?.username} </Text>
                         <Text style={styles.poppinsRegular} className='font-light text-white'>alaoIfeoluwa@gmail.com </Text>
                     </View>
                 </View>
