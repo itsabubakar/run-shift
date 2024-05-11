@@ -17,22 +17,11 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+
+
 const StackLayout = () => {
-  const segments = useSegments()
-  const router = useRouter()
-  const { authState } = useAuth()
+  const { authState } = useAuth();
 
-
-  useEffect(() => {
-
-
-    // const inAuthGroup = segments[0] === '(shifts)'
-    // if (authState?.authenticated === null && inAuthGroup) {
-    //   router.replace('/')
-    // } else if (authState?.authenticated === true) {
-    //   router.replace('/(shifts)')
-    // }
-  }, [authState])
 
   return (
     <AuthProvider>
@@ -56,7 +45,6 @@ const StackLayout = () => {
 
 
 export default function RootLayout() {
-
   const [loaded, error] = useFonts({
     PoppinsRegular: require('../assets/fonts/Poppins-Regular.ttf'),
     PoppinsSemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
@@ -78,6 +66,7 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
+
 
   return <AuthProvider>
     <StackLayout />

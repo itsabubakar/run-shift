@@ -20,15 +20,16 @@ const index = (props: Props) => {
     const [password, setPassword] = useState('admin');
     const [email, setEmail] = useState('admin')
 
-    const { onLogin, authState } = useAuth()
+    const { onLogin, onSignUp } = useAuth()
     const router = useRouter()
 
 
 
-
     const onAdminLoginPress = async () => {
-        onLogin!(email, password)
-        router.replace('/(shifts)')
+        console.log(email, password);
+
+        onSignUp!(email, password)
+        // router.replace('/(shifts)')
 
 
     }
@@ -94,7 +95,7 @@ const index = (props: Props) => {
                             onPress={onAdminLoginPress}
 
                         >
-                            <Text style={styles.poppinsRegular} className='text-center bg-secondary py-4  text-lg rounded-2xl max-w-[308px] min-w-[308px] text-white'>Login</Text>
+                            <Text style={styles.poppinsRegular} className='text-center bg-secondary py-4  text-lg rounded-2xl max-w-[308px] min-w-[308px] text-white'>Register</Text>
                         </TouchableOpacity>
                     </View>
                     <View
@@ -105,7 +106,7 @@ const index = (props: Props) => {
                             // onPress={() => setShowError(!showError)}
                             onPress={onStaffLoginPress}
                         >
-                            <Text style={styles.poppinsRegular} className='text-center bg-secondary py-4  text-lg rounded-2xl max-w-[308px] min-w-[308px] text-white'>Login User</Text>
+                            <Text style={styles.poppinsRegular} className='text-center bg-secondary py-4  text-lg rounded-2xl max-w-[308px] min-w-[308px] text-white'>Login</Text>
                         </TouchableOpacity>
                     </View>
                     <View className='pt-8 pb-10 max-w-[308px] w-full'>
