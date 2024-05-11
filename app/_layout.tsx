@@ -48,6 +48,7 @@ export default function RootLayout() {
   const [loaded, error] = useFonts({
     PoppinsRegular: require('../assets/fonts/Poppins-Regular.ttf'),
     PoppinsSemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
+    PoppinsLight: require('../assets/fonts/Poppins-Light.ttf'),
   });
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.

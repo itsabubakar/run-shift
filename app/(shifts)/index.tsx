@@ -53,28 +53,35 @@ const HomeScreen = (props: Props) => {
                     calendar={true}
                     filter={true}
                     moreOptions={true}
+                    persons={true}
 
                 />
             </SafeAreaView>
-            <Calender />
+            <View className='bg-white'>
+                <Calender />
+            </View>
+
             <View className='flex-1 bg-white'>
                 {!shifts && <View className='px-6 flex-1 text-base'>
                     <Text style={styles.poppinsRegular} className='mt-10 text-[#606060]'>There are no shifts on this date </Text>
 
                     <View className=' mt-auto pb-6 items-end'>
-                        <TouchableOpacity className='bg-primary flex-row py-3 px-4 rounded-xl gap-x-2 mb-5' >
+                        <TouchableOpacity className='bg-primary flex-row py-3 px-4 rounded-xl  mb-5' >
+
+
                             <CalenderIcon />
+
                             <Text
                                 style={styles.poppinsRegular}
-                                className='text-white'>request shift</Text>
+                                className='text-white ml-2'>request shift</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => setAddTimeOff(!addTimeOff)}
-                            className='bg-primary flex-row py-3 px-4 rounded-xl gap-x-2 mb-5'  >
+                            className='bg-primary flex-row py-3 px-3 rounded-xl mb-5'  >
                             <Clock />
                             <Text
                                 style={styles.poppinsRegular}
-                                className='text-white'
+                                className='text-white ml-2'
                             >request time off</Text>
                         </TouchableOpacity>
                         <TouchableOpacity >

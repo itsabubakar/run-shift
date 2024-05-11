@@ -1,16 +1,14 @@
 import { Link, useRouter } from "expo-router"
 import { StatusBar } from "expo-status-bar"
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform } from "react-native"
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-// import Checkbox from 'expo-checkbox';
 import { useState } from "react";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-// import CustomCheckBox from "@/components/utils/CustomCheckBox";
 import CheckBox from "@/components/utils/CustomCheckBox";
-import Eye from "@/assets/icons/Eye";
 import EyeOpen from "@/assets/icons/EyeOpen";
 import EyeClose from "@/assets/icons/EyeClose";
 import { useAuth } from "@/context/AuthContext";
+import { logoSm } from "@/assets/images";
 
 type Props = {}
 const index = (props: Props) => {
@@ -24,12 +22,11 @@ const index = (props: Props) => {
     const router = useRouter()
 
 
-
     const onAdminLoginPress = async () => {
         console.log(email, password);
 
         onSignUp!(email, password)
-        // router.replace('/(shifts)')
+        router.replace('/(shifts)')
 
 
     }
@@ -53,14 +50,15 @@ const index = (props: Props) => {
 
                 <View className="flex-col flex-1 justify-center items-center pt-[50%]">
                     <View className='pb-8  w-full max-w-[308px] mx-auto'>
-                        <Image className="w-[83px] object-cover" source={require('../assets/images/logo-sm.png')} />
+                        <Image className="w-[83px] object-cover" source={logoSm} />
                     </View>
-                    <TextInput style={styles.poppinsRegular} placeholderTextColor="#FFF" className='border border-[#FFF]/25 rounded-2xl py-3 px-3 placeholder:text-lg text-white max-w-[308px] min-w-[308px]' placeholder='Email address' />
+                    <TextInput style={styles.poppinsRegular}
+                        placeholderTextColor="#c2c2c2" className='border border-[#FFF]/25 rounded-2xl py-3 px-3 placeholder:text-lg text-white max-w-[308px] min-w-[308px]' placeholder='Email address' />
 
                     <View className=" border border-[#ffffff]/25 rounded-2xl flex flex-row items-center justify-between w-full mt-5 py-3 px-3 max-w-[308px] min-w-[308px]">
                         <TextInput
                             style={styles.poppinsRegular}
-                            placeholderTextColor="#FFF"
+                            placeholderTextColor="#c2c2c2"
                             placeholder="Password"
                             secureTextEntry={!passwordVisible}
                             onChangeText={text => setPassword(text)}
@@ -86,24 +84,11 @@ const index = (props: Props) => {
                             onChecked={() => setChecked(!isChecked)}
                         />
                     </View>
-                    <View
-                    // href={'/'}
-                    // asChild
-                    >
-                        <TouchableOpacity
-                            // onPress={() => setShowError(!showError)}
-                            onPress={onAdminLoginPress}
 
-                        >
-                            <Text style={styles.poppinsRegular} className='text-center bg-secondary py-4  text-lg rounded-2xl max-w-[308px] min-w-[308px] text-white'>Register</Text>
-                        </TouchableOpacity>
-                    </View>
                     <View
-                    // href={'/'}
-                    // asChild
+
                     >
                         <TouchableOpacity
-                            // onPress={() => setShowError(!showError)}
                             onPress={onStaffLoginPress}
                         >
                             <Text style={styles.poppinsRegular} className='text-center bg-secondary py-4  text-lg rounded-2xl max-w-[308px] min-w-[308px] text-white'>Login</Text>
@@ -118,11 +103,14 @@ const index = (props: Props) => {
 
                     <Link href={'/options'} asChild>
                         <TouchableOpacity>
+                            {/* Change to an icon */}
                             <Image source={require('../assets/images/LoginMenu.png')} />
                         </TouchableOpacity>
                     </Link>
                 </View>
 
+
+                {/* Shows error if any */}
 
                 {
                     showError && <View className=" h-full absolute w-full flex-col flex-1 bg-[#000000b0]">
@@ -131,6 +119,7 @@ const index = (props: Props) => {
                         <View className="bg-primary h-full bottom-0 w-full rounded-t-[60px] justify-center items-center">
                             <Text style={styles.poppinsRegular} className="text-white text-2xl pb-8 text-center -mt-[500px] max-w-[208px]">Kindly enter your email address.</Text>
                             <TouchableOpacity onPress={() => setShowError(!showError)}>
+                                {/* Change to an icon */}
                                 <Image className="w-[51px] object-cover" source={require('../assets/images/Tick.png')} />
                             </TouchableOpacity>
 

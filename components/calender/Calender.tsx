@@ -1,69 +1,83 @@
-import { View, Text, StyleSheet } from 'react-native'
-type Props = {}
-const Calender = (props: Props) => {
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { format, eachDayOfInterval, addDays, isSameDay } from 'date-fns';
+
+const CalendarWeek = () => {
+    const today = new Date();
+    const [activeDate, setActiveDate] = useState(today);
+
+    // Generate the days starting from today and the next six days
+    const days = [];
+    for (let i = 0;i < 9;i++) {
+        days.push(addDays(today, i));
+    }
+
+    const renderDay = (date: Date) => {
+        const dayOfWeek = format(date, 'EEEEEE'); // Two-letter abbreviation
+        const dayOfMonth = format(date, 'd');
+        const isActive = isSameDay(date, activeDate); // Compares the two dates
+
+        return (
+            <TouchableOpacity
+                key={date.toString()}
+                onPress={() => setActiveDate(date)}
+
+            >
+                <Text style={styles.dayOfWeek} className='text-[#FFFFFF99]'>{dayOfWeek}</Text>
+                <Text className='text-white' style={[styles.dayContainer, isActive && styles.activeDay]}>{dayOfMonth}</Text>
+            </TouchableOpacity>
+        );
+    };
+
     return (
-        <View className=' bg-[#1D504D]  py-5  px-6 flex-row justify-between rounded-3xl -mt-12'>
-            <View>
-
-                <Text style={styles.poppinsRegular} className='text-white pb-3'>FEBRUARY 2024</Text>
-                <View className='flex-row gap-2'>
-                    <View className='bg-[#FFFFFF40] rounded-xl'>
-                        <Text style={styles.poppinsRegular} className='text-white p-2'>FR</Text>
-                        <Text style={styles.poppinsRegular} className='bg-secondary text-white px-1 py-1 rounded-xl'>23</Text>
-                    </View>
-                    <View className=' rounded-xl'>
-                        <Text style={styles.poppinsRegular} className='text-white p-2 '>SA</Text>
-                        <Text style={styles.poppinsRegular} className=' text-white px-1 py-1 rounded-xl'>23</Text>
-                    </View>
-                    <View className=' rounded-xl'>
-                        <Text style={styles.poppinsRegular} className='text-white p-2'>SU</Text>
-                        <Text style={styles.poppinsRegular} className=' text-white px-1 py-1 rounded-xl'>23</Text>
-                    </View>
-                    <View className=' rounded-xl'>
-                        <Text style={styles.poppinsRegular} className='text-white p-2'>SU</Text>
-                        <Text style={styles.poppinsRegular} className=' text-white px-1 py-1 rounded-xl'>23</Text>
-                    </View>
-                    <View className=' rounded-xl'>
-                        <Text style={styles.poppinsRegular} className='text-white p-2'>Mo</Text>
-                        <Text style={styles.poppinsRegular} className=' text-white px-1 py-1 rounded-xl'>23</Text>
-                    </View>
-
-
-                </View>
-            </View>
-            <View className='border-l border-gray-500 pl-4'>
-                <Text style={styles.poppinsRegular} className='text-white pb-3'>MARCH 2024</Text>
-
-                <View className='flex-row gap-2'>
-                    <View className='rounded-xl'>
-                        <Text style={styles.poppinsRegular} className='text-white p-2'>FR</Text>
-                        <Text style={styles.poppinsRegular} className=' text-white px-1 py-1 rounded-xl'>23</Text>
-                    </View>
-                    <View className=' rounded-xl'>
-                        <Text style={styles.poppinsRegular} className='text-white p-2'>SA</Text>
-                        <Text style={styles.poppinsRegular} className=' text-white px-1 py-1 rounded-xl'>23</Text>
-                    </View>
-                    <View className=' rounded-xl'>
-                        <Text style={styles.poppinsRegular} className='text-white p-2'>SU</Text>
-                        <Text style={styles.poppinsRegular} className=' text-white px-1 py-1 rounded-xl'>23</Text>
-                    </View>
-
-
-
-
-                </View>
-
+        <View style={styles.calendarContainer} className=' bg-[#1D504D]  py-5  px-6 rounded-3xl -mt-12'>
+            <Text className='text-white' style={styles.monthHeader}>{format(today, 'MMMM yyyy')}</Text>
+            <View className='' style={styles.daysContainer}>
+                {days.map(renderDay)}
             </View>
         </View>
-    )
-}
-export default Calender
+    );
+};
 
 const styles = StyleSheet.create({
-    poppinsRegular: {
-        fontFamily: 'PoppinsRegular',
+    calendarContainer: {
+        // Your calendar container styles
     },
-    poppinsSemiBold: {
-        fontFamily: 'PoppinsSemiBold',
+    monthHeader: {
+        fontFamily: 'PoppinsLight',
+        fontSize: 14,
     },
-})
+    daysContainer: {
+        // Your days container styles
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+
+    },
+    dayContainer: {
+        // Your day container styles
+        alignItems: 'center',
+        fontFamily: 'PoppinsLight',
+
+        padding: 8,
+        paddingHorizontal: 12,
+        fontSize: 14,
+
+    },
+    activeDay: {
+        backgroundColor: '#A4A705', // Highlight color for the active day
+        borderRadius: 10,
+        borderWidth: 0,
+    },
+    dayOfWeek: {
+        fontFamily: 'PoppinsLight',
+        textAlign: 'center',
+        // Styles for the day of the week text
+    },
+    dayOfMonth: {
+        padding: 6,
+        // Styles for the day of the month text
+    },
+    // ... any other styles you need
+});
+
+export default CalendarWeek;
