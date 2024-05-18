@@ -18,11 +18,13 @@ import Arrow from '@/assets/icons/Arrow';
 import CustomCalendarSelect from '@/components/utils/CustomCalendarSelect';
 import Chevron from '@/assets/icons/Chevron';
 import Check from '@/assets/icons/Check';
+import HeaderCalendar from '@/components/calender/HeaderCalender';
 
 type Props = {}
 const HomeScreen = (props: Props) => {
     const [shifts, setShifts] = useState(false)
     const [addTimeOff, setAddTimeOff] = useState(false)
+    const [showHeaderCalendar, setShowHeaderCalendar] = useState(false)
 
     const options = [
         { label: 'Holiday', value: '1' },
@@ -57,6 +59,7 @@ const HomeScreen = (props: Props) => {
 
                 />
             </SafeAreaView>
+
             <View className='bg-white'>
                 <Calender />
             </View>
@@ -226,6 +229,17 @@ const HomeScreen = (props: Props) => {
 
 
                     </ScrollView>
+
+                </View >
+            }
+
+
+            {
+                showHeaderCalendar && <View className='bg-[#00000073] flex-1 h-full w-full absolute'>
+                    <View className=''>
+                        <HeaderCalendar setShowHeaderCalendar={setShowHeaderCalendar} showHeaderCalendar={showHeaderCalendar} onSelect={handleDateSelection} />
+                    </View>
+
 
                 </View >
             }

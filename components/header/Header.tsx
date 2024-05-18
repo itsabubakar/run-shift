@@ -6,6 +6,9 @@ import { DrawerActions } from '@react-navigation/native'
 import { useNavigation } from 'expo-router'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Path, Svg } from 'react-native-svg'
+import CustomCalendarSelect from '../utils/CustomCalendarSelect'
+import { useState } from 'react'
+import HeaderCalendar from '../calender/HeaderCalender'
 type Props = {
     title?: string
     calendar?: boolean
@@ -16,9 +19,16 @@ type Props = {
 }
 const Header = ({ title, calendar, filter, moreOptions, persons, subhead }: Props) => {
     const navigation = useNavigation()
+
+    const [showCalendar, setShowCalendar] = useState(false)
     const onToggle = () => {
         navigation.dispatch(DrawerActions.openDrawer())
     }
+
+    const handleDateSelection = (date: Date) => {
+        // Handle the selected date here
+        console.log(date);
+    };
 
     return (
         <View className={`bg-[#175B57] px-6   py-6 max-w-[395px] w-full  mx-auto  rounded-b-3xl ${subhead ? '' : 'pb-10'}`}>
@@ -43,8 +53,9 @@ const Header = ({ title, calendar, filter, moreOptions, persons, subhead }: Prop
 
                 <View className='flex-row gap-x-4'>
                     {
-                        calendar && <TouchableOpacity>
+                        calendar && <TouchableOpacity onPress={() => setShowCalendar(!showCalendar)}>
                             <Calender />
+
                         </TouchableOpacity>
                     }
 
@@ -67,10 +78,14 @@ const Header = ({ title, calendar, filter, moreOptions, persons, subhead }: Prop
                     }
 
                 </View>
+
             </View>
 
 
+
             {subhead && <Text style={styles.poppinsRegular} className='text-white pt-6 text-base pl-1'>{subhead}</Text>}
+
+
 
         </View>
     )
