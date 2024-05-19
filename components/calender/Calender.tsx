@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { format, eachDayOfInterval, addDays, isSameDay } from 'date-fns';
+import { format, addDays, isSameDay } from 'date-fns';
 
 const CalendarWeek = () => {
     const today = new Date();
@@ -17,13 +17,20 @@ const CalendarWeek = () => {
         const dayOfMonth = format(date, 'd');
         const isActive = isSameDay(date, activeDate); // Compares the two dates
 
+
+        // styling active day of the week - su mo tu
+        const isToday = isSameDay(date, today);
+        const activeDayOfWeekStyle = isToday ? styles.activeDayOfWeek : {};
+
+
         return (
             <TouchableOpacity
                 key={date.toString()}
                 onPress={() => setActiveDate(date)}
+                style={[isActive && styles.activeDay, activeDayOfWeekStyle, styles.borderRadius]}
 
             >
-                <Text style={styles.dayOfWeek} className='text-[#FFFFFF99]'>{dayOfWeek}</Text>
+                <Text style={styles.dayOfWeek}>{dayOfWeek}</Text>
                 <Text className='text-white' style={[styles.dayContainer, isActive && styles.activeDay]}>{dayOfMonth}</Text>
             </TouchableOpacity>
         );
@@ -42,6 +49,9 @@ const CalendarWeek = () => {
 const styles = StyleSheet.create({
     calendarContainer: {
         // Your calendar container styles
+    },
+    borderRadius: {
+        borderRadius: 8,
     },
     monthHeader: {
         fontFamily: 'PoppinsLight',
@@ -65,19 +75,21 @@ const styles = StyleSheet.create({
     },
     activeDay: {
         backgroundColor: '#A4A705', // Highlight color for the active day
-        borderRadius: 10,
         borderWidth: 0,
+        borderRadius: 8,
+
+    },
+    activeDayOfWeek: {
+        backgroundColor: '#FFFFFF99', // Dark gray color
     },
     dayOfWeek: {
         fontFamily: 'PoppinsLight',
         textAlign: 'center',
-        // Styles for the day of the week text
+        color: '#FFFFFF99'
+
     },
-    dayOfMonth: {
-        padding: 6,
-        // Styles for the day of the month text
-    },
-    // ... any other styles you need
+
+
 });
 
 export default CalendarWeek;

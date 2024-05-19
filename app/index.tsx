@@ -1,6 +1,6 @@
 import { Link, useRouter } from "expo-router"
 import { StatusBar } from "expo-status-bar"
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useState } from "react";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -9,32 +9,49 @@ import EyeOpen from "@/assets/icons/EyeOpen";
 import EyeClose from "@/assets/icons/EyeClose";
 import { useAuth } from "@/context/AuthContext";
 import { logoSm } from "@/assets/images";
+import axiosInstance from "@/services";
 
 type Props = {}
-const index = (props: Props) => {
+
+export enum Role {
+    STAFF = "staff",
+    ADMIN = "admin"
+}
+
+const Index = (props: Props) => {
     const [isChecked, setChecked] = useState(false)
     const [showError, setShowError] = useState(false)
     const [passwordVisible, setPasswordVisible] = useState(false);
-    const [password, setPassword] = useState('admin');
-    const [email, setEmail] = useState('admin')
+    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('')
 
-    const { onLogin, onSignUp } = useAuth()
+    const { onLogin, onSignUp, setAuthState } = useAuth()
     const router = useRouter()
 
+    const Login = async (email: string, password: string) => {
 
-    const onAdminLoginPress = async () => {
-        console.log(email, password);
+        try {
+            const res = await axiosInstance.post(`/test/login`, { email, password });
+            console.log(res.data);
+            if (setAuthState) {
 
-        onSignUp!(email, password)
-        router.replace('/(shifts)')
+                setAuthState({
+                    authenticated: true,
+                    role: Role.ADMIN,
+                    username: email,
+                    token: res.data.token,
+                })
+            }
+            router.replace('/(shifts)')
 
-
+            // axiosInstance.defaults.headers.common.Authorization = `Bearer ${res.data.token}`
+            // await SecureStore.setItemAsync('TOKEN_KEY', res.data.token)
+        } catch (error) {
+            console.log(error);
+            Alert.alert(error as any || 'An error occured... Check your network connection!')
+        }
     }
-    const onStaffLoginPress = async () => {
-        onLogin!('staff', 'staff')
-        router.replace('/(shifts)')
 
-    }
 
     const togglePasswordVisibility = () => {
         setPasswordVisible(!passwordVisible);
@@ -53,6 +70,7 @@ const index = (props: Props) => {
                         <Image className="w-[83px] object-cover" source={logoSm} />
                     </View>
                     <TextInput style={styles.poppinsRegular}
+                        onChangeText={text => setEmail(text)}
                         placeholderTextColor="#c2c2c2" className='border border-[#FFF]/25 rounded-2xl py-3 px-3 placeholder:text-lg text-white max-w-[308px] min-w-[308px]' placeholder='Email address' />
 
                     <View className=" border border-[#ffffff]/25 rounded-2xl flex flex-row items-center justify-between w-full mt-5 py-3 px-3 max-w-[308px] min-w-[308px]">
@@ -89,7 +107,7 @@ const index = (props: Props) => {
 
                     >
                         <TouchableOpacity
-                            onPress={onStaffLoginPress}
+                            onPress={() => Login(email, password)}
                         >
                             <Text style={styles.poppinsRegular} className='text-center bg-secondary py-4  text-lg rounded-2xl max-w-[308px] min-w-[308px] text-white'>Login</Text>
                         </TouchableOpacity>
@@ -148,4 +166,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default index
+export default Index

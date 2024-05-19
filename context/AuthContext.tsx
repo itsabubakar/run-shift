@@ -1,4 +1,4 @@
-import axiosInstance from "@/services";
+import axiosInstance from "@/services"
 import { createContext, useContext, useEffect, useState } from "react";
 import * as SecureStore from 'expo-secure-store';
 
@@ -17,6 +17,12 @@ interface AuthProps {
     onLogin: (username: string, password: string) => void,
     onSignUp: (username: string, password: string) => void,
     onLogout: () => void;
+    setAuthState: React.Dispatch<React.SetStateAction<{
+        authenticated: boolean | null,
+        role: Role | null,
+        username: string | null,
+        token: string | null,
+    }>>
 }
 
 const AuthContext = createContext<Partial<AuthProps>>({})
@@ -70,7 +76,7 @@ export const AuthProvider = ({ children }: any) => {
 
         try {
             const res = await axiosInstance.post(`/users`, { email, password })
-            console.log(res);
+            console.log(res.data);
 
         } catch (e) {
             return { error: true, msg: (e as any).response.data.message }
@@ -79,19 +85,23 @@ export const AuthProvider = ({ children }: any) => {
 
     const logged = async (email: string, password: string) => {
 
+        console.log('hit', email, password);
+
         try {
-            const res = await axiosInstance.post(`/auth`, { email, password })
+            const res = await axiosInstance.post(`/test/login`, { email, password })
+            console.log(res);
+
             setAuthState({
                 authenticated: true,
                 role: Role.ADMIN,
                 username: email,
                 token: res.data.token,
             })
-            axiosInstance.defaults.headers.common.Authorization = `Bearer ${res.data.token}`
+            // axiosInstance.defaults.headers.common.Authorization = `Bearer ${res.data.token}`
 
-            await SecureStore.setItemAsync('TOKEN_KEY', res.data.token)
+            // await SecureStore.setItemAsync('TOKEN_KEY', res.data.token)
         } catch (e) {
-            return { error: true, msg: (e as any).response.data.message }
+            return { error: true, msg: (e as any).response }
         }
     }
 
@@ -139,6 +149,8 @@ export const AuthProvider = ({ children }: any) => {
         onLogout: logout,
         authState,
         onSignUp: register,
+
+        setAuthState,
 
     }
 

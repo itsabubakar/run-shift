@@ -22,7 +22,7 @@ import HeaderCalendar from '@/components/calender/HeaderCalender';
 
 type Props = {}
 const HomeScreen = (props: Props) => {
-    const [shifts, setShifts] = useState(false)
+    const [shifts, setShifts] = useState(true)
     const [addTimeOff, setAddTimeOff] = useState(false)
     const [showHeaderCalendar, setShowHeaderCalendar] = useState(false)
 
