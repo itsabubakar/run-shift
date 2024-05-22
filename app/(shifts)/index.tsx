@@ -21,12 +21,16 @@ import Check from '@/assets/icons/Check';
 import HeaderCalendar from '@/components/calender/HeaderCalender';
 import axiosInstance from '@/services';
 import LoadingSpinner from '@/components/utils/LoadingSpinner';
+import { useAppContext } from '@/context/AppContext';
 
 type Props = {}
 const HomeScreen = (props: Props) => {
     const [shifts, setShifts] = useState(false)
     const [addTimeOff, setAddTimeOff] = useState(false)
-    const [showHeaderCalendar, setShowHeaderCalendar] = useState(false)
+    const { setShowHeaderCalendar, showHeaderCalendar } = useAppContext()
+    const [showRequestIcon, setShowRequestIcon] = useState(false)
+    const [showTimeOffAndShiftRequest, setShowTimeOffAndShiftRequest] = useState(false)
+
 
     // Replace after setting up tanstack query
     const [loading, setLoading] = useState(false)
@@ -78,6 +82,12 @@ const HomeScreen = (props: Props) => {
 
     }, [])
 
+    const handleLongPress = () => {
+        // setShowRequestIcon(!showRequestIcon)
+        console.log('long press');
+
+    }
+
     return (
 
         <>
@@ -103,8 +113,6 @@ const HomeScreen = (props: Props) => {
 
                         <View className=' mt-auto pb-6 items-end'>
                             <TouchableOpacity className='bg-primary flex-row py-3 px-4 rounded-xl  mb-5' >
-
-
                                 <CalenderIcon />
 
                                 <Text
@@ -129,6 +137,8 @@ const HomeScreen = (props: Props) => {
 
 
                     }
+
+                    {/* Shifts */}
                     {
                         shifts && <View className='px-6 mt-10 flex-1'>
                             {
@@ -140,25 +150,58 @@ const HomeScreen = (props: Props) => {
                                 ))
                             }
 
-                            <View className='mt-auto'>
-                                <TouchableOpacity className='   items-end absolute right-20 bottom-14'>
-                                    <Redo />
+                            {
+                                !showRequestIcon ? <View className=' mt-auto pb-6 items-end'>
+                                    {
+                                        showTimeOffAndShiftRequest && <>
+                                            <TouchableOpacity onLongPress={handleLongPress} className='bg-primary flex-row py-3 px-4 rounded-xl  mb-5' >
+                                                <CalenderIcon />
 
-                                </TouchableOpacity>
-                                <TouchableOpacity className='   items-end pb-4'>
-                                    <Pencil />
+                                                <Text
+                                                    style={styles.poppinsRegular}
+                                                    className='text-white ml-2'>request shift</Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity
+                                                onPress={() => setAddTimeOff(!addTimeOff)}
+                                                className='bg-primary flex-row py-3 px-3 rounded-xl mb-5'  >
+                                                <Clock />
+                                                <Text
+                                                    style={styles.poppinsRegular}
+                                                    className='text-white ml-2'
+                                                >request time off</Text>
+                                            </TouchableOpacity>
+                                        </>
+                                    }
 
-                                </TouchableOpacity>
-                                <TouchableOpacity className='   items-end pb-6'>
-                                    <Cancel fill='#175B57' />
-                                </TouchableOpacity>
-                            </View>
+                                    <TouchableOpacity onPress={() => setShowTimeOffAndShiftRequest(!showTimeOffAndShiftRequest)}>
+                                        <Upload />
+                                    </TouchableOpacity>
+                                </View> : <View className='mt-auto'>
+                                    <TouchableOpacity className='   items-end absolute right-20 bottom-14'>
+                                        <Redo />
+
+                                    </TouchableOpacity>
+
+                                    {/* <TouchableOpacity className='   items-end pb-4'>
+                                        <Pencil />
+                                    </TouchableOpacity> */}
+
+                                    <TouchableOpacity className='   items-end pb-6'>
+                                        <Cancel fill='#175B57' />
+                                    </TouchableOpacity>
+                                </View>
+                            }
+
+
+
+
 
                         </View>
                     }
 
                 </View>
 
+                {/* Time off */}
                 {
                     addTimeOff && <View className='bg-[#00000073] flex-1 h-full w-full absolute'>
 

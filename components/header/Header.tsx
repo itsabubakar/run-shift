@@ -9,6 +9,7 @@ import { Path, Svg } from 'react-native-svg'
 import CustomCalendarSelect from '../utils/CustomCalendarSelect'
 import { useState } from 'react'
 import HeaderCalendar from '../calender/HeaderCalender'
+import { useAppContext } from '@/context/AppContext'
 type Props = {
     title?: string
     calendar?: boolean
@@ -20,7 +21,9 @@ type Props = {
 const Header = ({ title, calendar, filter, moreOptions, persons, subhead }: Props) => {
     const navigation = useNavigation()
 
-    const [showCalendar, setShowCalendar] = useState(false)
+    // const [showHeaderCalendar, setShowHeaderCalendar] = useState(false)
+    const { setShowHeaderCalendar, showHeaderCalendar } = useAppContext()
+
     const onToggle = () => {
         navigation.dispatch(DrawerActions.openDrawer())
     }
@@ -53,9 +56,8 @@ const Header = ({ title, calendar, filter, moreOptions, persons, subhead }: Prop
 
                 <View className='flex-row gap-x-4'>
                     {
-                        calendar && <TouchableOpacity onPress={() => setShowCalendar(!showCalendar)}>
+                        calendar && <TouchableOpacity onPress={() => setShowHeaderCalendar!(!showHeaderCalendar)}>
                             <Calender />
-
                         </TouchableOpacity>
                     }
 

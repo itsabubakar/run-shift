@@ -10,7 +10,6 @@ import EyeClose from "@/assets/icons/EyeClose";
 import { useAuth } from "@/context/AuthContext";
 import { logoSm } from "@/assets/images";
 import axiosInstance from "@/services";
-import Spinner from "./(shifts)/refresh";
 import LoadingSpinner from "@/components/utils/LoadingSpinner";
 
 type Props = {}
@@ -24,8 +23,8 @@ const Index = (props: Props) => {
     const [isChecked, setChecked] = useState(false)
     const [showError, setShowError] = useState(false)
     const [passwordVisible, setPasswordVisible] = useState(false);
-    const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('123456');
+    const [email, setEmail] = useState('sadiqbilyamin@gmail.com')
 
     // Replace after setting up tanstack query
     const [loading, setLoading] = useState(false)
@@ -105,8 +104,6 @@ const Index = (props: Props) => {
 
                         <View className='pt-8 pb-10 max-w-[308px] w-full flex-row items-center justify-between px-2'>
                             <Text style={styles.poppinsRegular} className='text-white text-left text-lg'>Keep me logged in</Text>
-
-
                             <CheckBox
                                 isCheck={isChecked}
                                 onChecked={() => setChecked(!isChecked)}

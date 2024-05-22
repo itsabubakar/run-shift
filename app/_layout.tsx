@@ -3,6 +3,7 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { AppProvider } from '@/context/AppContext';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -25,18 +26,20 @@ const StackLayout = () => {
 
   return (
     <AuthProvider>
-      <Stack
-        screenOptions={{
-          headerShown: false
-        }}
-      >
-        <Stack.Screen name="index" />
-        <Stack.Screen options={{ headerShown: false }} name="(shifts)" />
-        <Stack.Screen name="offline" />
-        <Stack.Screen name="signUp" />
-        <Stack.Screen name="login" />
-        <Stack.Screen name="options" />
-      </Stack>
+      <AppProvider>
+        <Stack
+          screenOptions={{
+            headerShown: false
+          }}
+        >
+          <Stack.Screen name="index" />
+          <Stack.Screen options={{ headerShown: false }} name="(shifts)" />
+          <Stack.Screen name="offline" />
+          <Stack.Screen name="signUp" />
+          <Stack.Screen name="login" />
+          <Stack.Screen name="options" />
+        </Stack>
+      </AppProvider>
     </AuthProvider>
   );
 }

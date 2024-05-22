@@ -9,7 +9,7 @@ import Redo from '@/assets/icons/shifts/Redo';
 type Props = {
     onSelect: (date: Date) => void;
     showHeaderCalendar: boolean;
-    setShowHeaderCalendar: React.Dispatch<React.SetStateAction<boolean>>;
+    setShowHeaderCalendar: React.Dispatch<React.SetStateAction<boolean>> | undefined;
 
 };
 
@@ -21,7 +21,7 @@ const CustomCalendarSelect = ({ onSelect, showHeaderCalendar, setShowHeaderCalen
     const handleSelectDay = (day: number) => {
         const selectedDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
         onSelect(selectedDate);
-        setShowHeaderCalendar(false);
+        setShowHeaderCalendar!(false);
     };
 
     const renderDaysOfWeek = () => {
@@ -80,8 +80,8 @@ const CustomCalendarSelect = ({ onSelect, showHeaderCalendar, setShowHeaderCalen
     return (
         <View>
 
-            <Modal visible={showHeaderCalendar} transparent={true} onRequestClose={() => setShowHeaderCalendar(false)}>
-                <TouchableOpacity style={styles.modalOverlay} onPress={() => setShowHeaderCalendar(false)}>
+            <Modal visible={showHeaderCalendar} transparent={true} onRequestClose={() => setShowHeaderCalendar!(false)}>
+                <TouchableOpacity style={styles.modalOverlay} onPress={() => setShowHeaderCalendar!(false)}>
                     <View style={styles.modalContent}>
                         <View style={styles.header}>
                             <TouchableOpacity onPress={() => changeMonth('prev')}>
