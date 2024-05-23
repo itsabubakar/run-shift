@@ -18,8 +18,6 @@ const Screen = (props: Props) => {
             </SafeAreaView>
 
             <Header title='uploads'
-                calendar={true}
-                filter={true}
                 moreOptions={true}
             />
             <View className='flex-1 justify-between bg-white px-6'>

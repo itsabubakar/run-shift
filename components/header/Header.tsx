@@ -22,7 +22,10 @@ const Header = ({ title, calendar, filter, moreOptions, persons, subhead }: Prop
     const navigation = useNavigation()
 
     // const [showHeaderCalendar, setShowHeaderCalendar] = useState(false)
-    const { setShowHeaderCalendar, showHeaderCalendar } = useAppContext()
+    const { setShowHeaderCalendar,
+        showHeaderCalendar,
+        showAllShifts,
+        setShowAllShifts, setMoreOptions, showMoreOptions } = useAppContext()
 
     const onToggle = () => {
         navigation.dispatch(DrawerActions.openDrawer())
@@ -62,7 +65,7 @@ const Header = ({ title, calendar, filter, moreOptions, persons, subhead }: Prop
                     }
 
                     {
-                        persons && <TouchableOpacity>
+                        persons && <TouchableOpacity onPress={() => setShowAllShifts!(!showAllShifts)}>
                             <Persons />
                         </TouchableOpacity>
                     }
@@ -74,7 +77,7 @@ const Header = ({ title, calendar, filter, moreOptions, persons, subhead }: Prop
                     }
 
                     {
-                        moreOptions && <TouchableOpacity>
+                        moreOptions && <TouchableOpacity onPress={() => setMoreOptions!(!showMoreOptions)}>
                             <MoreOptions />
                         </TouchableOpacity>
                     }

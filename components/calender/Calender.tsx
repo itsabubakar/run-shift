@@ -4,8 +4,8 @@ import { format, addDays, isSameDay } from 'date-fns';
 
 const CalendarWeek = () => {
     const today = new Date();
-    console.log(today);
-    
+    // console.log(today);
+
     const [activeDate, setActiveDate] = useState(today);
 
     // Generate the days starting from today and the next six days

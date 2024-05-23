@@ -31,8 +31,6 @@ const Screen = (props: Props) => {
                 resetScrollToCoords={{ x: 0, y: 0 }}
                 scrollEnabled={true}>
                 <Header title='notice board'
-                    calendar={true}
-                    filter={true}
                     moreOptions={true}
                 />
                 <View className="justify-between">

@@ -46,8 +46,6 @@ const Screen = (props: Props) => {
                 </SafeAreaView>
                 <Header
                     title='staff'
-                    calendar={true}
-                    filter={true}
                     moreOptions={true}
 
                 />

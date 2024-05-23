@@ -22,14 +22,18 @@ import HeaderCalendar from '@/components/calender/HeaderCalender';
 import axiosInstance from '@/services';
 import LoadingSpinner from '@/components/utils/LoadingSpinner';
 import { useAppContext } from '@/context/AppContext';
+import MyShifts from '@/components/header/MyShifts';
+import MoreOptions from '@/components/header/MoreOptions';
 
 type Props = {}
 const HomeScreen = (props: Props) => {
     const [shifts, setShifts] = useState(false)
     const [addTimeOff, setAddTimeOff] = useState(false)
-    const { setShowHeaderCalendar, showHeaderCalendar } = useAppContext()
+    const { setShowHeaderCalendar, showHeaderCalendar, showAllShifts, setShowAllShifts, showMoreOptions } = useAppContext()
     const [showRequestIcon, setShowRequestIcon] = useState(false)
     const [showTimeOffAndShiftRequest, setShowTimeOffAndShiftRequest] = useState(false)
+
+    const [myShifts, setMyShifts] = useState(true)
 
 
     // Replace after setting up tanstack query
@@ -316,6 +320,7 @@ const HomeScreen = (props: Props) => {
                 }
 
 
+                {/* Header calendar */}
                 {
                     showHeaderCalendar && <View className='bg-[#00000073] flex-1 h-full w-full absolute'>
                         <View className=''>
@@ -326,6 +331,24 @@ const HomeScreen = (props: Props) => {
                     </View >
                 }
 
+                {/* Header shifts display */}
+
+                {showAllShifts && <View className='bg-[#00000073] flex-1 h-full w-full absolute'>
+                    <View className=''>
+                        <MyShifts />
+                    </View>
+
+                </View >
+                }
+
+                {/* more options */}
+                {showMoreOptions && <View className='bg-[#00000073] flex-1 h-full w-full absolute'>
+                    <View className=''>
+                        <MoreOptions />
+                    </View>
+
+                </View >
+                }
                 <StatusBar style="auto" />
             </View >
             {

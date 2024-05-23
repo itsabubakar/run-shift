@@ -8,7 +8,6 @@ const Shift = (props: Props) => {
     const [showCheckBoxes, setShowCheckBoxes] = useState(false)
     const [isChecked, setChecked] = useState(false)
 
-    console.log(props.info);
 
 
     return (
@@ -23,9 +22,11 @@ const Shift = (props: Props) => {
             </View>
             <View className=''>
                 {props?.info.map((info: any, index: Key | null | undefined) => (
-                    <TouchableOpacity key={index} onLongPress={() => setShowCheckBoxes(!showCheckBoxes)} className={`flex-row ${showCheckBoxes && 'bg-[#F0F0F0]'} p-1 mb-2 rounded-2xl`}>
+                    <TouchableOpacity key={index}
+                        //  onLongPress={() => setShowCheckBoxes(!showCheckBoxes)} 
+                        className={`flex-row ${showCheckBoxes && 'bg-[#F0F0F0]'} p-1 mb-2 rounded-2xl`}>
                         <Text style={styles.poppinsRegular} className='bg-secondary px-3  text-white rounded-2xl py-3'>{info}</Text>
-                        {
+                        {/* {
                             showCheckBoxes &&
                             <View className='bg-[#F0F0F0] px-4'>
                                 <CheckBox
@@ -33,7 +34,7 @@ const Shift = (props: Props) => {
                                     onChecked={() => setChecked(!isChecked)}
                                 />
                             </View>
-                        }
+                        } */}
 
                     </TouchableOpacity>
                 ))}
