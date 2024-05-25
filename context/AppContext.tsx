@@ -11,6 +11,12 @@ interface AppProps {
     setShowFilter: React.Dispatch<React.SetStateAction<boolean>>,
     showMoreOptions: boolean,
     setMoreOptions: React.Dispatch<React.SetStateAction<boolean>>,
+    fontSize: number,
+    setFontSize: React.Dispatch<React.SetStateAction<number>>,
+    showProfilePicture: boolean,
+    setShowProfilePicture: React.Dispatch<React.SetStateAction<boolean>>,
+    selectedDate: Date;
+    setSelectedDate: (date: Date) => void;
 
 
 }
@@ -27,8 +33,13 @@ export const AppProvider = ({ children }: any) => {
     const [showAllShifts, setShowAllShifts] = useState(false)
     const [showFilter, setShowFilter] = useState(false)
     const [showMoreOptions, setMoreOptions] = useState(false)
+    const [fontSize, setFontSize] = useState(14); // Default font size
+    const [showProfilePicture, setShowProfilePicture] = useState(true)
+    const [selectedDate, setSelectedDate] = useState(new Date());
 
     const value = {
+        selectedDate,
+        setSelectedDate,
         showHeaderCalendar,
         setShowHeaderCalendar,
         showAllShifts,
@@ -36,7 +47,11 @@ export const AppProvider = ({ children }: any) => {
         showFilter,
         setShowFilter,
         showMoreOptions,
-        setMoreOptions
+        setMoreOptions,
+        fontSize,
+        setFontSize,
+        showProfilePicture,
+        setShowProfilePicture
 
     }
 

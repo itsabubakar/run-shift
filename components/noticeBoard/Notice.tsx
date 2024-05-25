@@ -1,7 +1,9 @@
 import ProfilePicture from '@/assets/icons/ProfilePicture'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-type Props = {}
-const Notice = (props: Props) => {
+type Props = {
+    notification: string
+}
+const Notice = ({ notification }: Props) => {
     return (<View className='pt-10 pb-20 '>
         <View className='min-w-[300px] justify-between  flex-row flex  w-full'>
             <View className="  max-w-[90px] ">
@@ -9,8 +11,8 @@ const Notice = (props: Props) => {
                 <ProfilePicture />
             </View>
 
-            <View className='ml-10  '>
-                <Text style={styles.poppinsRegular} className='bg-[#6E6E6E] text-white px-3 py-3 rounded-xl text-[14px] min-h-[94px] max-w-[260px] min-w-[200px]'>Run Shift Board</Text>
+            <View className='ml-10 flex-1 '>
+                <Text style={styles.poppinsRegular} className='bg-[#6E6E6E] text-white px-3 py-3 rounded-xl text-[14px] min-h-[94px] max-w-[260px] min-w-[200px]'>{notification}!</Text>
             </View>
         </View>
     </View>

@@ -18,7 +18,7 @@ const Screen = (props: Props) => {
         const fetchStaff = async () => {
             setLoading(true)
             try {
-                setLoading(false)
+                // setLoading(false)
                 const staffs = await axiosInstance.get('/staff')
                 console.log(staffs.data);
 
@@ -29,9 +29,8 @@ const Screen = (props: Props) => {
                 console.log(error);
             }
             finally {
-                console.log('done');
+                console.log('done', loading);
                 setLoading(false)
-
 
             }
         }
@@ -39,26 +38,29 @@ const Screen = (props: Props) => {
         fetchStaff()
 
     }, [])
+
+
     return (
         <View className="flex-1 bg-white">
-            <>
-                <SafeAreaView className='bg-primary pb-7'>
-                </SafeAreaView>
-                <Header
-                    title='staff'
-                    moreOptions={true}
 
-                />
+            <SafeAreaView className='bg-primary pb-7'>
+            </SafeAreaView>
+            <Header
+                title='staff'
+            // moreOptions={true}
 
-                <View className='flex-1  bg-white  '>
-                    {
-                        staff.map((staff, index) => {
-                            return <Staff {...staff} key={index} />
-                        })
-                    }
+            />
 
-                </View>
-            </>
+            <View className='flex-1  bg-white  '>
+                {
+                    staff.map((staff: {}, index) => {
+                        return <Staff {...staff} key={index} />
+                    })
+                }
+
+
+            </View>
+
             {loading && <LoadingSpinner />}
             <StatusBar style="auto" />
         </View>

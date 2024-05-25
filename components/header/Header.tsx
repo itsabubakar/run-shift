@@ -4,12 +4,15 @@ import MoreOptions from '@/assets/icons/header/MoreOptions'
 import Persons from '@/assets/icons/header/Persons'
 import { DrawerActions } from '@react-navigation/native'
 import { useNavigation } from 'expo-router'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { Path, Svg } from 'react-native-svg'
 import CustomCalendarSelect from '../utils/CustomCalendarSelect'
 import { useState } from 'react'
 import HeaderCalendar from '../calender/HeaderCalender'
 import { useAppContext } from '@/context/AppContext'
+import Person from '@/assets/icons/header/Person'
+import Arrow from '@/assets/icons/Arrow'
+import ArrowLarge from '@/assets/icons/ArrowLarge'
 type Props = {
     title?: string
     calendar?: boolean
@@ -25,7 +28,7 @@ const Header = ({ title, calendar, filter, moreOptions, persons, subhead }: Prop
     const { setShowHeaderCalendar,
         showHeaderCalendar,
         showAllShifts,
-        setShowAllShifts, setMoreOptions, showMoreOptions } = useAppContext()
+        setShowAllShifts, setMoreOptions, showMoreOptions, showFilter, setShowFilter } = useAppContext()
 
     const onToggle = () => {
         navigation.dispatch(DrawerActions.openDrawer())
@@ -54,35 +57,57 @@ const Header = ({ title, calendar, filter, moreOptions, persons, subhead }: Prop
                             strokeWidth="1.5"
                         />
                     </Svg>
-                    <Text style={styles.poppinsRegular} className='text-white text-2xl pl-1'>{title || 'runshift'}</Text>
+                    {!showFilter && <Text style={styles.poppinsRegular} className='text-white text-2xl pl-1'>{title || 'runshift'}</Text>}
+
                 </TouchableOpacity>
 
-                <View className='flex-row gap-x-4'>
-                    {
-                        calendar && <TouchableOpacity onPress={() => setShowHeaderCalendar!(!showHeaderCalendar)}>
-                            <Calender />
-                        </TouchableOpacity>
-                    }
+                {!showFilter &&
+                    <View className='flex-row gap-x-4'>
+                        {
+                            calendar && <TouchableOpacity onPress={() => setShowHeaderCalendar!(!showHeaderCalendar)}>
+                                <Calender />
+                            </TouchableOpacity>
+                        }
 
-                    {
-                        persons && <TouchableOpacity onPress={() => setShowAllShifts!(!showAllShifts)}>
-                            <Persons />
-                        </TouchableOpacity>
-                    }
+                        {
+                            persons && <TouchableOpacity onPress={() => setShowAllShifts!(!showAllShifts)}>
+                                <Persons />
+                            </TouchableOpacity>
+                        }
 
-                    {
-                        filter && <TouchableOpacity>
-                            <Filter />
-                        </TouchableOpacity>
-                    }
+                        {
+                            filter && <TouchableOpacity onPress={() => setShowFilter!(!showFilter)}>
+                                <Filter />
+                            </TouchableOpacity>
+                        }
 
-                    {
-                        moreOptions && <TouchableOpacity onPress={() => setMoreOptions!(!showMoreOptions)}>
-                            <MoreOptions />
-                        </TouchableOpacity>
-                    }
+                        {
+                            moreOptions && <TouchableOpacity onPress={() => setMoreOptions!(!showMoreOptions)}>
+                                <MoreOptions />
+                            </TouchableOpacity>
+                        }
 
-                </View>
+                    </View>
+                }
+
+                {
+                    showFilter && <View className='flex-1 flex-row justify-between border-b ml-4 w-full border-white'>
+                        <TextInput
+                            style={styles.poppinsRegular}
+                            placeholder='filter'
+                            className=' text-2xl'
+                            placeholderTextColor={'white'}
+                        >
+                        </TextInput>
+                        <TouchableOpacity onPress={() => setShowFilter!(!showFilter)}>
+
+                            <ArrowLarge />
+                        </TouchableOpacity>
+
+                    </View>
+                }
+
+
 
             </View>
 

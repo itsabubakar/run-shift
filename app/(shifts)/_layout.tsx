@@ -30,10 +30,12 @@ import Desktop from '@/assets/icons/drawer/Desktop';
 import Logout from '@/assets/icons/drawer/Logout';
 import Exit from '@/assets/icons/drawer/Exit';
 import { useAuth } from '@/context/AuthContext';
+import { useAppContext } from '@/context/AppContext';
 type Props = {}
 
 const Layout = (props: Props) => {
     const { authState } = useAuth()
+    const { showProfilePicture } = useAppContext()
 
     function CustomDrawerContent(props: any) {
         const { top, bottom } = useSafeAreaInsets()
@@ -45,12 +47,12 @@ const Layout = (props: Props) => {
                 }}
                 {...props}>
 
-                <View className='px-5 bg-[#175B57] rounded-b-[30px] flex-row items-center h-[125px] justify-center gap-x-[10px]'>
+                <View className='px-6 bg-[#175B57] rounded-b-[30px] flex-row items-center h-[125px] justify-center gap-x-[10px] '>
 
                     {/* Profile image */}
-                    <View className=" h-[50] w-[50] rounded-full justify-center items-center">
+                    {showProfilePicture && <View className=" h-[50] w-[50] rounded-full justify-center items-center">
                         <ProfilePicture />
-                    </View>
+                    </View>}
 
                     {/* name and email */}
                     <View className=''>

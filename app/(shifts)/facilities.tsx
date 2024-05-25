@@ -12,6 +12,7 @@ const Screen = (props: Props) => {
             </SafeAreaView>
             <Header
                 title='facilities'
+                moreOptions={true}
 
             />
 

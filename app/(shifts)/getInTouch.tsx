@@ -1,9 +1,10 @@
 import Exclamination from '@/assets/icons/Exclamination'
+import Letter from '@/assets/icons/Letter'
 import Header from '@/components/header/Header'
 import { StatusBar } from 'expo-status-bar'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-const getInTouch = () => {
+const GetInTouch = () => {
     return (
         <SafeAreaView className="flex-1 bg-primary ">
             <Header
@@ -20,6 +21,10 @@ const getInTouch = () => {
                 <Text style={styles.poppinsRegular} className='text-white text-base'>Have questions about this app? Feel free to reach out to our support team, available online from 12 am to 10 pm (GMT), Monday through Friday. If it's outside these hours, you can still leave them a message at any time.</Text>
             </View>
 
+            <TouchableOpacity className='mt-auto bg-[#27736E] justify-end align-end ml-auto mr-6 mb-10 p-4 rounded-xl'>
+                <Letter />
+            </TouchableOpacity>
+
 
             <StatusBar style="auto" />
         </SafeAreaView>
@@ -35,4 +40,4 @@ const styles = StyleSheet.create({
         fontFamily: 'PoppinsSemiBold',
     },
 })
-export default getInTouch
+export default GetInTouch
