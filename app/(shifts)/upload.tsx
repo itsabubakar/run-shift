@@ -4,12 +4,14 @@ import Jpg from '@/assets/icons/Jpg'
 import Upload from '@/assets/icons/Upload'
 import Header from '@/components/header/Header'
 import Notice from '@/components/noticeBoard/Notice'
+import { useAppContext } from '@/context/AppContext'
 import { StatusBar } from 'expo-status-bar'
 import { useState } from 'react'
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 type Props = {}
 const Screen = (props: Props) => {
+    const { fontSize } = useAppContext()
     const [showDelete, setShowDelete] = useState(false)
 
     return (
@@ -28,9 +30,9 @@ const Screen = (props: Props) => {
                         </View>
                         <View className='ml-4'>
 
-                            <Text className='bg-[#626262] text-white px-3 rounded-lg mb-1 py-2 text-base' style={styles.poppinsRegular} >IMG -2e22e4-22</Text>
-                            <Text className='text-sm text-[#606060]' style={styles.poppinsRegular}>A few seconds ago</Text>
-                            <Text className='text-sm text-[#606060]' style={styles.poppinsRegular}>45.78kb</Text>
+                            <Text className='bg-[#626262] text-white px-3 rounded-lg mb-1 py-2 text-base' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]} >IMG -2e22e4-22</Text>
+                            <Text className='text-sm text-[#606060]' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>A few seconds ago</Text>
+                            <Text className='text-sm text-[#606060]' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>45.78kb</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity onLongPress={() => setShowDelete(!showDelete)} className='flex-row'>
@@ -39,9 +41,9 @@ const Screen = (props: Props) => {
                         </View>
                         <View className='ml-4'>
 
-                            <Text className='bg-[#626262] text-white px-3 rounded-lg mb-1 py-2 text-base' style={styles.poppinsRegular} >IMG -2e22e4-22</Text>
-                            <Text className='text-sm text-[#606060]' style={styles.poppinsRegular}>A few seconds ago</Text>
-                            <Text className='text-sm text-[#606060]' style={styles.poppinsRegular}>45.78kb</Text>
+                            <Text className='bg-[#626262] text-white px-3 rounded-lg mb-1 py-2 text-base' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]} >IMG -2e22e4-22</Text>
+                            <Text className='text-sm text-[#606060]' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>A few seconds ago</Text>
+                            <Text className='text-sm text-[#606060]' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>45.78kb</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -54,7 +56,7 @@ const Screen = (props: Props) => {
                     <View className=" h-[60%]  bottom-0 w-full rounded-t-[20px] justify-center items-center">
                     </View>
                     <View className="bg-primary h-full bottom-0 w-full rounded-t-[60px] justify-center px-6">
-                        <Text style={styles.poppinsRegular} className="text-white text-2xl pb-8  -mt-[500px] ">Are you sure you want to delete this selected file ?</Text>
+                        <Text style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]} className="text-white text-2xl pb-8  -mt-[500px] ">Are you sure you want to delete this selected file ?</Text>
                         <View className='justify-end flex-row gap-x-[76px]'>
                             <TouchableOpacity className='flex-row ' onPress={() => setShowDelete(!showDelete)}>
                                 <Check />

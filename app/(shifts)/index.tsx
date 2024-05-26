@@ -9,11 +9,12 @@ import MyShifts from '@/components/header/MyShifts'
 import MoreOptions from '@/components/header/MoreOptions';
 import LoadingSpinner from '@/components/utils/LoadingSpinner'
 import { useState } from 'react'
+import FontSlider from '@/components/FontSlider'
 
 
 type Props = {}
 const HomeScreen = (props: Props) => {
-    const { setShowHeaderCalendar, showHeaderCalendar, showAllShifts, setShowAllShifts, showMoreOptions } = useAppContext()
+    const { setShowHeaderCalendar, showHeaderCalendar, showAllShifts, setShowAllShifts, showMoreOptions, showFontSlider } = useAppContext()
 
     const handleDateSelection = (date: Date) => {
         // Handle the selected date here
@@ -64,6 +65,18 @@ const HomeScreen = (props: Props) => {
                 </View>
 
             </View >
+            }
+
+            {/* font size modal */}
+
+            {
+                showFontSlider && <View className='flex-1 h-full w-full absolute'>
+                    <View className=''>
+                        <FontSlider />
+                    </View>
+
+                </View >
+
             }
             {
                 loading && <LoadingSpinner />

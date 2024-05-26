@@ -17,6 +17,8 @@ interface AppProps {
     setShowProfilePicture: React.Dispatch<React.SetStateAction<boolean>>,
     selectedDate: Date;
     setSelectedDate: (date: Date) => void;
+    showFontSlider: boolean;
+    setShowFontSlider: React.Dispatch<React.SetStateAction<boolean>>,
 
 
 }
@@ -36,6 +38,7 @@ export const AppProvider = ({ children }: any) => {
     const [fontSize, setFontSize] = useState(14); // Default font size
     const [showProfilePicture, setShowProfilePicture] = useState(true)
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [showFontSlider, setShowFontSlider] = useState(false)
 
     const value = {
         selectedDate,
@@ -51,8 +54,9 @@ export const AppProvider = ({ children }: any) => {
         fontSize,
         setFontSize,
         showProfilePicture,
-        setShowProfilePicture
-
+        setShowProfilePicture,
+        showFontSlider,
+        setShowFontSlider
     }
 
     return <AppContext.Provider

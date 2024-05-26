@@ -4,7 +4,7 @@ import { Drawer } from 'expo-router/drawer';
 import Persons from '@/assets/icons/header/Persons';
 // import CustomDrawerContent from '@/components/header/CustomDrawerHeader';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { usePathname, useRouter } from 'expo-router';
 import { DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import ProfilePicture from '@/assets/icons/drawer/ProfilePicture';
 import Calender from '@/assets/icons/header/Calender';
@@ -36,6 +36,11 @@ type Props = {}
 const Layout = (props: Props) => {
     const { authState } = useAuth()
     const { showProfilePicture } = useAppContext()
+    const { showFontSlider, setShowFontSlider } = useAppContext()
+    const router = useRouter()
+
+    const pathname: any = usePathname()
+
 
     function CustomDrawerContent(props: any) {
         const { top, bottom } = useSafeAreaInsets()
@@ -98,6 +103,7 @@ const Layout = (props: Props) => {
         </View>
 
     }
+
 
     return (
         <GestureHandlerRootView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -227,16 +233,23 @@ const Layout = (props: Props) => {
                         )
                     }}
                 />
+
                 <Drawer.Screen
-                    name="font" // This is the name of the page and must match the url from root
+                    name="font"
                     options={{
-                        drawerLabel: 'font size',
-                        title: 'font size',
-                        drawerIcon: ({ color }: any) => (
-                            <Font color={color} />
-                        )
+                        drawerLabel: 'Font Size',
+                        title: 'Font Size',
+                        drawerIcon: ({ color }) => <Font color={color} />,
+                    }}
+                    listeners={{
+                        drawerItemPress: (e) => {
+                            e.preventDefault(); // Prevent navigation
+                            setShowFontSlider!(true)
+                            router.push(`${pathname}`)
+                        },
                     }}
                 />
+
                 <Drawer.Screen
                     name="mode" // This is the name of the page and must match the url from root
                     options={{

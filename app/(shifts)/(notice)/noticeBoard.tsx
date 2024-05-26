@@ -39,7 +39,7 @@ const Screen = () => {
             <SafeAreaView className='bg-primary pb-7'>
             </SafeAreaView>
 
-            <Header title='notifications'
+            <Header title='notice board'
                 moreOptions={true}
             />
             <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }}>
