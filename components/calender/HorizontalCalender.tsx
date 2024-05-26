@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
         paddingTop: 8,
         paddingBottom: 24,
         borderRadius: 24,
-        marginTop: -24,
+        marginTop: -50
     },
     monthHeader: {
         fontSize: 18,

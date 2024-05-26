@@ -7,11 +7,20 @@ const VerticalDatePicker: React.FC = () => {
     const [currentMonth, setCurrentMonth] = useState<string>(format(new Date(), 'MMMM yyyy'));
     const flatListRef = useRef<FlatList>(null);
     const today = new Date();
+    const dateHeight = 160;
 
     useEffect(() => {
         // Initial load of dates, centered around today
         const initialDates = Array.from({ length: 30 }).map((_, index) => subDays(today, 15 - index));
         setDates(initialDates);
+
+        // Automatically scroll to today's date after the dates are set
+        setTimeout(() => {
+            if (flatListRef.current) {
+                const todayIndex = 15; // Since we are centering around today, it's at the 15th position
+                flatListRef.current.scrollToIndex({ index: todayIndex, animated: false });
+            }
+        }, 0);
     }, []);
 
     const loadMoreDates = (direction: 'up' | 'down') => {
@@ -25,7 +34,7 @@ const VerticalDatePicker: React.FC = () => {
             // Adjust the scroll position to account for the added dates at the top
             setTimeout(() => {
                 if (flatListRef.current) {
-                    flatListRef.current.scrollToOffset({ offset: 30 * 160, animated: false });
+                    flatListRef.current.scrollToOffset({ offset: 30 * dateHeight, animated: false });
                 }
             }, 0);
         }
@@ -44,10 +53,21 @@ const VerticalDatePicker: React.FC = () => {
 
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const offsetY = event.nativeEvent.contentOffset.y;
-        const dateHeight = 160; // Adjust this based on your date item height
         const currentIndex = Math.floor(offsetY / dateHeight);
         const currentMonth = dates[currentIndex] ? format(dates[currentIndex], 'MMMM yyyy') : '';
         setCurrentMonth(currentMonth);
+    };
+
+    const getItemLayout = (data: any, index: number) => ({
+        length: dateHeight,
+        offset: dateHeight * index,
+        index,
+    });
+
+    const onScrollToIndexFailed = (info: any) => {
+        setTimeout(() => {
+            flatListRef.current?.scrollToIndex({ index: info.index, animated: true });
+        }, 500);
     };
 
     return (
@@ -61,8 +81,8 @@ const VerticalDatePicker: React.FC = () => {
                         styles.dateContainer,
                         isToday(item) && styles.selectedDate
                     ]}>
-                        <View style={styles.row}>
-                            <Text className='text-primary' style={styles.dateText}>{format(item, 'EEE')}</Text>
+                        <View style={[styles.row, isToday(item) && styles.selectedDay]}>
+                            <Text style={styles.dateText} className='text-primary'>{format(item, 'EEE')}</Text>
                             <Text className='text-primary' style={styles.dayName}>{format(item, 'd')}</Text>
                             <Text className='text-primary' style={styles.dateText}>{format(item, 'MMM')}</Text>
                         </View>
@@ -80,6 +100,8 @@ const VerticalDatePicker: React.FC = () => {
                         loadMoreDates('up');
                     }
                 }}
+                getItemLayout={getItemLayout}
+                onScrollToIndexFailed={onScrollToIndexFailed}
             />
         </View>
     );
@@ -106,14 +128,17 @@ const styles = StyleSheet.create({
     dateContainer: {
         borderBottomColor: '#E9E9E9',
         borderBottomWidth: 1,
-
         paddingHorizontal: 10,
         paddingVertical: 16,
         minHeight: 160,
     },
     selectedDate: {
-        backgroundColor: 'yellow',
+        // backgroundColor: 'yellow',
         borderRadius: 14,
+    },
+    selectedDay: {
+        borderBottomColor: '#175B57',
+        borderBottomWidth: 1,
     },
     dateText: {
         fontFamily: 'PoppinsLight',

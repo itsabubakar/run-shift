@@ -143,6 +143,8 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 10,
         width: '80%',
+        marginRight: 10,
+
     },
     header: {
         flexDirection: 'row',
