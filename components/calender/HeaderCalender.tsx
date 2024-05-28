@@ -5,6 +5,9 @@ import Chevron from '@/assets/icons/Chevron';
 import Cancel from '@/assets/icons/Cancel';
 import Check from '@/assets/icons/Check';
 import Redo from '@/assets/icons/shifts/Redo';
+import Pin from '@/assets/icons/Pin';
+import Star from '@/assets/icons/Star';
+import Expand from '@/assets/icons/Expand';
 
 type Props = {
     onSelect: (date: Date) => void;
@@ -104,15 +107,24 @@ const CustomCalendarSelect = ({ onSelect, showHeaderCalendar, setShowHeaderCalen
                             {renderDays()}
                         </View>
                         <View className='flex-row pt-8'>
-                            <View className='mr-auto'>
 
-                                <Redo fill="#27736E" />
+                            <View className='mr-4 p-4 rounded-xl bg-[#27736E]'>
+
+                                <Pin />
                             </View>
-                            <View className='mr-8'>
+                            <View className='mr-4 p-4 rounded-xl bg-[#27736E]'>
+
+                                <Star />
+                            </View>
+                            <View className='mr-4 p-4 rounded-xl bg-[#27736E]'>
+
+                                <Expand />
+                            </View>
+                            <View className=''>
 
                                 <Cancel />
                             </View>
-                            <Check />
+
                         </View>
                     </View>
                 </TouchableOpacity>

@@ -193,16 +193,7 @@ const Layout = (props: Props) => {
                         )
                     }}
                 />
-                <Drawer.Screen
-                    name="scan" // This is the name of the page and must match the url from root
-                    options={{
-                        drawerLabel: 'scan a qr code',
-                        title: 'scan',
-                        drawerIcon: ({ color }: any) => (
-                            <Scan color={color} />
-                        )
-                    }}
-                />
+
                 <Drawer.Screen
                     name="(settings)" // This is the name of the page and must match the url from root
                     options={{

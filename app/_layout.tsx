@@ -1,9 +1,10 @@
 import { useFonts } from 'expo-font';
-import { Stack, useRouter, useSegments } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { AppProvider } from '@/context/AppContext';
+import { View, StyleSheet } from 'react-native';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -18,34 +19,31 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-
-
 const StackLayout = () => {
   const { authState } = useAuth();
-
 
   return (
     <AuthProvider>
       <AppProvider>
-        <Stack
-          screenOptions={{
-            headerShown: false
-          }}
-        >
-          <Stack.Screen name="index" />
-          <Stack.Screen options={{ headerShown: false }} name="(shifts)" />
-          <Stack.Screen name="offline" />
-          <Stack.Screen name="signUp" />
-          <Stack.Screen name="login" />
-          <Stack.Screen name="options" />
-        </Stack>
+        <View style={styles.container}>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: styles.container,  // Apply background color to all screens
+            }}
+          >
+            <Stack.Screen name="index" />
+            <Stack.Screen name="(shifts)" />
+            <Stack.Screen name="offline" />
+            <Stack.Screen name="signUp" />
+            <Stack.Screen name="login" />
+            <Stack.Screen name="options" />
+          </Stack>
+        </View>
       </AppProvider>
     </AuthProvider>
   );
 }
-
-
-
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -64,17 +62,22 @@ export default function RootLayout() {
     if (loaded) {
       SplashScreen.hideAsync();
     }
-
   }, [loaded]);
 
   if (!loaded) {
     return null;
   }
 
-
-  return <AuthProvider>
-    <StackLayout />
-  </AuthProvider>
+  return (
+    <AuthProvider>
+      <StackLayout />
+    </AuthProvider>
+  );
 }
 
-
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#175B57',  // Set your desired background color here
+  },
+});
