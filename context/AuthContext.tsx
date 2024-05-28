@@ -1,6 +1,6 @@
 import axiosInstance from "@/services"
 import { createContext, useContext, useEffect, useState } from "react";
-import * as SecureStore from 'expo-secure-store';
+// import * as SecureStore from 'expo-secure-store';
 
 export enum Role {
     STAFF = "staff",
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: any) => {
         const loadToken = async () => {
             console.log('look fr token');
 
-            const token = await SecureStore.getItemAsync('TOKEN_KEY')
+            const token = 'token'
 
             if (token) {
                 console.log('token', token);
@@ -131,7 +131,7 @@ export const AuthProvider = ({ children }: any) => {
 
     const logout = async () => {
         // delte token from storage
-        await SecureStore.deleteItemAsync('TOKEN_KEY')
+        // await SecureStore.deleteItemAsync('TOKEN_KEY')
 
         // update http header
         axiosInstance.defaults.headers.common.Authorization = ``

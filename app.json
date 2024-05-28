@@ -22,7 +22,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-iconOne.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.thetrueseeker.runshift"
     },
     "web": {
       "bundler": "metro",
@@ -35,6 +36,20 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "31611472-44c3-460c-9ac9-54249dd2780b"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/31611472-44c3-460c-9ac9-54249dd2780b"
     }
   }
 }
