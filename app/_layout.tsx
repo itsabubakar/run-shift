@@ -5,45 +5,11 @@ import { useEffect } from 'react';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { AppProvider } from '@/context/AppContext';
 import { View, StyleSheet } from 'react-native';
+import * as SystemUI from 'expo-system-ui';
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
-
-export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: 'index',
-};
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+SystemUI.setBackgroundColorAsync('#175B57')
 
-const StackLayout = () => {
-  const { authState } = useAuth();
-
-  return (
-    <AuthProvider>
-      <AppProvider>
-        <View style={styles.container}>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: styles.container,  // Apply background color to all screens
-            }}
-          >
-            <Stack.Screen name="index" />
-            <Stack.Screen name="(shifts)" />
-            <Stack.Screen name="offline" />
-            <Stack.Screen name="signUp" />
-            <Stack.Screen name="login" />
-            <Stack.Screen name="options" />
-          </Stack>
-        </View>
-      </AppProvider>
-    </AuthProvider>
-  );
-}
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -52,13 +18,13 @@ export default function RootLayout() {
     PoppinsLight: require('../assets/fonts/Poppins-Light.ttf'),
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
 
   useEffect(() => {
     if (error) throw error;
   }, [error]);
 
   useEffect(() => {
+
     if (loaded) {
       SplashScreen.hideAsync();
     }
@@ -70,7 +36,24 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <StackLayout />
+      <AuthProvider>
+        <AppProvider>
+          <View style={styles.container}>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                contentStyle: {
+                  backgroundColor: 'green'
+                },  // Apply background color to all screens
+              }}
+            >
+              <Stack.Screen name="index" />
+              <Stack.Screen name="(shifts)" />
+
+            </Stack>
+          </View>
+        </AppProvider>
+      </AuthProvider>
     </AuthProvider>
   );
 }

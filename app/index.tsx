@@ -68,7 +68,7 @@ const Index = (props: Props) => {
     return (
         <>
             <KeyboardAwareScrollView
-                className={`${showError ? 'bg-[#175b57]' : 'bg-primary'}`}
+                className={`${showError ? 'bg-primary' : 'bg-primary'}`}
                 style={styles.flexContainer}
                 resetScrollToCoords={{ x: 0, y: 0 }}
                 scrollEnabled={false}>
