@@ -1,6 +1,6 @@
 import { Link, useRouter } from "expo-router"
 import { StatusBar } from "expo-status-bar"
-import { ActivityIndicator, Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useState } from "react";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -8,9 +8,12 @@ import CheckBox from "@/components/utils/CustomCheckBox";
 import EyeOpen from "@/assets/icons/EyeOpen";
 import EyeClose from "@/assets/icons/EyeClose";
 import { useAuth } from "@/context/AuthContext";
-import { logoSm } from "@/assets/images";
+import { logoSm, tick } from "@/assets/images";
 import axiosInstance from "@/services";
 import LoadingSpinner from "@/components/utils/LoadingSpinner";
+import axios from "axios";
+import ErrorModal from "@/components/login/ErrorModal";
+// import NetInfo from '@react-native-community/netinfo';
 
 type Props = {}
 
@@ -19,12 +22,23 @@ export enum Role {
     ADMIN = "admin"
 }
 
+// NetInfo.fetch().then(networkState => {
+//     console.log("Connection type - ", networkState.type);
+//     console.log("Is connected? - ", networkState.isConnected);
+// });
+
+console.log('hello world');
+
+
 const Index = (props: Props) => {
     const [isChecked, setChecked] = useState(false)
-    const [showError, setShowError] = useState(false)
     const [passwordVisible, setPasswordVisible] = useState(false);
-    const [password, setPassword] = useState('123456');
+    const [password, setPassword] = useState('');
     const [email, setEmail] = useState('sadiqbilyamin@gmail.com')
+    const [isOffline, setIsOffline] = useState(false)
+    const [showError, setShowError] = useState(false)
+    const [errorField, setErrorField] = useState('');
+
 
     // Replace after setting up tanstack query
     const [loading, setLoading] = useState(false)
@@ -33,10 +47,17 @@ const Index = (props: Props) => {
     const router = useRouter()
 
     const Login = async (email: string, password: string) => {
+        if (!email || !password) {
+            // Set the error message based on which field is empty
+            setErrorField(!email ? 'Please enter an email address' : 'Please enter your password');
+            setShowError(true);
+            return;
+        }
         setLoading(true)
         try {
             const res = await axiosInstance.post(`/test/login`, { email, password });
             console.log(res.data);
+
             if (setAuthState) {
 
                 setAuthState({
@@ -51,8 +72,25 @@ const Index = (props: Props) => {
             // axiosInstance.defaults.headers.common.Authorization = `Bearer ${res.data.token}`
             // await SecureStore.setItemAsync('TOKEN_KEY', res.data.token)
         } catch (error) {
-            console.log(error);
-            Alert.alert(error as any || 'An error occured... Check your network connection!')
+            setLoading(false);
+            if (axios.isAxiosError(error)) {
+                if (error.response?.status === 401) {
+                    // Handle 401 Unauthorized error
+                    setErrorField('Invalid email or password');
+                    setShowError(true);
+                    // Alert.alert('Unauthorized', 'Invalid email or password.');
+                } else {
+                    // Handle other errors
+                    setErrorField('An error occurred. Please try again later.');
+                    setShowError(true);
+                    // Alert.alert('Error', 'An error occurred. Please try again later.');
+                }
+            } else {
+                // Handle non-axios errors
+                setErrorField('An error occurred. Please try again later.');
+                setShowError(true);
+                // Alert.alert('Error', 'A non-network error occurred.');
+            }
         }
         finally {
             setLoading(false)
@@ -64,10 +102,16 @@ const Index = (props: Props) => {
         setPasswordVisible(!passwordVisible);
     }
 
+    const resetError = () => {
+        setShowError(false);
+        setErrorField('');
+    };
+
 
     return (
         <>
-            <KeyboardAwareScrollView
+
+            {!isOffline ? <KeyboardAwareScrollView
                 className={`${showError ? 'bg-primary' : 'bg-primary'}`}
                 style={styles.flexContainer}
                 resetScrollToCoords={{ x: 0, y: 0 }}
@@ -142,10 +186,12 @@ const Index = (props: Props) => {
                             <View className=" h-[67%]  bottom-0 w-full rounded-t-[20px] justify-center items-center">
                             </View>
                             <View className="bg-primary h-full bottom-0 w-full rounded-t-[60px] justify-center items-center">
-                                <Text style={styles.poppinsRegular} className="text-white text-2xl pb-8 text-center -mt-[500px] max-w-[208px]">Kindly enter your email address.</Text>
-                                <TouchableOpacity onPress={() => setShowError(!showError)}>
+                                <Text style={styles.poppinsRegular} className="text-white text-2xl pb-8 text-center -mt-[500px] max-w-[208px]">
+                                    {errorField}
+                                </Text>
+                                <TouchableOpacity onPress={resetError}>
                                     {/* Change to an icon */}
-                                    <Image className="w-[51px] object-cover" source={require('../assets/images/Tick.png')} />
+                                    <Image className="w-[51px] object-cover" source={tick} />
                                 </TouchableOpacity>
 
                             </View>
@@ -154,10 +200,23 @@ const Index = (props: Props) => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
                     <StatusBar style="auto" />
                 </SafeAreaView>
                 {/* Loading spinner */}
-            </KeyboardAwareScrollView>
+            </KeyboardAwareScrollView> : <></>
+            }
+
             {
                 loading && <LoadingSpinner />
             }
