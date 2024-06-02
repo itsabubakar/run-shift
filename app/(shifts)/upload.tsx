@@ -9,10 +9,31 @@ import { StatusBar } from 'expo-status-bar'
 import { useState } from 'react'
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import * as ImagePicker from 'expo-image-picker';
+
 type Props = {}
 const Screen = (props: Props) => {
     const { fontSize } = useAppContext()
     const [showDelete, setShowDelete] = useState(false)
+    const [selectedImages, setSelectedImages] = useState('')
+
+    const pickImage = async () => {
+        console.log('hot');
+
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+
+        if (!result.canceled) {
+            setSelectedImages(result.assets[0].uri);
+        }
+    };
+
 
     return (
         <View className="flex-1   justify-between">
@@ -47,7 +68,7 @@ const Screen = (props: Props) => {
                         </View>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={() => setShowDelete(!showDelete)} className=' items-end rounded-xl  mb-10'>
+                <TouchableOpacity onPress={pickImage} className=' items-end rounded-xl  mb-10'>
                     <Upload />
                 </TouchableOpacity>
             </View>

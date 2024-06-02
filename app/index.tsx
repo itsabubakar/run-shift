@@ -13,7 +13,7 @@ import axiosInstance from "@/services";
 import LoadingSpinner from "@/components/utils/LoadingSpinner";
 import axios from "axios";
 import ErrorModal from "@/components/login/ErrorModal";
-// import NetInfo from '@react-native-community/netinfo';
+import NetInfo from '@react-native-community/netinfo';
 
 type Props = {}
 
@@ -22,18 +22,17 @@ export enum Role {
     ADMIN = "admin"
 }
 
-// NetInfo.fetch().then(networkState => {
-//     console.log("Connection type - ", networkState.type);
-//     console.log("Is connected? - ", networkState.isConnected);
-// });
+NetInfo.fetch().then(networkState => {
+    console.log("Connection type - ", networkState.type);
+    console.log("Is connected? - ", networkState.isConnected);
+});
 
-console.log('hello world');
 
 
 const Index = (props: Props) => {
     const [isChecked, setChecked] = useState(false)
     const [passwordVisible, setPasswordVisible] = useState(false);
-    const [password, setPassword] = useState('');
+    const [password, setPassword] = useState('123456');
     const [email, setEmail] = useState('sadiqbilyamin@gmail.com')
     const [isOffline, setIsOffline] = useState(false)
     const [showError, setShowError] = useState(false)
@@ -43,7 +42,7 @@ const Index = (props: Props) => {
     // Replace after setting up tanstack query
     const [loading, setLoading] = useState(false)
 
-    const { onLogin, onSignUp, setAuthState } = useAuth()
+    const { setAuthState } = useAuth()
     const router = useRouter()
 
     const Login = async (email: string, password: string) => {
@@ -78,17 +77,23 @@ const Index = (props: Props) => {
                     // Handle 401 Unauthorized error
                     setErrorField('Invalid email or password');
                     setShowError(true);
+                    console.log(error);
+
                     // Alert.alert('Unauthorized', 'Invalid email or password.');
                 } else {
                     // Handle other errors
                     setErrorField('An error occurred. Please try again later.');
                     setShowError(true);
+                    console.log(error);
+
                     // Alert.alert('Error', 'An error occurred. Please try again later.');
                 }
             } else {
                 // Handle non-axios errors
                 setErrorField('An error occurred. Please try again later.');
                 setShowError(true);
+                console.log(error);
+
                 // Alert.alert('Error', 'A non-network error occurred.');
             }
         }
