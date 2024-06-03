@@ -10,12 +10,15 @@ import { useState } from 'react'
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import * as ImagePicker from 'expo-image-picker';
+import Modal from 'react-native-modal';
 
 type Props = {}
 const Screen = (props: Props) => {
     const { fontSize } = useAppContext()
+    const [isVisible, setIsVisible] = useState(false)
     const [showDelete, setShowDelete] = useState(false)
-    const [selectedImages, setSelectedImages] = useState('')
+    const [selectedImages, setSelectedImages] = useState<string[]>([]);
+    const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
 
     const pickImage = async () => {
         console.log('hot');
@@ -30,9 +33,31 @@ const Screen = (props: Props) => {
 
 
         if (!result.canceled) {
-            setSelectedImages(result.assets[0].uri);
+            setSelectedImages(currentImages => [...currentImages, result.assets[0].uri]);
         }
+
     };
+
+    const showImageModal = (uri: string) => {
+        console.log('Show image in modal:', uri);
+        setSelectedImageUri(uri); // Store the clicked image URI
+        setIsVisible(true);
+
+    };
+
+    const deleteImage = () => {
+        setShowDelete(!showDelete)
+
+        setSelectedImages(currentImages => currentImages.filter(imageUri => imageUri !== selectedImageUri));
+    };
+
+    const handleDeleteImage = (uri: string) => {
+        setShowDelete(!showDelete)
+        setSelectedImageUri(uri)
+    }
+
+
+
 
 
     return (
@@ -40,33 +65,39 @@ const Screen = (props: Props) => {
             <SafeAreaView className='bg-primary pb-7'>
             </SafeAreaView>
 
+
             <Header title='uploads'
                 moreOptions={true}
             />
             <View className='flex-1 justify-between bg-white px-6'>
+
                 <View className='pt-10 gap-y-10'>
-                    <TouchableOpacity onLongPress={() => setShowDelete(!showDelete)} className='flex-row'>
-                        <View>
-                            <Jpg />
-                        </View>
-                        <View className='ml-4'>
+                    {/* Render images here */}
+                    {selectedImages ? selectedImages.map((uri, index) => (
 
-                            <Text className='bg-[#626262] text-white px-3 rounded-lg mb-1 py-2 text-base' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]} >IMG -2e22e4-22</Text>
-                            <Text className='text-sm text-[#606060]' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>A few seconds ago</Text>
-                            <Text className='text-sm text-[#606060]' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>45.78kb</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onLongPress={() => setShowDelete(!showDelete)} className='flex-row'>
-                        <View>
-                            <Jpg />
-                        </View>
-                        <View className='ml-4'>
+                        <TouchableOpacity key={index} onLongPress={() => handleDeleteImage(uri)} onPress={() => showImageModal(uri)} className='flex-row'>
+                            <View>
+                                <Jpg />
+                            </View>
+                            <View className='ml-4'>
 
-                            <Text className='bg-[#626262] text-white px-3 rounded-lg mb-1 py-2 text-base' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]} >IMG -2e22e4-22</Text>
-                            <Text className='text-sm text-[#606060]' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>A few seconds ago</Text>
-                            <Text className='text-sm text-[#606060]' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>45.78kb</Text>
+                                <Text className='bg-[#626262] text-white px-3 rounded-lg mb-1 py-2 text-base' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]} >IMG -2e22e4-22</Text>
+                                <Text className='text-sm text-[#606060]' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>A few seconds ago</Text>
+                                <Text className='text-sm text-[#606060]' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>45.78kb</Text>
+                            </View>
+                        </TouchableOpacity>
+                    )) : <>
+                        <Text style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>No images to show</Text>
+                    </>}
+
+                    {/* Image modal */}
+                    <Modal isVisible={isVisible} onBackdropPress={() => setIsVisible(false)}>
+                        <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 8 }}>
+                            {selectedImageUri && (
+                                <Image source={{ uri: selectedImageUri }} style={{ width: '100%', height: 300, borderRadius: 8 }} />
+                            )}
                         </View>
-                    </TouchableOpacity>
+                    </Modal>
                 </View>
                 <TouchableOpacity onPress={pickImage} className=' items-end rounded-xl  mb-10'>
                     <Upload />
@@ -79,7 +110,7 @@ const Screen = (props: Props) => {
                     <View className="bg-primary h-full bottom-0 w-full rounded-t-[60px] justify-center px-6">
                         <Text style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]} className="text-white text-2xl pb-8  -mt-[500px] ">Are you sure you want to delete this selected file ?</Text>
                         <View className='justify-end flex-row gap-x-[76px]'>
-                            <TouchableOpacity className='flex-row ' onPress={() => setShowDelete(!showDelete)}>
+                            <TouchableOpacity className='flex-row ' onPress={deleteImage}>
                                 <Check />
                             </TouchableOpacity>
                             <TouchableOpacity className='flex-row ' onPress={() => setShowDelete(!showDelete)}>

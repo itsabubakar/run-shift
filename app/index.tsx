@@ -2,13 +2,13 @@ import { Link, useRouter } from "expo-router"
 import { StatusBar } from "expo-status-bar"
 import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import CheckBox from "@/components/utils/CustomCheckBox";
 import EyeOpen from "@/assets/icons/EyeOpen";
 import EyeClose from "@/assets/icons/EyeClose";
 import { useAuth } from "@/context/AuthContext";
-import { logoSm, tick } from "@/assets/images";
+import { logoSm, offline, tick } from "@/assets/images";
 import axiosInstance from "@/services";
 import LoadingSpinner from "@/components/utils/LoadingSpinner";
 import axios from "axios";
@@ -44,6 +44,16 @@ const Index = (props: Props) => {
 
     const { setAuthState } = useAuth()
     const router = useRouter()
+
+    useEffect(() => {
+        // Subscribe to network state changes
+        const unsubscribe = NetInfo.addEventListener(state => {
+            setIsOffline(!(state.isConnected && state.isInternetReachable));
+        });
+
+        // Unsubscribe on cleanup
+        return () => unsubscribe();
+    }, []);
 
     const Login = async (email: string, password: string) => {
         if (!email || !password) {
@@ -219,7 +229,24 @@ const Index = (props: Props) => {
                     <StatusBar style="auto" />
                 </SafeAreaView>
                 {/* Loading spinner */}
-            </KeyboardAwareScrollView> : <></>
+            </KeyboardAwareScrollView> : <>
+                <SafeAreaView className="flex-1  bg-primary font-PoppinsRegular">
+
+                    <View className='pb-8 pt-24  w-full max-w-[308px] mx-auto'>
+                        <Image className="w-[213px] object-cover" source={offline} />
+
+                    </View>
+
+                    <View className="flex-1 max-w-[308px] mx-auto">
+                        <View>
+                            <Text style={styles.poppinsSemiBold} className="text-white  text-4xl pb-8">You are offline</Text>
+                            <Text style={styles.poppinsRegular} className="text-white text-lg">We are not able to connect to the internet from your device. Please check your settings and try again.</Text>
+                        </View>
+                    </View>
+                    <StatusBar style="auto" />
+                </SafeAreaView>
+
+            </>
             }
 
             {
