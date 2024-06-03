@@ -19,7 +19,7 @@ type Props = {
     filter?: boolean
     moreOptions?: boolean
     persons?: boolean
-    subhead?: string
+    subhead?: string | string[]
 }
 const Header = ({ title, calendar, filter, moreOptions, persons, subhead }: Props) => {
     const navigation = useNavigation()

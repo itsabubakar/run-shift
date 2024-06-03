@@ -6,7 +6,7 @@ type Props = {
 }
 const Notice = ({ notification }: Props) => {
     const { fontSize } = useAppContext()
-    return (<View className='pt-10 pb-20 '>
+    return (<View className='pt-10 pb-4 '>
         <View className='min-w-[300px] justify-between  flex-row flex  w-full'>
             <View className="  max-w-[90px] ">
                 <Text className='text-xl text-[#175B57] pb-1' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>Ifeoluwa</Text>

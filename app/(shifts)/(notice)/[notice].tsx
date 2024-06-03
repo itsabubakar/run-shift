@@ -9,30 +9,38 @@ import NoticeMessage from '@/components/noticeBoard/NoticeMessage'
 import { StatusBar } from 'expo-status-bar'
 
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useLocalSearchParams } from 'expo-router';
 type Props = {}
 const Screen = (props: Props) => {
     const [showError, setShowError] = useState(true)
 
     const [showAddPost, setShowAddPost] = useState(false)
     const [showDelete, setShowDelete] = useState(false)
+    const { notice } = useLocalSearchParams();
+
 
     return (
-        <KeyboardAwareScrollView
-            // className={`${showError ? 'bg-white' : 'bg-white'}`}
-            style={{ flex: 1 }}
-            resetScrollToCoords={{ x: 0, y: 0 }}
-            scrollEnabled={false}>
-            <SafeAreaView style={{ flex: 1 }} className={`flex-1   justify-between bg-primary `}>
+        <>
+            <SafeAreaView className={`   bg-primary `}>
 
-                <View className="   justify-between">
+            </SafeAreaView>
+            <KeyboardAwareScrollView
+                contentContainerStyle={{ flex: 1, backgroundColor: 'white' }}
+                style={{ flex: 1 }}
+                resetScrollToCoords={{ x: 0, y: 0 }}
+                scrollEnabled={false}>
+
+
+                <View className="flex-1   justify-between">
 
                     <Header title='notice board'
                         calendar={true}
                         filter={true}
                         moreOptions={true}
+                        subhead={notice}
                     />
 
-                    <View className='flex-1  justify-between bg-white px-6'>
+                    <View className='flex-1  justify-between px-6'>
                         <View className=''>
                             <TouchableOpacity onLongPress={() => setShowDelete(!showDelete)}>
 
@@ -45,18 +53,23 @@ const Screen = (props: Props) => {
                             </TouchableOpacity>
 
                         </View>
-                        <TouchableOpacity className='bg-[#27736E] rounded-xl mt-[170px] pr-4 justify-between  items-center flex-row  mb-10'>
-                            <TextInput
-                                style={styles.poppinsRegular}
-                                className='bg-[#27736E] rounded-2xl py-3 px-4 placeholder:text-white text-white  w-4/5 '
-                                placeholderTextColor="#FFF"
-                                placeholder='Your message' />
-                            <Send />
-                        </TouchableOpacity>
+
                     </View>
 
                 </View>
+                <View className='flex-1 pb-4'>
+                    <View className='  absolute top-[80%]  flex-1 w-full px-6'>
+                        <View className='bg-[#27736E] flex-row justify-between items-center w-full px-4  rounded-2xl'>
+                            <TextInput
+                                style={styles.poppinsRegular}
+                                className='bg-[#27736E] rounded-2xl py-3 px-4 placeholder:text-white text-white flex-1 w-full'
+                                placeholderTextColor="#FFF"
+                                placeholder='Your message' />
+                            <Send />
+                        </View>
+                    </View>
 
+                </View>
 
                 {
                     showAddPost && <View className=" h-full absolute w-full flex-col flex-1 bg-[#000000b0]">
@@ -102,8 +115,9 @@ const Screen = (props: Props) => {
                 }
 
                 <StatusBar style="auto" />
-            </SafeAreaView>
-        </KeyboardAwareScrollView>
+
+            </KeyboardAwareScrollView>
+        </>
     )
 }
 
