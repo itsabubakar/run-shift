@@ -61,8 +61,9 @@ const Layout = (props: Props) => {
 
                     {/* name and email */}
                     <View className=''>
-                        <Text style={styles.poppinsSemiBold} className='text-white text-xl pb-1'>{authState?.username} </Text>
-                        <Text style={styles.poppinsRegular} className='font-light text-white'>alaoIfeoluwa@gmail.com </Text>
+                        <Text style={styles.poppinsSemiBold} className='text-white text-xl pb-1'>Sadiq </Text>
+                        <Text style={styles.poppinsSemiBold} className='font-light text-white'>{authState?.username} </Text>
+                        {/* <Text style={styles.poppinsRegular} className='font-light text-white'>alaoIfeoluwa@gmail.com </Text> */}
                     </View>
                 </View>
 
@@ -183,7 +184,7 @@ const Layout = (props: Props) => {
                         )
                     }}
                 />
-                <Drawer.Screen
+                {/* <Drawer.Screen
                     name="refresh" // This is the name of the page and must match the url from root
                     options={{
                         drawerLabel: 'refresh',
@@ -192,7 +193,7 @@ const Layout = (props: Props) => {
                             <Refresh color={color} />
                         )
                     }}
-                />
+                /> */}
 
                 <Drawer.Screen
                     name="(settings)" // This is the name of the page and must match the url from root
@@ -214,7 +215,7 @@ const Layout = (props: Props) => {
                         )
                     }}
                 />
-                <Drawer.Screen
+                {/* <Drawer.Screen
                     name="language" // This is the name of the page and must match the url from root
                     options={{
                         drawerLabel: 'english (uk)',
@@ -223,7 +224,7 @@ const Layout = (props: Props) => {
                             <Language color={color} />
                         )
                     }}
-                />
+                /> */}
 
                 <Drawer.Screen
                     name="font"
@@ -241,7 +242,7 @@ const Layout = (props: Props) => {
                     }}
                 />
 
-                <Drawer.Screen
+                {/* <Drawer.Screen
                     name="mode" // This is the name of the page and must match the url from root
                     options={{
                         drawerLabel: 'dark mode',
@@ -250,7 +251,7 @@ const Layout = (props: Props) => {
                             <DarkMode color={color} />
                         )
                     }}
-                />
+                /> */}
 
                 <Drawer.Screen
                     name="terms" // This is the name of the page and must match the url from root

@@ -19,6 +19,12 @@ interface AppProps {
     setSelectedDate: (date: Date) => void;
     showFontSlider: boolean;
     setShowFontSlider: React.Dispatch<React.SetStateAction<boolean>>,
+    showHorizontalCalendar: boolean,
+    setShowHorizontalCalendar: React.Dispatch<React.SetStateAction<boolean>>,
+    pushNotifications: boolean,
+    setPushNotifications: React.Dispatch<React.SetStateAction<boolean>>,
+    hideReadMessages: boolean,
+    setHideReadMessages: React.Dispatch<React.SetStateAction<boolean>>,
 
 
 }
@@ -32,6 +38,7 @@ export const useAppContext = () => {
 export const AppProvider = ({ children }: any) => {
 
     const [showHeaderCalendar, setShowHeaderCalendar] = useState(false)
+    const [showHorizontalCalendar, setShowHorizontalCalendar] = useState(true)
     const [showAllShifts, setShowAllShifts] = useState(false)
     const [showFilter, setShowFilter] = useState(false)
     const [showMoreOptions, setMoreOptions] = useState(false)
@@ -39,6 +46,8 @@ export const AppProvider = ({ children }: any) => {
     const [showProfilePicture, setShowProfilePicture] = useState(true)
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [showFontSlider, setShowFontSlider] = useState(false)
+    const [pushNotifications, setPushNotifications] = useState(false)
+    const [hideReadMessages, setHideReadMessages] = useState(false)
 
     const value = {
         selectedDate,
@@ -56,7 +65,13 @@ export const AppProvider = ({ children }: any) => {
         showProfilePicture,
         setShowProfilePicture,
         showFontSlider,
-        setShowFontSlider
+        setShowFontSlider,
+        showHorizontalCalendar,
+        setShowHorizontalCalendar,
+        pushNotifications,
+        setPushNotifications,
+        hideReadMessages,
+        setHideReadMessages
     }
 
     return <AppContext.Provider

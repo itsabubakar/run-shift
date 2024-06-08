@@ -1,14 +1,17 @@
 import Header from '@/components/header/Header'
 import Notice from '@/components/noticeBoard/Notice'
+import { useAppContext } from '@/context/AppContext'
 import axiosInstance from '@/services'
 import { StatusBar } from 'expo-status-bar'
 import { useEffect, useState } from 'react'
-import { View, StyleSheet, ScrollView, } from 'react-native'
+import { View, StyleSheet, ScrollView, Text, } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 type Props = {}
 const Screen = (props: Props) => {
     const [notifications, setNotifications] = useState([])
     const [loading, setLoading] = useState(true)
+    const { fontSize } = useAppContext()
+
 
     useEffect(() => {
         console.log('notifications screen mouted');
@@ -50,10 +53,10 @@ const Screen = (props: Props) => {
 
 
                 {
-                    notifications.map((notification: {}, i) => (
+                    notifications.length > 0 ? notifications.map((notification: {}, i) => (
                         <Notice {...notification} key={i} />
 
-                    ))
+                    )) : <Text className='mt-2' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>No Notifications</Text>
                 }
 
             </ScrollView>

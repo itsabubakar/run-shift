@@ -14,7 +14,7 @@ import FontSlider from '@/components/FontSlider'
 
 type Props = {}
 const HomeScreen = (props: Props) => {
-    const { setShowHeaderCalendar, showHeaderCalendar, showAllShifts, setShowAllShifts, showMoreOptions, showFontSlider } = useAppContext()
+    const { setShowHeaderCalendar, showHeaderCalendar, showAllShifts, setShowAllShifts, showMoreOptions, showFontSlider, showHorizontalCalendar } = useAppContext()
 
     const handleDateSelection = (date: Date) => {
         // Handle the selected date here
@@ -35,7 +35,9 @@ const HomeScreen = (props: Props) => {
 
                 />
             </SafeAreaView>
-            <HorizontalDatePicker />
+            {
+                showHorizontalCalendar && <HorizontalDatePicker />
+            }
             <VerticalDateList />
             {/* Header Calendar */}
             {

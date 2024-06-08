@@ -58,6 +58,7 @@ const Screen = (props: Props) => {
 
 
 
+    console.log(selectedImages);
 
 
     return (
@@ -73,7 +74,7 @@ const Screen = (props: Props) => {
 
                 <View className='pt-10 gap-y-10'>
                     {/* Render images here */}
-                    {selectedImages ? selectedImages.map((uri, index) => (
+                    {selectedImages.length !== 0 ? selectedImages.map((uri, index) => (
 
                         <TouchableOpacity key={index} onLongPress={() => handleDeleteImage(uri)} onPress={() => showImageModal(uri)} className='flex-row'>
                             <View>
@@ -86,9 +87,10 @@ const Screen = (props: Props) => {
                                 <Text className='text-sm text-[#606060]' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>45.78kb</Text>
                             </View>
                         </TouchableOpacity>
-                    )) : <>
+                    )) : <View className=''>
                         <Text style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>No images to show</Text>
-                    </>}
+
+                    </View>}
 
                     {/* Image modal */}
                     <Modal isVisible={isVisible} onBackdropPress={() => setIsVisible(false)}>
