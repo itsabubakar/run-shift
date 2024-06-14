@@ -10,7 +10,11 @@ import { useState } from 'react'
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
+import { Buffer } from 'buffer'
 import Modal from 'react-native-modal';
+import axios from 'axios'
+import axiosInstance from '@/services'
 
 type Props = {}
 const Screen = (props: Props) => {
@@ -19,24 +23,59 @@ const Screen = (props: Props) => {
     const [showDelete, setShowDelete] = useState(false)
     const [selectedImages, setSelectedImages] = useState<string[]>([]);
     const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
+    const [image, setImage] = useState<any>(null);
+
+    let CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dyikojd82/image/upload';
 
     const pickImage = async () => {
-        console.log('hot');
-
-        // No permissions request is necessary for launching the image library
+        console.log('Image picker opened');
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
+            base64: true,
         });
 
-
         if (!result.canceled) {
-            setSelectedImages(currentImages => [...currentImages, result.assets[0].uri]);
-        }
+            console.log('Image picked');
+            const imageToBePosted = result.assets[0];
+            console.log(imageToBePosted.uri);
 
+            let base64Img = `data:image/jpeg;base64,${imageToBePosted.base64}`;
+            console.log(base64Img);
+
+            let data = {
+                "file": base64Img,
+                "upload_preset": "runshift",
+            };
+
+            try {
+                let response = await fetch(CLOUDINARY_URL, {
+                    body: JSON.stringify(data),
+                    headers: {
+                        'content-type': 'application/json',
+                    },
+                    method: 'POST',
+                });
+
+                let responseData = await response.json();
+                console.log(responseData);
+
+                if (responseData.secure_url) {
+                    setImage(responseData.secure_url);
+                    setSelectedImages(prevImages => [...prevImages, responseData.secure_url]);
+                }
+            } catch (error) {
+                console.error('Error uploading image:', error);
+            }
+        }
     };
+
+
+
+
+
 
     const showImageModal = (uri: string) => {
         console.log('Show image in modal:', uri);

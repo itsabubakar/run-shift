@@ -1,5 +1,6 @@
 import Header from '@/components/header/Header'
 import Notice from '@/components/noticeBoard/Notice'
+import LoadingSpinner from '@/components/utils/LoadingSpinner'
 import { useAppContext } from '@/context/AppContext'
 import axiosInstance from '@/services'
 import { StatusBar } from 'expo-status-bar'
@@ -20,7 +21,7 @@ const Screen = (props: Props) => {
             setLoading(true)
             try {
                 // setLoading(false)
-                const notifications = await axiosInstance.get('/notification')
+                const notifications = await axiosInstance.get('/notifications')
                 console.log(notifications.data);
 
                 setNotifications(notifications.data)
@@ -51,15 +52,24 @@ const Screen = (props: Props) => {
             />
             <ScrollView className='flex-1  bg-white px-6'>
 
+                {!loading &&
+                    <View>
+                        {
+                            notifications.length > 0 ? notifications.map((notification: {}, i) => (
+                                <Notice {...notification} key={i} />
 
-                {
-                    notifications.length > 0 ? notifications.map((notification: {}, i) => (
-                        <Notice {...notification} key={i} />
+                            )) : <Text className='mt-2' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>No Notifications</Text>
+                        }
 
-                    )) : <Text className='mt-2' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>No Notifications</Text>
+                    </View>
+
                 }
 
+
+
             </ScrollView>
+            {loading && <LoadingSpinner />}
+
             <StatusBar style="auto" />
         </View>
     )

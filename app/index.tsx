@@ -38,7 +38,6 @@ const Index = (props: Props) => {
     const [showError, setShowError] = useState(false)
     const [errorField, setErrorField] = useState('');
 
-
     // Replace after setting up tanstack query
     const [loading, setLoading] = useState(false)
 
@@ -55,88 +54,88 @@ const Index = (props: Props) => {
         return () => unsubscribe();
     }, []);
 
-    // const Login = async (email: string, password: string) => {
-    //     if (!email || !password) {
-    //         // Set the error message based on which field is empty
-    //         setErrorField(!email ? 'Please enter an email address' : 'Please enter your password');
-    //         setShowError(true);
-    //         return;
-    //     }
-    //     setLoading(true)
-    //     try {
-    //         const res = await axios.post(`https://runshift-backend.onrender.com/test/login`, { email, password });
-    //         console.log(res.data);
-
-    //         if (setAuthState) {
-
-    //             setAuthState({
-    //                 authenticated: true,
-    //                 role: Role.ADMIN,
-    //                 username: email,
-    //                 token: res.data.token,
-    //             })
-    //         }
-    //         router.replace('/(shifts)')
-
-    //         // axiosInstance.defaults.headers.common.Authorization = `Bearer ${res.data.token}`
-    //         // await SecureStore.setItemAsync('TOKEN_KEY', res.data.token)
-    //     } catch (error) {
-    //         setLoading(false);
-    //         if (axios.isAxiosError(error)) {
-    //             if (error.response?.status === 401) {
-    //                 // Handle 401 Unauthorized error
-    //                 setErrorField('Invalid email or password');
-    //                 setShowError(true);
-    //                 console.log(error);
-
-    //                 // Alert.alert('Unauthorized', 'Invalid email or password.');
-    //             } else {
-    //                 // Handle other errors
-    //                 setErrorField('An error occurred. Please try again later.');
-    //                 setShowError(true);
-    //                 console.log(error);
-
-    //                 // Alert.alert('Error', 'An error occurred. Please try again later.');
-    //             }
-    //         } else {
-    //             // Handle non-axios errors
-    //             setErrorField('An error occurred. Please try again later.');
-    //             setShowError(true);
-    //             console.log(error);
-
-    //             // Alert.alert('Error', 'A non-network error occurred.');
-    //         }
-    //     }
-    //     finally {
-    //         setLoading(false)
-    //     }
-    // }
-
     const Login = async (email: string, password: string) => {
-        setLoading(true);
-
-        // Simulate a 5-second delay with a loading screen
-        await new Promise(resolve => setTimeout(resolve, 5000));
-
-        // Hardcoded credentials check
-        if (email === 'sadiqbilyamin@gmail.com' && password === '123456') {
-            // Simulate successful login with hardcoded token and role
-            setAuthState!({
-                authenticated: true,
-                role: Role.ADMIN,
-                username: email,
-                token: 'hardcoded-token',
-            });
-
-            router.replace('/(shifts)');
-        } else {
-            // If credentials do not match, set error
-            setErrorField('Invalid email or password');
+        if (!email || !password) {
+            // Set the error message based on which field is empty
+            setErrorField(!email ? 'Please enter an email address' : 'Please enter your password');
             setShowError(true);
+            return;
         }
+        setLoading(true)
+        try {
+            const res = await axiosInstance.post(`/test/login`, { email, password });
+            console.log(res.data);
 
-        setLoading(false);
-    };
+            if (setAuthState) {
+
+                setAuthState({
+                    authenticated: true,
+                    role: Role.ADMIN,
+                    username: email,
+                    token: res.data.token,
+                })
+            }
+            router.replace('/(shifts)')
+
+            // axiosInstance.defaults.headers.common.Authorization = `Bearer ${res.data.token}`
+            // await SecureStore.setItemAsync('TOKEN_KEY', res.data.token)
+        } catch (error) {
+            setLoading(false);
+            if (axios.isAxiosError(error)) {
+                if (error.response?.status === 401) {
+                    // Handle 401 Unauthorized error
+                    setErrorField('Invalid email or password');
+                    setShowError(true);
+                    console.log(error);
+
+                    // Alert.alert('Unauthorized', 'Invalid email or password.');
+                } else {
+                    // Handle other errors
+                    setErrorField('An error occurred. Please try again later.');
+                    setShowError(true);
+                    console.log(error);
+
+                    // Alert.alert('Error', 'An error occurred. Please try again later.');
+                }
+            } else {
+                // Handle non-axios errors
+                setErrorField('An error occurred. Please try again later.');
+                setShowError(true);
+                console.log(error);
+
+                // Alert.alert('Error', 'A non-network error occurred.');
+            }
+        }
+        finally {
+            setLoading(false)
+        }
+    }
+
+    // const Login = async (email: string, password: string) => {
+    //     setLoading(true);
+
+    //     // Simulate a 5-second delay with a loading screen
+    //     await new Promise(resolve => setTimeout(resolve, 5000));
+
+    //     // Hardcoded credentials check
+    //     if (email === 'sadiqbilyamin@gmail.com' && password === '123456') {
+    //         // Simulate successful login with hardcoded token and role
+    //         setAuthState!({
+    //             authenticated: true,
+    //             role: Role.ADMIN,
+    //             username: email,
+    //             token: 'hardcoded-token',
+    //         });
+
+    //         router.replace('/(shifts)');
+    //     } else {
+    //         // If credentials do not match, set error
+    //         setErrorField('Invalid email or password');
+    //         setShowError(true);
+    //     }
+
+    //     setLoading(false);
+    // };
 
 
     const togglePasswordVisibility = () => {
