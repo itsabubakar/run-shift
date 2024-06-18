@@ -102,14 +102,16 @@ const Screen = () => {
                             onChangeText={setNewPostTitle}
                         />
                         <View style={styles.modalButtons}>
-                            {/* Add post */}
-                            <TouchableOpacity onPress={handleAddPost}>
-                                <Check />
-                            </TouchableOpacity>
+
 
                             {/* Cancel post */}
                             <TouchableOpacity onPress={() => setShowAddPost(false)}>
                                 <Cancel />
+                            </TouchableOpacity>
+
+                            {/* Add post */}
+                            <TouchableOpacity onPress={handleAddPost}>
+                                <Check />
                             </TouchableOpacity>
                         </View>
                     </View>

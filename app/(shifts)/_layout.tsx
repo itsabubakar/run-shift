@@ -39,7 +39,7 @@ const Layout = (props: Props) => {
     const { showFontSlider, setShowFontSlider } = useAppContext()
     const router = useRouter()
 
-    const pathname: any = usePathname()
+    const pathname = usePathname()
 
 
     function CustomDrawerContent(props: any) {
@@ -237,6 +237,10 @@ const Layout = (props: Props) => {
                         drawerItemPress: (e) => {
                             e.preventDefault(); // Prevent navigation
                             setShowFontSlider!(true)
+                            if (pathname === '/') {
+                                router.push(`/(shifts)/`)
+                            }
+
                             router.push(`${pathname}`)
                         },
                     }}

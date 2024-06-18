@@ -15,6 +15,9 @@ import { Buffer } from 'buffer'
 import Modal from 'react-native-modal';
 import axios from 'axios'
 import axiosInstance from '@/services'
+import LoadingSpinner from '@/components/utils/LoadingSpinner'
+import moment from 'moment'
+
 
 type Props = {}
 const Screen = (props: Props) => {
@@ -24,8 +27,22 @@ const Screen = (props: Props) => {
     const [selectedImages, setSelectedImages] = useState<string[]>([]);
     const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
     const [image, setImage] = useState<any>(null);
+    const [loading, setLoading] = useState(false)
+    const [uploadedImages, setUploadedImages] = useState<{ url: string, publicId: string }[]>([]);
 
     let CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dyikojd82/image/upload';
+
+    function timeAgo(date: moment.MomentInput) {
+        return moment(date).fromNow();
+    }
+
+    const formatBytes = (bytes: number) => {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    };
 
     const pickImage = async () => {
         console.log('Image picker opened');
@@ -39,12 +56,9 @@ const Screen = (props: Props) => {
 
         if (!result.canceled) {
             console.log('Image picked');
+            setLoading(true)
             const imageToBePosted = result.assets[0];
-            console.log(imageToBePosted.uri);
-
             let base64Img = `data:image/jpeg;base64,${imageToBePosted.base64}`;
-            console.log(base64Img);
-
             let data = {
                 "file": base64Img,
                 "upload_preset": "runshift",
@@ -61,19 +75,19 @@ const Screen = (props: Props) => {
 
                 let responseData = await response.json();
                 console.log(responseData);
+                setLoading(false);
 
-                if (responseData.secure_url) {
+                if (responseData.secure_url && responseData.public_id) {
                     setImage(responseData.secure_url);
                     setSelectedImages(prevImages => [...prevImages, responseData.secure_url]);
+                    setUploadedImages(prevImages => [...prevImages, { url: responseData.secure_url, publicId: responseData.public_id }]);
                 }
             } catch (error) {
+                setLoading(false);
                 console.error('Error uploading image:', error);
             }
         }
     };
-
-
-
 
 
 
@@ -84,20 +98,37 @@ const Screen = (props: Props) => {
 
     };
 
-    const deleteImage = () => {
-        setShowDelete(!showDelete)
+    const deleteImage = async () => {
+        setShowDelete(!showDelete);
 
-        setSelectedImages(currentImages => currentImages.filter(imageUri => imageUri !== selectedImageUri));
+        const imageToDelete = uploadedImages.find(image => image.url === selectedImageUri);
+        if (!imageToDelete) return;
+
+        try {
+            await fetch(`https://api.cloudinary.com/v1_1/dyikojd82/image/destroy`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    public_id: imageToDelete.publicId,
+                    api_key: '455767718212827',
+                    api_secret: 'Vt4RBo795emx3iEZ0GR3hr1LJbw',
+                }),
+            });
+
+            setSelectedImages(currentImages => currentImages.filter(imageUri => imageUri !== selectedImageUri));
+            setUploadedImages(currentImages => currentImages.filter(image => image.url !== selectedImageUri));
+        } catch (error) {
+            console.error('Error deleting image from Cloudinary:', error);
+        }
     };
+
 
     const handleDeleteImage = (uri: string) => {
         setShowDelete(!showDelete)
         setSelectedImageUri(uri)
     }
-
-
-
-    console.log(selectedImages);
 
 
     return (
@@ -113,17 +144,17 @@ const Screen = (props: Props) => {
 
                 <View className='pt-10 gap-y-10'>
                     {/* Render images here */}
-                    {selectedImages.length !== 0 ? selectedImages.map((uri, index) => (
+                    {uploadedImages.length !== 0 ? uploadedImages.map(({ secure_url, created_at, bytes }: any, index) => (
 
-                        <TouchableOpacity key={index} onLongPress={() => handleDeleteImage(uri)} onPress={() => showImageModal(uri)} className='flex-row'>
+                        <TouchableOpacity key={index} onLongPress={() => handleDeleteImage(secure_url)} onPress={() => showImageModal(secure_url)} className='flex-row'>
                             <View>
                                 <Jpg />
                             </View>
                             <View className='ml-4'>
 
                                 <Text className='bg-[#626262] text-white px-3 rounded-lg mb-1 py-2 text-base' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]} >IMG -2e22e4-22</Text>
-                                <Text className='text-sm text-[#606060]' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>A few seconds ago</Text>
-                                <Text className='text-sm text-[#606060]' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>45.78kb</Text>
+                                <Text className='text-sm text-[#606060]' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>{timeAgo(created_at)}</Text>
+                                <Text className='text-sm text-[#606060]' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>{formatBytes(bytes)}</Text>
                             </View>
                         </TouchableOpacity>
                     )) : <View className=''>
@@ -161,6 +192,9 @@ const Screen = (props: Props) => {
 
                     </View>
                 </View>
+            }
+            {
+                loading && <LoadingSpinner />
             }
             <StatusBar style="auto" />
         </View>
