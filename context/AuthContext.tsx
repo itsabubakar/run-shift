@@ -4,24 +4,28 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 export enum Role {
     STAFF = "staff",
-    ADMIN = "admin"
+    MANAGER = "manager"
 }
 
 interface AuthProps {
     authState: {
         authenticated: boolean | null,
         role: Role | null,
-        username: string | null,
+        email: string | null,
         token: string | null,
+        firstName: string | null,
+        companyId: string | null
     },
-    onLogin: (username: string, password: string) => void,
-    onSignUp: (username: string, password: string) => void,
     onLogout: () => void;
     setAuthState: React.Dispatch<React.SetStateAction<{
         authenticated: boolean | null,
         role: Role | null,
-        username: string | null,
+        email: string | null,
         token: string | null,
+        firstName: string | null,
+        companyId: string | null
+
+
     }>>
 }
 
@@ -44,9 +48,12 @@ export const AuthProvider = ({ children }: any) => {
                 axiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`
                 setAuthState({
                     authenticated: true,
-                    role: Role.ADMIN,
-                    username: 'admin',
-                    token
+                    role: Role.MANAGER,
+                    email: '',
+                    token,
+                    firstName: '',
+                    companyId: ''
+
                 })
             } else {
                 console.log('no token found');
@@ -62,72 +69,26 @@ export const AuthProvider = ({ children }: any) => {
     const [authState, setAuthState] = useState<{
         authenticated: boolean | null;
         role: Role | null;
-        username: string | null;
+        email: string | null;
         token: string | null;
+        firstName: string | null;
+        companyId: string | null
+
     }>({
         authenticated: null,
         role: null,
-        username: null,
+        email: null,
         token: null,
+        firstName: null,
+        companyId: null
+
     })
 
-    const register = async (email: string, password: string) => {
-        console.log('register', email, password);
-
-        try {
-            const res = await axiosInstance.post(`/users`, { email, password })
-            console.log(res.data);
-
-        } catch (e) {
-            return { error: true, msg: (e as any).response.data.message }
-        }
-    }
-
-    const logged = async (email: string, password: string) => {
-
-        console.log('hit', email, password);
-
-        try {
-            const res = await axiosInstance.post(`/test/login`, { email, password })
-            console.log(res);
-
-            setAuthState({
-                authenticated: true,
-                role: Role.ADMIN,
-                username: email,
-                token: res.data.token,
-            })
-            // axiosInstance.defaults.headers.common.Authorization = `Bearer ${res.data.token}`
-
-            // await SecureStore.setItemAsync('TOKEN_KEY', res.data.token)
-        } catch (e) {
-            return { error: true, msg: (e as any).response }
-        }
-    }
-
-    const login = (username: string, password: string) => {
-        if (username === 'admin' && password === 'admin') {
-
-            setAuthState({
-                authenticated: true,
-                role: Role.ADMIN,
-                username,
-                token: 'token',
-            })
 
 
-        } else if (username === 'staff' && password === 'staff') {
-            setAuthState({
-                authenticated: true,
-                role: Role.STAFF,
-                username,
-                token: 'token',
-            })
 
-        } else {
-            alert('Invalid username or password')
-        }
-    }
+
+
 
     const logout = async () => {
         // delte token from storage
@@ -139,17 +100,17 @@ export const AuthProvider = ({ children }: any) => {
         setAuthState({
             authenticated: false,
             role: null,
-            username: null,
+            email: null,
             token: null,
+            firstName: null,
+            companyId: null
+
         })
     }
 
     const value = {
-        onLogin: logged,
         onLogout: logout,
         authState,
-        onSignUp: register,
-
         setAuthState,
 
     }

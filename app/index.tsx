@@ -32,7 +32,7 @@ NetInfo.fetch().then(networkState => {
 const Index = (props: Props) => {
     const [isChecked, setChecked] = useState(false)
     const [passwordVisible, setPasswordVisible] = useState(false);
-    const [password, setPassword] = useState('123456');
+    const [password, setPassword] = useState('12345678');
     const [email, setEmail] = useState('sadiqbilyamin@gmail.com')
     const [isOffline, setIsOffline] = useState(false)
     const [showError, setShowError] = useState(false)
@@ -63,16 +63,18 @@ const Index = (props: Props) => {
         }
         setLoading(true)
         try {
-            const res = await axiosInstance.post(`/test/login`, { email, password });
+            const res = await axiosInstance.post(`/company/login`, { email, password });
             console.log(res.data);
 
             if (setAuthState) {
 
                 setAuthState({
                     authenticated: true,
-                    role: Role.ADMIN,
-                    username: email,
+                    role: res.data.role,
+                    email: email,
+                    firstName: res.data.firstName,
                     token: res.data.token,
+                    companyId: res.data.companyId
                 })
             }
             router.replace('/(shifts)')
@@ -111,7 +113,7 @@ const Index = (props: Props) => {
         }
     }
 
-    // const Login = async (email: string, password: string) => {
+
     //     setLoading(true);
 
     //     // Simulate a 5-second delay with a loading screen
@@ -135,8 +137,7 @@ const Index = (props: Props) => {
     //     }
 
     //     setLoading(false);
-    // };
-
+    // }
 
     const togglePasswordVisibility = () => {
         setPasswordVisible(!passwordVisible);

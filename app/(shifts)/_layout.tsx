@@ -41,6 +41,9 @@ const Layout = (props: Props) => {
 
     const pathname = usePathname()
 
+    console.log(authState);
+
+
 
     function CustomDrawerContent(props: any) {
         const { top, bottom } = useSafeAreaInsets()
@@ -62,7 +65,7 @@ const Layout = (props: Props) => {
                     {/* name and email */}
                     <View className=''>
                         <Text style={styles.poppinsSemiBold} className='text-white text-xl pb-1'>Sadiq </Text>
-                        <Text style={styles.poppinsSemiBold} className='font-light text-white'>{authState?.username} </Text>
+                        <Text style={styles.poppinsSemiBold} className='font-light text-white'>{authState?.email} </Text>
                         {/* <Text style={styles.poppinsRegular} className='font-light text-white'>alaoIfeoluwa@gmail.com </Text> */}
                     </View>
                 </View>
