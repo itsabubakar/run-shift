@@ -65,20 +65,20 @@ const Index = (props: Props) => {
         }
         setLoading(true)
         try {
-            const res = await axiosInstance.post(`/company/login`, { email, password });
-            console.log(res.data);
+            // const res = await axiosInstance.post(`/company/login`, { email, password });
+            // console.log(res.data);
 
-            if (setAuthState) {
+            // if (setAuthState) {
 
-                setAuthState({
-                    authenticated: true,
-                    role: res.data.role,
-                    email: email,
-                    firstName: res.data.firstName,
-                    token: res.data.token,
-                    companyId: res.data.companyId
-                })
-            }
+            //     setAuthState({
+            //         authenticated: true,
+            //         role: res.data.role,
+            //         email: email,
+            //         firstName: res.data.firstName,
+            //         token: res.data.token,
+            //         companyId: res.data.companyId
+            //     })
+            // }
             router.replace('/(shifts)')
 
             // axiosInstance.defaults.headers.common.Authorization = `Bearer ${res.data.token}`

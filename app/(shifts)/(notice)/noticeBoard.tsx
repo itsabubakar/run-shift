@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, Animated, Dimensions, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, Animated, Dimensions, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Link } from "expo-router";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -17,8 +17,9 @@ const { height: screenHeight } = Dimensions.get('window');
 const Screen = () => {
     const [showAddPost, setShowAddPost] = useState(false);
     const [showDelete, setShowDelete] = useState(false);
-    const [posts, setPosts] = useState([{ id: 'id1', title: 'hello' }, { id: 'id2', title: 'hello my neibour!!! I sabi this code thing' }]);
+    const [posts, setPosts] = useState([{ id: 'id1', title: 'hello' }, { id: 'id2', title: 'hello my neighbour!!! I sabi this code thing' }]);
     const [newPostTitle, setNewPostTitle] = useState('');
+    const [postToDelete, setPostToDelete] = useState(null);
     const slideAnim = useRef(new Animated.Value(screenHeight)).current;
     const { fontSize } = useAppContext()
 
@@ -27,8 +28,14 @@ const Screen = () => {
         setPosts([...posts, newPost]);
         setNewPostTitle(''); // Clear the input field
         setShowAddPost(false); // Close the add post modal
+        Keyboard.dismiss();
     };
 
+    const handleDeletePost = () => {
+        setPosts(posts.filter(post => post.id !== postToDelete));
+        setShowDelete(false);
+        setPostToDelete(null);
+    };
 
     useEffect(() => {
         if (showAddPost) {
@@ -48,25 +55,17 @@ const Screen = () => {
 
     return (
         <>
-
-            <SafeAreaView className='bg-primary pb-7'>
-            </SafeAreaView>
-
-            <Header title='notice board'
-                moreOptions={true}
-            />
+            <SafeAreaView className='bg-primary pb-7' />
+            <Header title='notice board' moreOptions={true} />
             <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }} resetScrollToCoords={{ x: 0, y: 0 }}>
-                <ScrollView className='p-6 flex-1 bg-white max-h-full'>
-
-
+                <ScrollView contentContainerStyle={{ paddingBottom: 30, paddingHorizontal: 24 }} className='flex-1 bg-white max-h-full'>
                     {posts ? posts.map(post => (
                         <Link key={post.id} asChild className='w-full' href={`/(shifts)/(notice)/${post.title}`}>
-                            <TouchableOpacity onLongPress={() => setShowDelete(!showDelete)}>
+                            <TouchableOpacity onLongPress={() => { setShowDelete(true); setPostToDelete(post.id); }}>
                                 <Notice notification={post.title} />
                             </TouchableOpacity>
                         </Link>
                     )) : <Text style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>There are no read messages.</Text>}
-
                 </ScrollView>
                 <TouchableOpacity onPress={() => setShowAddPost(true)} className='self-end absolute top-[80%] right-6'>
                     <Upload />
@@ -75,14 +74,17 @@ const Screen = () => {
             </KeyboardAwareScrollView>
 
             {showDelete && (
-                <View style={styles.overlay}>
-                    <View style={styles.deleteContainer}>
-                        <Text style={styles.deleteText}>Are you sure you want to delete the selected message?</Text>
-                        <View style={styles.modalButtons}>
-                            <TouchableOpacity onPress={() => setShowDelete(false)}>
+                <View className="h-full absolute w-full flex-col flex-1 bg-[#000000b0]">
+                    <View className="h-[60%] bottom-0 w-full rounded-t-[20px] justify-center items-center"></View>
+                    <View className="bg-primary h-full bottom-0 w-full rounded-t-[60px] justify-center px-8">
+                        <Text style={styles.poppinsRegular} className="text-white text-2xl pb-8 -mt-[500px]">
+                            Are you sure you want to delete the selected message?
+                        </Text>
+                        <View className='justify-end flex-row gap-x-[76px]'>
+                            <TouchableOpacity className='flex-row' onPress={handleDeletePost}>
                                 <Check />
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => setShowDelete(false)}>
+                            <TouchableOpacity className='flex-row' onPress={() => setShowDelete(false)}>
                                 <Cancel />
                             </TouchableOpacity>
                         </View>
@@ -102,16 +104,11 @@ const Screen = () => {
                             onChangeText={setNewPostTitle}
                         />
                         <View style={styles.modalButtons}>
-
-
-                            {/* Cancel post */}
-                            <TouchableOpacity onPress={() => setShowAddPost(false)}>
-                                <Cancel />
-                            </TouchableOpacity>
-
-                            {/* Add post */}
                             <TouchableOpacity onPress={handleAddPost}>
                                 <Check />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setShowAddPost(false)}>
+                                <Cancel />
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -157,8 +154,8 @@ const styles = StyleSheet.create({
     },
     modalButtons: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingHorizontal: 40,
+        justifyContent: 'flex-end',
+        gap: 60,
     },
     overlay: {
         position: 'absolute',
