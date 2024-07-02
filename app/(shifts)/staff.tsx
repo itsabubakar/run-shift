@@ -9,13 +9,10 @@ import { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LottieView from "lottie-react-native";
-import loader from '../../assets/loader.json'
 
 type Props = {};
 
-// const ball = require('../../assets/ball.json')
-const Anim = require('../../assets/Anim.json')
-const Anima = require('../../assets/Anima.json')
+
 
 
 
@@ -40,23 +37,18 @@ const Screen = (props: Props) => {
         }
     }, [authState?.companyId]);
 
-    const onRefresh = useCallback(async () => {
-        setRefreshing(true);
-        await fetchStaff();
-        setRefreshing(false);
-    }, [fetchStaff]);
+    // const onRefresh = useCallback(async () => {
+    //     setRefreshing(true);
+    //     await fetchStaff();
+    //     setRefreshing(false);
+    // }, [fetchStaff]);
 
     useEffect(() => {
         console.log('staff screen mounted');
         fetchStaff();
     }, [fetchStaff]);
 
-    function onScroll(event: { nativeEvent: any; }) {
-        const { nativeEvent } = event;
-        const { contentOffset } = nativeEvent;
-        const { y } = contentOffset;
-        setOffsetY(y);
-    }
+   
     const renderItem = ({ item }: { item: { firstName: string, email: string } }) => <Staff {...item} />;
 
     return (
@@ -64,28 +56,8 @@ const Screen = (props: Props) => {
             <SafeAreaView className="bg-primary pb-7"></SafeAreaView>
             <Header title="Staff" />
 
-            <View className="flex">
-                <View className=' items-center'>
-                    <LottieView
-                        style={styles.lottieView}
-                        source={Anima}
-                        autoPlay
-                        loop
-                    />
-                    <LottieView
-                        style={styles.lottieView}
-                        source={Anim}
-                        autoPlay
-                        loop
-                    />
-                    <LottieView
-                        style={styles.lottieView}
-                        source={Anim}
-                        autoPlay
-                        loop
-                        renderMode={'SOFTWARE'}
-                    />
-                </View>
+            <View className="flex-1">
+                
 
 
                 <FlatList
@@ -93,9 +65,8 @@ const Screen = (props: Props) => {
                     renderItem={renderItem}
                     keyExtractor={(item, index) => index.toString()}
                     contentContainerStyle={{ paddingBottom: 10 }}
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                    onScroll={onScroll}
+                    // refreshing={refreshing}
+                    // onRefresh={onRefresh}
                 />
             </View>
 
