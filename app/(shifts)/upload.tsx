@@ -11,9 +11,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } fr
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
-import { Buffer } from 'buffer';
 import Modal from 'react-native-modal';
-import axios from 'axios';
 import axiosInstance from '@/services';
 import LoadingSpinner from '@/components/utils/LoadingSpinner';
 import moment from 'moment';
@@ -36,6 +34,8 @@ const Screen = (props: Props) => {
     const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dyikojd82/image/upload';
 
     const fetchImages = async () => {
+        console.log('fetching images');
+        
         try {
             const response = await axiosInstance.get(`/company/imgurl/${email}`);
             setUploadedImages(response.data);
@@ -47,6 +47,8 @@ const Screen = (props: Props) => {
         // Fetch images on component mount
 
         fetchImages();
+       
+       
         
     }, [email]);
 
@@ -133,10 +135,11 @@ const Screen = (props: Props) => {
 
     const deleteImage = async () => {
         setShowDelete(!showDelete);
+        setLoading(true)
         console.log("image to be deleted");
 
         const imageToDelete = uploadedImages.find(image => image.url === selectedImageUri);
-        console.log(imageToDelete);
+        console.log(imageToDelete?.publicId);
         
         if (!imageToDelete) return;
     
@@ -149,15 +152,15 @@ const Screen = (props: Props) => {
             console.log(res);
 
             console.log("image deleted");
-    
-            // Update your state to reflect the deletion
-            // setUploadedImages(currentImages => currentImages.filter(image => image.url !== selectedImageUri));
+        setLoading(false)          
             fetchImages()
         } catch (error) {
+        setLoading(false)
+
             console.error('Error deleting image from Cloudinary:', error);
         }
     };
-    
+    ``
 
     const handleDeleteImage = (uri: string) => {
         setShowDelete(!showDelete); 

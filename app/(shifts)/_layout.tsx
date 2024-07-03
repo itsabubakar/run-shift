@@ -41,7 +41,7 @@ const Layout = (props: Props) => {
 
     const pathname = usePathname()
 
-    console.log(authState);
+
 
 
 
@@ -240,11 +240,16 @@ const Layout = (props: Props) => {
                         drawerItemPress: (e) => {
                             e.preventDefault(); // Prevent navigation
                             setShowFontSlider!(true)
+                            console.log(pathname);
+                            
                             if (pathname === '/') {
                                 router.push(`/(shifts)/`)
+                                
+                            } else {
+
+                                router.push(pathname as any)
                             }
 
-                            router.push(`${pathname}`)
                         },
                     }}
                 />
