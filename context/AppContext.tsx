@@ -1,8 +1,10 @@
-import axiosInstance from "@/services"
-import { createContext, useContext, useEffect, useState } from "react";
-
+import axiosInstance from "@/services";
+import { createContext, useContext, useState } from "react";
 
 interface AppProps {
+    emailFilter: string;
+    setEmailFilter: React.Dispatch<React.SetStateAction<string>>;
+
     showHeaderCalendar: boolean,
     setShowHeaderCalendar: React.Dispatch<React.SetStateAction<boolean>>,
     showAllShifts: boolean,
@@ -25,8 +27,8 @@ interface AppProps {
     setPushNotifications: React.Dispatch<React.SetStateAction<boolean>>,
     hideReadMessages: boolean,
     setHideReadMessages: React.Dispatch<React.SetStateAction<boolean>>,
-
-
+    refreshKey: number,
+    setRefreshKey: React.Dispatch<React.SetStateAction<number>>,
 }
 
 const AppContext = createContext<Partial<AppProps>>({})
@@ -38,6 +40,8 @@ export const useAppContext = () => {
 export const AppProvider = ({ children }: any) => {
 
     const [showHeaderCalendar, setShowHeaderCalendar] = useState(false)
+    const [emailFilter, setEmailFilter] = useState('');
+
     const [showHorizontalCalendar, setShowHorizontalCalendar] = useState(true)
     const [showAllShifts, setShowAllShifts] = useState(false)
     const [showFilter, setShowFilter] = useState(false)
@@ -48,8 +52,11 @@ export const AppProvider = ({ children }: any) => {
     const [showFontSlider, setShowFontSlider] = useState(false)
     const [pushNotifications, setPushNotifications] = useState(false)
     const [hideReadMessages, setHideReadMessages] = useState(false)
+    const [refreshKey, setRefreshKey] = useState(0);
 
     const value = {
+        emailFilter,
+        setEmailFilter,
         selectedDate,
         setSelectedDate,
         showHeaderCalendar,
@@ -71,14 +78,12 @@ export const AppProvider = ({ children }: any) => {
         pushNotifications,
         setPushNotifications,
         hideReadMessages,
-        setHideReadMessages
+        setHideReadMessages,
+        refreshKey,
+        setRefreshKey,
     }
 
-    return <AppContext.Provider
-        value={value}
-    >
+    return <AppContext.Provider value={value}>
         {children}
     </AppContext.Provider>
-
-
 }

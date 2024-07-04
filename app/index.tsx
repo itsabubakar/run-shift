@@ -1,10 +1,10 @@
-import { Link, useRouter } from "expo-router"
-import { StatusBar } from "expo-status-bar"
-import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
+import { Link, useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import CheckBox from "@/components/utils/CustomCheckBox";
+
 import EyeOpen from "@/assets/icons/EyeOpen";
 import EyeClose from "@/assets/icons/EyeClose";
 import { useAuth } from "@/context/AuthContext";
@@ -14,8 +14,8 @@ import LoadingSpinner from "@/components/utils/LoadingSpinner";
 import axios from "axios";
 import ErrorModal from "@/components/login/ErrorModal";
 import NetInfo from '@react-native-community/netinfo';
-
-// Testing commit from a new pc
+import * as SecureStore from 'expo-secure-store';
+import CheckBox from "@/components/settings/CheckBox";
 
 type Props = {}
 
@@ -24,52 +24,58 @@ export enum Role {
     ADMIN = "admin"
 }
 
-NetInfo.fetch().then(networkState => {
-    console.log("Connection type - ", networkState.type);
-    console.log("Is connected? - ", networkState.isConnected);
-});
-
-
-
 const Index = (props: Props) => {
-    const [isChecked, setChecked] = useState(false)
+    const [isChecked, setChecked] = useState(false);
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [password, setPassword] = useState('12345678');
-    const [email, setEmail] = useState('sadiq@gmail.com')
-    const [isOffline, setIsOffline] = useState(false)
-    const [showError, setShowError] = useState(false)
+    const [email, setEmail] = useState('sadiq@gmail.com');
+    const [isOffline, setIsOffline] = useState(false);
+    const [showError, setShowError] = useState(false);
     const [errorField, setErrorField] = useState('');
 
-    // Replace after setting up tanstack query
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
 
-    const { setAuthState } = useAuth()
-    const router = useRouter()
+    const { setAuthState } = useAuth();
+    const router = useRouter();
+
+    console.log(isChecked);
+    console.log(isChecked);
+    console.log(isChecked);
+    
 
     useEffect(() => {
-        // Subscribe to network state changes
+        
+        const checkStoredLogin = async () => {
+            const storedEmail = await SecureStore.getItemAsync('email');
+            const storedPassword = await SecureStore.getItemAsync('password');
+            
+            
+
+            if (storedEmail && storedPassword) {
+                await Login(storedEmail, storedPassword, true); // auto-login
+            }
+        };
+
+        checkStoredLogin();
+
         const unsubscribe = NetInfo.addEventListener(state => {
             setIsOffline(!(state.isConnected && state.isInternetReachable));
         });
 
-        // Unsubscribe on cleanup
         return () => unsubscribe();
     }, []);
 
-    const Login = async (email: string, password: string) => {
+    const Login = async (email: string, password: string, autoLogin = false) => {
         if (!email || !password) {
-            // Set the error message based on which field is empty
             setErrorField(!email ? 'Please enter an email address' : 'Please enter your password');
             setShowError(true);
             return;
         }
-        setLoading(true)
+        setLoading(true);
         try {
             const res = await axiosInstance.post(`/company/login`, { email, password });
-            console.log(res.data);
 
             if (setAuthState) {
-
                 setAuthState({
                     authenticated: true,
                     role: res.data.role,
@@ -77,79 +83,46 @@ const Index = (props: Props) => {
                     firstName: res.data.firstName,
                     token: res.data.token,
                     companyId: res.data.companyId
-                })
+                });
             }
-            router.replace('/(shifts)')
 
-            // axiosInstance.defaults.headers.common.Authorization = `Bearer ${res.data.token}`
-            // await SecureStore.setItemAsync('TOKEN_KEY', res.data.token)
+            if (isChecked && !autoLogin) {
+                await SecureStore.setItemAsync('email', email);
+                await SecureStore.setItemAsync('password', password);
+            }
+
+            router.replace('/(shifts)');
         } catch (error) {
             setLoading(false);
             if (axios.isAxiosError(error)) {
                 if (error.response?.status === 401) {
-                    // Handle 401 Unauthorized error
                     setErrorField('Invalid email or password');
                     setShowError(true);
-                    console.log(error);
-
-                    // Alert.alert('Unauthorized', 'Invalid email or password.');
                 } else {
-                    // Handle other errors
                     setErrorField('An error occurred. Please try again later.');
                     setShowError(true);
-                    console.log(error);
-
-                    // Alert.alert('Error', 'An error occurred. Please try again later.');
                 }
             } else {
-                // Handle non-axios errors
                 setErrorField('An error occurred. Please try again later.');
                 setShowError(true);
-                console.log(error);
-
-                // Alert.alert('Error', 'A non-network error occurred.');
             }
+        } finally {
+            setLoading(false);
         }
-        finally {
-            setLoading(false)
-        }
-    }
-
-
-    //     setLoading(true);
-
-    //     // Simulate a 5-second delay with a loading screen
-    //     await new Promise(resolve => setTimeout(resolve, 5000));
-
-    //     // Hardcoded credentials check
-    //     if (email === 'sadiqbilyamin@gmail.com' && password === '123456') {
-    //         // Simulate successful login with hardcoded token and role
-    //         setAuthState!({
-    //             authenticated: true,
-    //             role: Role.ADMIN,
-    //             username: email,
-    //             token: 'hardcoded-token',
-    //         });
-
-    //         router.replace('/(shifts)');
-    //     } else {
-    //         // If credentials do not match, set error
-    //         setErrorField('Invalid email or password');
-    //         setShowError(true);
-    //     }
-
-    //     setLoading(false);
-    // }
+    };
 
     const togglePasswordVisibility = () => {
         setPasswordVisible(!passwordVisible);
-    }
+    };
 
     const resetError = () => {
         setShowError(false);
         setErrorField('');
     };
 
+    let i = 0
+
+    console.log(isChecked);
 
     return (
         <>

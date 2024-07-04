@@ -19,7 +19,6 @@ const FontSlider = () => {
 
 
     const pathname = usePathname();
-    console.log(pathname);
 
     return (
         <View className=''>

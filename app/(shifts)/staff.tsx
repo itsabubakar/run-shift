@@ -9,6 +9,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LottieView from "lottie-react-native";
+import { useAppContext } from '@/context/AppContext';
 
 type Props = {};
 
@@ -23,6 +24,8 @@ const Screen = (props: Props) => {
     const [refreshing, setRefreshing] = useState(false);
     const { authState } = useAuth();
     const [offsetY, setOffsetY] = useState(0);
+    const { refreshKey } = useAppContext()
+
 
     const fetchStaff = useCallback(async () => {
         setLoading(true);
@@ -46,7 +49,7 @@ const Screen = (props: Props) => {
     useEffect(() => {
         console.log('staff screen mounted');
         fetchStaff();
-    }, [fetchStaff]);
+    }, [fetchStaff, refreshKey]);
 
    
     const renderItem = ({ item }: { item: { firstName: string, email: string } }) => <Staff {...item} />;

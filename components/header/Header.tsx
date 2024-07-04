@@ -28,7 +28,10 @@ const Header = ({ title, calendar, filter, moreOptions, persons, subhead }: Prop
     const { setShowHeaderCalendar,
         showHeaderCalendar,
         showAllShifts,
-        setShowAllShifts, setMoreOptions, showMoreOptions, showFilter, setShowFilter } = useAppContext()
+        setShowAllShifts, setMoreOptions, showMoreOptions, showFilter, setShowFilter, emailFilter, setEmailFilter, } = useAppContext()
+
+        console.log(emailFilter);
+        
 
     const onToggle = () => {
         navigation.dispatch(DrawerActions.openDrawer())
@@ -91,19 +94,18 @@ const Header = ({ title, calendar, filter, moreOptions, persons, subhead }: Prop
                 }
 
                 {
-                    showFilter && <View className='flex-1 flex-row justify-between border-b ml-4 w-full border-white'>
+                    showFilter && <View className='flex-1 flex-row justify-between border-b ml-4 w-full border-white pr-6'>
                         <TextInput
-                            style={styles.poppinsRegular}
-                            placeholder='filter'
-                            className=' text-2xl'
-                            placeholderTextColor={'white'}
-                        >
-                        </TextInput>
+                style={styles.poppinsRegular}
+                placeholder='filter'
+                className='text-xl pt-2 text-white w-full'
+                placeholderTextColor={'white'}
+                value={emailFilter}
+                onChangeText={text => setEmailFilter!(text.toLowerCase())}
+            />
                         <TouchableOpacity onPress={() => setShowFilter!(!showFilter)}>
-
                             <ArrowLarge />
                         </TouchableOpacity>
-
                     </View>
                 }
 

@@ -36,7 +36,7 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <AuthProvider>
+      
         <AppProvider>
           <View style={styles.container}>
             <Stack
@@ -53,7 +53,7 @@ export default function RootLayout() {
             </Stack>
           </View>
         </AppProvider>
-      </AuthProvider>
+      
     </AuthProvider>
   );
 }

@@ -31,18 +31,43 @@ import Logout from '@/assets/icons/drawer/Logout';
 import Exit from '@/assets/icons/drawer/Exit';
 import { useAuth } from '@/context/AuthContext';
 import { useAppContext } from '@/context/AppContext';
+import * as SecureStore from 'expo-secure-store';
 type Props = {}
 
 const Layout = (props: Props) => {
-    const { authState } = useAuth()
+    const { authState,setAuthState } = useAuth()
     const { showProfilePicture } = useAppContext()
     const { showFontSlider, setShowFontSlider } = useAppContext()
     const router = useRouter()
 
     const pathname = usePathname()
+    const {  setRefreshKey } = useAppContext()
+    
+    const handleRefresh = () => {
+        setRefreshKey!(prevKey => prevKey + 1);
+    };
 
+    // Logout function
+const handleLogout = async () => {
+    console.log('hit');
+    
+    // Remove stored email and password
+    await SecureStore.deleteItemAsync('email');
+    await SecureStore.deleteItemAsync('password');
 
+    // Clear authentication state
+    setAuthState!({
+        authenticated: false,
+        role: null,
+        email: '',
+        firstName: '',
+        token: '',
+        companyId: ''
+    });
 
+    // Navigate to login screen
+    router.replace('/'); // Replace this with the correct route to your login screen
+};
 
 
     function CustomDrawerContent(props: any) {
@@ -89,7 +114,8 @@ const Layout = (props: Props) => {
                             <Logout color={color} />
                         )}
                         labelStyle={{ fontFamily: 'PoppinsRegular', fontSize: 14, marginLeft: -14 }}
-                        onPress={() => router.replace('/')} label={"Logout"} />
+                        onPress={handleLogout}
+                        label={"Logout"} />
                     <DrawerItem
                         icon={({ focused, color, size }) => (
                             <Exit color={color} />
@@ -240,6 +266,31 @@ const Layout = (props: Props) => {
                         drawerItemPress: (e) => {
                             e.preventDefault(); // Prevent navigation
                             setShowFontSlider!(true)
+                            console.log(pathname);
+                            
+                            if (pathname === '/') {
+                                router.push(`/(shifts)/`)
+                                
+                            } else {
+
+                                router.push(pathname as any)
+                            }
+
+                        },
+                    }}
+                />
+                <Drawer.Screen
+                    name="refresh"
+                    options={{
+                        drawerLabel: 'Refresh',
+                        title: 'Refresh',
+                        drawerIcon: ({ color }) => <Font color={color} />,
+                    }}
+                    listeners={{
+                        drawerItemPress: (e) => {
+                            e.preventDefault(); // Prevent navigation
+                            // setShowFontSlider!(true)
+                            handleRefresh()
                             console.log(pathname);
                             
                             if (pathname === '/') {

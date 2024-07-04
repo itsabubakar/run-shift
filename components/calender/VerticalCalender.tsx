@@ -1,18 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FlatList, Text, StyleSheet, View, ViewToken, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { format, addDays, subDays, isToday, parseISO } from 'date-fns';
-
-// interface ShiftInfo {
-//   startTime: string;
-//   endTime: string;
-//   description: string;
-// }
+import { useAppContext } from '@/context/AppContext';
 
 interface Shift {
   date: string; // Date in 'yyyy-MM-dd' format
   description: [];
   staffId: string;
   staffName: string;
+  staff: {email: string}; // Add this field to match the email
 }
 
 interface Props {
@@ -20,8 +16,7 @@ interface Props {
 }
 
 const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
-    console.log(shifts[1])
-    
+  const { emailFilter } = useAppContext();
   const [dates, setDates] = useState<Date[]>([]);
   const [currentMonth, setCurrentMonth] = useState<string>(format(new Date(), 'MMMM yyyy'));
   const flatListRef = useRef<FlatList>(null);
@@ -29,14 +24,12 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
   const dateHeight = 160;
 
   useEffect(() => {
-    // Initial load of dates, centered around today
     const initialDates = Array.from({ length: 30 }).map((_, index) => subDays(today, 15 - index));
     setDates(initialDates);
 
-    // Automatically scroll to today's date after the dates are set
     setTimeout(() => {
       if (flatListRef.current) {
-        const todayIndex = 15; // Since we are centering around today, it's at the 15th position
+        const todayIndex = 15;
         flatListRef.current.scrollToIndex({ index: todayIndex, animated: false });
       }
     }, 0);
@@ -50,7 +43,6 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
       const newDates = Array.from({ length: 30 }).map((_, index) => subDays(dates[0], index + 1)).reverse();
       setDates((prevDates) => [...newDates, ...prevDates]);
 
-      // Adjust the scroll position to account for the added dates at the top
       setTimeout(() => {
         if (flatListRef.current) {
           flatListRef.current.scrollToOffset({ offset: 30 * dateHeight, animated: false });
@@ -89,16 +81,18 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
     }, 500);
   };
 
+  console.log(shifts.map((shift) => console.log(shift?.staff?.email))) 
+
   const renderShiftInfo = (date: Date) => {
-    const shift = shifts?.find(shift => format(parseISO(shift.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'));
-    
+    const shift = shifts
+      ?.filter(shift => emailFilter ? shift.staff.email === emailFilter : true)
+      .find(shift => format(parseISO(shift.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'));
+
     if (shift) {
-        console.log(shift?.date, 'hello');
+      
       return shift.description?.map((shiftInfo, index) => (
         <View key={index} style={styles.shiftContainer}>
-          {/* <Text style={styles.shiftText}>{`${shiftInfo.startTime} - ${shiftInfo.endTime}`}</Text> */}
           <Text style={styles.shiftText}>{shiftInfo}</Text>
-          {/* <Text style={styles.shiftText}>{shift.staffName}</Text> */}
         </View>
       ));
     }
@@ -125,7 +119,7 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
           </View>
         )}
         onEndReached={() => loadMoreDates('down')}
-        onEndReachedThreshold={0.5} // Load more dates when scrolled 50% to the end
+        onEndReachedThreshold={0.5}
         onViewableItemsChanged={handleViewableItemsChanged}
         viewabilityConfig={viewabilityConfig}
         showsVerticalScrollIndicator={false}
@@ -168,7 +162,6 @@ const styles = StyleSheet.create({
     minHeight: 160,
   },
   selectedDate: {
-    // backgroundColor: 'yellow',
     borderRadius: 14,
   },
   selectedDay: {
