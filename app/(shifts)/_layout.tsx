@@ -284,7 +284,7 @@ const handleLogout = async () => {
                     options={{
                         drawerLabel: 'Refresh',
                         title: 'Refresh',
-                        drawerIcon: ({ color }) => <Font color={color} />,
+                        drawerIcon: ({ color }) => <Refresh color={color} />,
                     }}
                     listeners={{
                         drawerItemPress: (e) => {

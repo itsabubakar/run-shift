@@ -88,7 +88,6 @@ const HomeScreen = (props: Props) => {
                         <HeaderCalendar setShowHeaderCalendar={setShowHeaderCalendar} showHeaderCalendar={showHeaderCalendar} onSelect={handleDateSelection} />
                     </View>
 
-
                 </View >
             }
 

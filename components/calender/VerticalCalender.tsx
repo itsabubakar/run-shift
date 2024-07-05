@@ -2,13 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FlatList, Text, StyleSheet, View, ViewToken, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { format, addDays, subDays, isToday, parseISO } from 'date-fns';
 import { useAppContext } from '@/context/AppContext';
+import ProfilePicture from '@/assets/icons/ProfilePicture';
 
 interface Shift {
   date: string; // Date in 'yyyy-MM-dd' format
   description: [];
   staffId: string;
-  staffName: string;
-  staff: {email: string}; // Add this field to match the email
+  staff: {
+    email: string,
+    firstName: string
+  }; // Add this field to match the email
 }
 
 interface Props {
@@ -81,23 +84,34 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
     }, 500);
   };
 
-  console.log(shifts.map((shift) => console.log(shift?.staff?.email))) 
 
   const renderShiftInfo = (date: Date) => {
-    const shift = shifts
-      ?.filter(shift => emailFilter ? shift.staff.email === emailFilter : true)
-      .find(shift => format(parseISO(shift.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'));
-
-    if (shift) {
-      
-      return shift.description?.map((shiftInfo, index) => (
+    const shiftsForDate = shifts
+      ?.filter(shift => format(parseISO(shift.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'))
+      .filter(shift => emailFilter ? shift.staff.email === emailFilter : true);
+  
+    if (shiftsForDate && shiftsForDate.length > 0) {
+      return shiftsForDate.map((shift, index) => (
         <View key={index} style={styles.shiftContainer}>
-          <Text style={styles.shiftText}>{shiftInfo}</Text>
+          {shift.description?.map((shiftInfo, descriptionIndex) => (
+            <View  key={`${index}-${descriptionIndex}`}>
+              <View className='flex-row space-x-2 items-center'>
+              <ProfilePicture width={20}/>
+              <Text style={styles.shiftHeader}>
+              {shift.staff.firstName.charAt(0).toUpperCase() + shift.staff.firstName.slice(1)}
+            </Text>
+
+              </View>
+              <Text style={styles.shiftText}>{shiftInfo}</Text>
+            </View>
+          ))}
         </View>
       ));
     }
     return <Text style={styles.shiftText}>No Shifts</Text>;
   };
+  
+  
 
   return (
     <View style={styles.container}>
@@ -183,6 +197,12 @@ const styles = StyleSheet.create({
     fontFamily: 'PoppinsRegular',
     paddingTop: 4,
     fontSize: 16,
+    marginLeft: 8,
+  },
+  shiftHeader: {
+    fontFamily: 'PoppinsRegular',
+    paddingTop: 6,
+    fontSize: 18,
   },
 });
 

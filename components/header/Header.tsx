@@ -30,8 +30,11 @@ const Header = ({ title, calendar, filter, moreOptions, persons, subhead }: Prop
         showAllShifts,
         setShowAllShifts, setMoreOptions, showMoreOptions, showFilter, setShowFilter, emailFilter, setEmailFilter, } = useAppContext()
 
-        console.log(emailFilter);
         
+        const [localEmail, setLocalEmail] = useState(emailFilter || '');
+        const [filterApplied, setFilterApplied] = useState(false);
+        console.log(emailFilter);
+
 
     const onToggle = () => {
         navigation.dispatch(DrawerActions.openDrawer())
@@ -40,7 +43,21 @@ const Header = ({ title, calendar, filter, moreOptions, persons, subhead }: Prop
     const handleDateSelection = (date: Date) => {
         // Handle the selected date here
         console.log(date);
-    };
+    }
+
+    const handleArrowClick = () => {
+        setEmailFilter!(localEmail.toLowerCase());
+        setShowFilter!(!showFilter);
+        setFilterApplied(!!localEmail);
+      };
+    
+      const handleRemoveFilter = () => {
+        setEmailFilter!('');
+        setLocalEmail('');
+        setFilterApplied(false);
+      };
+
+    
 
     return (
         <View className={`bg-[#175B57] px-6   py-6 max-w-[395px] w-full  mx-auto  rounded-b-3xl ${subhead ? '' : 'pb-10'}`}>
@@ -80,7 +97,10 @@ const Header = ({ title, calendar, filter, moreOptions, persons, subhead }: Prop
 
                         {
                             filter && <TouchableOpacity onPress={() => setShowFilter!(!showFilter)}>
+                                <View className={filterApplied ?`bg-secondary rounded-full` : ''}>
+
                                 <Filter />
+                                </View>
                             </TouchableOpacity>
                         }
 
@@ -94,26 +114,33 @@ const Header = ({ title, calendar, filter, moreOptions, persons, subhead }: Prop
                 }
 
                 {
-                    showFilter && <View className='flex-1 flex-row justify-between border-b ml-4 w-full border-white pr-6'>
-                        <TextInput
-                style={styles.poppinsRegular}
-                placeholder='filter'
-                className='text-xl pt-2 text-white w-full'
-                placeholderTextColor={'white'}
-                value={emailFilter}
-                onChangeText={text => setEmailFilter!(text.toLowerCase())}
-            />
-                        <TouchableOpacity onPress={() => setShowFilter!(!showFilter)}>
-                            <ArrowLarge />
-                        </TouchableOpacity>
-                    </View>
+                    showFilter &&  <View className='flex-1 flex-row justify-between border-b ml-4 w-full border-white pr-6'>
+                    <TextInput
+                      style={styles.poppinsRegular}
+                      placeholder='filter'
+                      className='text-xl pt-2 text-white w-full'
+                      placeholderTextColor={'white'}
+                      value={localEmail}
+                      onChangeText={text => setLocalEmail(text)}
+                    />
+                    <TouchableOpacity onPress={handleArrowClick}>
+                      <ArrowLarge />
+                    </TouchableOpacity>
+                  </View>
                 }
 
 
 
             </View>
 
-
+            {filterApplied && (
+        <View className='pt-4 -mb-4 flex-row space-x-2'>
+          <Text style={styles.poppinsRegular} className='text-white'>Your view is being filtered</Text>
+          <TouchableOpacity onPress={handleRemoveFilter}>
+            <Text style={styles.poppinsRegular} className='text-white underline'>Remove filter</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
             {subhead && <Text style={styles.poppinsRegular} className='text-white pt-6 text-base pl-1'>{subhead}</Text>}
 
