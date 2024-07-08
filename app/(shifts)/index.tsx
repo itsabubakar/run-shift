@@ -20,10 +20,9 @@ const HomeScreen = (props: Props) => {
     const [shifts, setShifts] = useState([])
 
     const {authState} = useAuth()
-    // const { refreshKey, setRefreshKey } = useAppContext()
 
-
-    
+    // console.log(authState?.role);
+        
 
     const handleDateSelection = (date: Date) => {
         // Handle the selected date here

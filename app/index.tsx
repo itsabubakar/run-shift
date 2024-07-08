@@ -37,10 +37,6 @@ const Index = (props: Props) => {
 
     const { setAuthState } = useAuth();
     const router = useRouter();
-
-    console.log(isChecked);
-    console.log(isChecked);
-    console.log(isChecked);
     
 
     useEffect(() => {
@@ -52,7 +48,9 @@ const Index = (props: Props) => {
             
 
             if (storedEmail && storedPassword) {
-                await Login(storedEmail, storedPassword, true); // auto-login
+                console.log(storedEmail);
+                
+                // await Login(storedEmail, storedPassword, true); // auto-login
             }
         };
 
@@ -120,7 +118,6 @@ const Index = (props: Props) => {
         setErrorField('');
     };
 
-    let i = 0
 
     console.log(isChecked);
 
