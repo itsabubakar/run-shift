@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FlatList, Text, StyleSheet, View, ViewToken, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
+import { FlatList, Text, StyleSheet, View, ViewToken, NativeSyntheticEvent, NativeScrollEvent, TouchableOpacity } from 'react-native';
 import { format, addDays, subDays, isToday, parseISO } from 'date-fns';
 import { useAppContext } from '@/context/AppContext';
 import ProfilePicture from '@/assets/icons/ProfilePicture';
+import LoadingSpinner from '../utils/LoadingSpinner';
+import CheckBox from '../settings/CheckBox';
 
 interface Shift {
   date: string; // Date in 'yyyy-MM-dd' format
@@ -14,12 +16,19 @@ interface Shift {
   }; // Add this field to match the email
 }
 
+
+interface RenderShiftInfoProps {
+  date: Date;
+  shifts: Shift[];
+  emailFilter: string | null;
+}
+
 interface Props {
   shifts: Shift[];
 }
 
 const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
-  const { emailFilter } = useAppContext();
+  const { emailFilter, showRequestCheckBox, setShowRequestCheckBox } = useAppContext();
   const [dates, setDates] = useState<Date[]>([]);
   const [currentMonth, setCurrentMonth] = useState<string>(format(new Date(), 'MMMM yyyy'));
   const flatListRef = useRef<FlatList>(null);
@@ -85,36 +94,70 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
   };
 
 
-  const renderShiftInfo = (date: Date) => {
-    const shiftsForDate = shifts
-      ?.filter(shift => format(parseISO(shift.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'))
-      .filter(shift => emailFilter ? shift.staff.email === emailFilter : true);
-  
-    if (shiftsForDate && shiftsForDate.length > 0) {
-      return shiftsForDate.map((shift, index) => (
-        <View key={index} style={styles.shiftContainer}>
-          {shift.description?.map((shiftInfo, descriptionIndex) => (
-            <View  key={`${index}-${descriptionIndex}`}>
-              <View className='flex-row space-x-2 items-center'>
-              <ProfilePicture width={20}/>
-              <Text style={styles.shiftHeader}>
-              {shift.staff.firstName.charAt(0).toUpperCase() + shift.staff.firstName.slice(1)}
-            </Text>
+ const renderShiftInfo = (date: Date) => {
+  const shiftsForDate = shifts
+    ?.filter(shift => format(parseISO(shift.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'))
+    .filter(shift => emailFilter ? shift.staff.email === emailFilter : true);
 
-              </View>
-              <Text style={styles.shiftText}>{shiftInfo}</Text>
+  if (shiftsForDate && shiftsForDate.length > 0) {
+    // Group shifts by staff
+    const shiftsByStaff = shiftsForDate.reduce<Record<string, { staff: Shift['staff']; shifts: string[][] }>>((acc, shift) => {
+      if (!acc[shift.staff.email]) {
+        acc[shift.staff.email] = {
+          staff: shift.staff,
+          shifts: [],
+        };
+      }
+      acc[shift.staff.email].shifts.push(shift.description);
+      return acc;
+    }, {});
+
+    // Render shifts grouped by staff
+    return Object.keys(shiftsByStaff).map((email, index) => {
+      const staffShift = shiftsByStaff[email];
+      return (
+        <View key={index} style={styles.shiftContainer}>
+          <View className="flex-row space-x-4">
+            <View className="flex-col">
+              <ProfilePicture width={20} />
+              <Text className="-mt-2 w-20" style={styles.shiftHeader}>
+                {staffShift.staff.firstName.charAt(0).toUpperCase() + staffShift.staff.firstName.slice(1)}
+              </Text>
             </View>
-          ))}
+            <View className='flex-1'>
+              {staffShift.shifts.map((shiftInfoArray, shiftIndex) => (
+                <View className='' key={shiftIndex}>
+                  {shiftInfoArray.map((shiftInfo, descriptionIndex) => (
+                    <TouchableOpacity onPress={()=>setShowRequestCheckBox!(!showRequestCheckBox)}  className='pt-2 flex-row justify-between w-full' key={descriptionIndex}>
+                      <Text className={`${showRequestCheckBox && 'w-4/5'}  `} style={styles.shiftText}>{shiftInfo}</Text>
+
+                      {
+                        showRequestCheckBox && <CheckBox
+                      color="gray"
+                       />
+                      }
+                        
+                      
+                    
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              ))}
+            </View>
+          </View>
         </View>
-      ));
-    }
-    return <Text style={styles.shiftText}>No Shifts</Text>;
-  };
+      );
+    });
+  }
+  return <Text style={styles.shiftText}>No Shifts</Text>;
+};
+
   
   
 
   return (
     <View style={styles.container}>
+
       <FlatList
         ref={flatListRef}
         data={dates}
@@ -146,6 +189,8 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
         getItemLayout={getItemLayout}
         onScrollToIndexFailed={onScrollToIndexFailed}
       />
+
+        
     </View>
   );
 };
@@ -201,7 +246,7 @@ const styles = StyleSheet.create({
   },
   shiftHeader: {
     fontFamily: 'PoppinsRegular',
-    paddingTop: 6,
+    // paddingTop: 6,
     fontSize: 18,
   },
 });

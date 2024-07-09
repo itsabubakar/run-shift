@@ -12,7 +12,7 @@ const CustomCheckbox: React.FC<Props> = ({ isChecked, onCheck, color }: Props) =
 
     return (
         <TouchableOpacity style={[styles.checkbox, {
-            borderColor: color === 'white' ? "#ffffff" : "#ffffff5a"
+            borderColor: color === 'white' ? "#ffffff" : color
         }]} onPress={onCheck}>
             {isChecked && (
                 <Svg width="15" height="11" viewBox="0 0 15 11" fill="none" >

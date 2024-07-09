@@ -61,7 +61,7 @@ const Screen = () => {
                 <ScrollView contentContainerStyle={{ paddingBottom: 30, paddingHorizontal: 24 }} className='flex-1 bg-white max-h-full'>
                     {posts ? posts.map(post => (
                         <Link key={post.id} asChild className='w-full' href={`/(shifts)/(notice)/${post.title}`}>
-                            <TouchableOpacity onLongPress={() => { setShowDelete(true); setPostToDelete(post.id); }}>
+                            <TouchableOpacity onLongPress={() => { setShowDelete(true); setPostToDelete(post.id as any); }}>
                                 <Notice notification={post.title} />
                             </TouchableOpacity>
                         </Link>

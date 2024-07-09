@@ -24,7 +24,9 @@ const MyShifts = () => {
     } else {
       setEmailFilter!(authState?.email as any);
     }
-  };
+  }
+
+  
 
   return (
     <View>

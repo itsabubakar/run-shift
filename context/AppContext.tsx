@@ -31,6 +31,10 @@ interface AppProps {
     setRefreshKey: React.Dispatch<React.SetStateAction<number>>,
     showAllShiftsBoolean: boolean,
     setShowAllShiftsBoolean: React.Dispatch<React.SetStateAction<boolean>>,
+    showRequest: boolean,
+    setShowRequest: React.Dispatch<React.SetStateAction<boolean>>,
+    showRequestCheckBox: boolean,
+    setShowRequestCheckBox: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 const AppContext = createContext<Partial<AppProps>>({})
@@ -42,6 +46,8 @@ export const useAppContext = () => {
 export const AppProvider = ({ children }: any) => {
 
     const [showAllShiftsBoolean, setShowAllShiftsBoolean] = useState(false)
+    const [showRequest, setShowRequest] = useState(false)
+    const [showRequestCheckBox, setShowRequestCheckBox] = useState(false)
 
     const [showHeaderCalendar, setShowHeaderCalendar] = useState(false)
     const [emailFilter, setEmailFilter] = useState('');
@@ -86,7 +92,11 @@ export const AppProvider = ({ children }: any) => {
         refreshKey,
         setRefreshKey,
         showAllShiftsBoolean, 
-        setShowAllShiftsBoolean
+        setShowAllShiftsBoolean,
+        showRequest,
+        setShowRequest,
+        showRequestCheckBox,
+        setShowRequestCheckBox
     }
 
     return <AppContext.Provider value={value}>
