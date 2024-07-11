@@ -128,17 +128,13 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
               {staffShift.shifts.map((shiftInfoArray, shiftIndex) => (
                 <View className='' key={shiftIndex}>
                   {shiftInfoArray.map((shiftInfo, descriptionIndex) => (
-                    <TouchableOpacity onPress={()=>setShowRequestCheckBox!(!showRequestCheckBox)}  className='pt-2 flex-row justify-between w-full' key={descriptionIndex}>
+                    <TouchableOpacity onPress={()=>console.log(staffShift.staff )} onLongPress={()=>setShowRequestCheckBox!(!showRequestCheckBox)}  className='pt-2 flex-row justify-between w-full' key={descriptionIndex}>
                       <Text className={`${showRequestCheckBox && 'w-4/5'}  `} style={styles.shiftText}>{shiftInfo}</Text>
-
                       {
                         showRequestCheckBox && <CheckBox
                       color="gray"
                        />
                       }
-                        
-                      
-                    
                     </TouchableOpacity>
                   ))}
                 </View>

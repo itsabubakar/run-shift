@@ -48,9 +48,8 @@ const Index = (props: Props) => {
             
 
             if (storedEmail && storedPassword) {
-                console.log(storedEmail);
                 
-                // await Login(storedEmail, storedPassword, true); // auto-login
+                await Login(storedEmail, storedPassword, true); // auto-login
             }
         };
 
