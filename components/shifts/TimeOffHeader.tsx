@@ -5,7 +5,7 @@ type Props = {
 const TimeOffHeader = ({ head }: Props) => {
     return (
         <View>
-            <Text className='text-xl text-[#21D0C6] pb-1' style={styles.poppinsRegular}>{head}</Text>
+            <Text className='text-xl text-[#21D0C6] pb-1 w-full' style={styles.poppinsRegular}>{head}</Text>
         </View>
     )
 }

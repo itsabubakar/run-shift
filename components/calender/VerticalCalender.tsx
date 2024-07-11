@@ -28,7 +28,7 @@ interface Props {
 }
 
 const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
-  const { emailFilter, showRequestCheckBox, setShowRequestCheckBox } = useAppContext();
+  const { emailFilter, showRequestCheckBox, setShowRequestCheckBox, shiftsToRequest, setShiftsToRequest } = useAppContext();
   const [dates, setDates] = useState<Date[]>([]);
   const [currentMonth, setCurrentMonth] = useState<string>(format(new Date(), 'MMMM yyyy'));
   const flatListRef = useRef<FlatList>(null);
@@ -46,6 +46,16 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
       }
     }, 0);
   }, []);
+
+  const handleCheckboxChange = (shift: Shift) => {
+    setShiftsToRequest!((prevShifts) => {
+      if (prevShifts.includes(shift)) {
+        return prevShifts.filter((s) => s !== shift);
+      } else {
+        return [...prevShifts, shift];
+      }
+    });
+  };
 
   const loadMoreDates = (direction: 'up' | 'down') => {
     if (direction === 'down') {
@@ -132,6 +142,7 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
                       <Text className={`${showRequestCheckBox && 'w-4/5'}  `} style={styles.shiftText}>{shiftInfo}</Text>
                       {
                         showRequestCheckBox && <CheckBox
+                        
                       color="gray"
                        />
                       }

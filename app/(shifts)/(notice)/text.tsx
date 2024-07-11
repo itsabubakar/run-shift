@@ -1,192 +1,264 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { FlatList, Text, StyleSheet, View, ViewToken, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
-import { format, addDays, subDays, isToday, parseISO } from 'date-fns';
+import Calender from '@/components/calender/Calender';
+import Header from '@/components/header/Header';
+import { StatusBar } from "expo-status-bar"
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
-interface ShiftInfo {
-  startTime: string;
-  endTime: string;
-  description: string;
-}
+import { SetStateAction, useState } from 'react';
+import Upload from '@/assets/icons/Upload';
+import Shift from '@/components/shifts/Shift';
+import Cancel from '@/assets/icons/Cancel';
+import Pencil from '@/assets/icons/shifts/Pencil';
+import Redo from '@/assets/icons/shifts/Redo';
+import CalenderIcon from '@/assets/icons/CalenderIcon';
+import Clock from '@/assets/icons/Clock';
+import TimeOffHeader from '@/components/shifts/TimeOffHeader';
+import CustomSelect from '@/components/utils/CustomSelect';
+import Arrow from '@/assets/icons/Arrow';
+import CustomCalendarSelect from '@/components/utils/CustomCalendarSelect';
+import Chevron from '@/assets/icons/Chevron';
+import Check from '@/assets/icons/Check';
+import HeaderCalendar from '@/components/calender/HeaderCalender';
 
-interface Shift {
-  date: string; // Date in 'yyyy-MM-dd' format
-  shiftInfos: ShiftInfo[];
-  staffId: string;
-  staffName: string;
-}
+type Props = {}
+const HomeScreen = (props: Props) => {
+    const [shifts, setShifts] = useState(false)
+    const [addTimeOff, setAddTimeOff] = useState(false)
+    const [showHeaderCalendar, setShowHeaderCalendar] = useState(false)
 
-interface Props {
-  shifts: Shift[];
-}
+    const options = [
+        { label: 'Holiday', value: '1' },
+        { label: 'LOA', value: '2' },
+        { label: 'Maternity', value: '3' },
+        { label: 'Personal', value: '4' },
+        { label: 'RDO', value: '5' },
+        { label: 'Sick leave', value: '6' },
+    ];
 
-const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
-  const [dates, setDates] = useState<Date[]>([]);
-  const [currentMonth, setCurrentMonth] = useState<string>(format(new Date(), 'MMMM yyyy'));
-  const flatListRef = useRef<FlatList>(null);
-  const today = new Date();
-  const dateHeight = 160;
+    const [selectedValue, setSelectedValue] = useState(null);
 
-  useEffect(() => {
-    // Initial load of dates, centered around today
-    const initialDates = Array.from({ length: 30 }).map((_, index) => subDays(today, 15 - index));
-    setDates(initialDates);
-
-    // Automatically scroll to today's date after the dates are set
-    setTimeout(() => {
-      if (flatListRef.current) {
-        const todayIndex = 15; // Since we are centering around today, it's at the 15th position
-        flatListRef.current.scrollToIndex({ index: todayIndex, animated: false });
-      }
-    }, 0);
-  }, []);
-
-  const loadMoreDates = (direction: 'up' | 'down') => {
-    if (direction === 'down') {
-      const newDates = Array.from({ length: 30 }).map((_, index) => addDays(dates[dates.length - 1], index + 1));
-      setDates((prevDates) => [...prevDates, ...newDates]);
-    } else {
-      const newDates = Array.from({ length: 30 }).map((_, index) => subDays(dates[0], index + 1)).reverse();
-      setDates((prevDates) => [...newDates, ...prevDates]);
-
-      // Adjust the scroll position to account for the added dates at the top
-      setTimeout(() => {
-        if (flatListRef.current) {
-          flatListRef.current.scrollToOffset({ offset: 30 * dateHeight, animated: false });
-        }
-      }, 0);
+    const handleSelect = (value: SetStateAction<null>) => {
+        setSelectedValue(value);
+        // Additional logic on select
     }
-  };
 
-  const handleViewableItemsChanged = ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-    if (viewableItems.length > 0) {
-      const firstVisibleDate = new Date(viewableItems[0].item);
-      setCurrentMonth(format(firstVisibleDate, 'MMMM yyyy'));
-    }
-  };
+    const handleDateSelection = (date: Date) => {
+        // Handle the selected date here
+        console.log(date);
+    };
 
-  const viewabilityConfig = {
-    itemVisiblePercentThreshold: 50,
-  };
+    return (
+        <View className="flex-1   justify-between">
+            <SafeAreaView className='bg-primary pb-10'>
+                <Header
+                    title='runshift'
+                    calendar={true}
+                    filter={true}
+                    moreOptions={true}
+                    persons={true}
 
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const offsetY = event.nativeEvent.contentOffset.y;
-    const currentIndex = Math.floor(offsetY / dateHeight);
-    const currentMonth = dates[currentIndex] ? format(dates[currentIndex], 'MMMM yyyy') : '';
-    setCurrentMonth(currentMonth);
-  };
+                />
+            </SafeAreaView>
 
-  const getItemLayout = (data: any, index: number) => ({
-    length: dateHeight,
-    offset: dateHeight * index,
-    index,
-  });
-
-  const onScrollToIndexFailed = (info: any) => {
-    setTimeout(() => {
-      flatListRef.current?.scrollToIndex({ index: info.index, animated: true });
-    }, 500);
-  };
-
-  const renderShiftInfo = (date: Date) => {
-    const shift = shifts.find(shift => format(parseISO(shift.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'));
-    if (shift) {
-      return shift.shiftInfos.map((shiftInfo, index) => (
-        <View key={index} style={styles.shiftContainer}>
-          {/* <Text style={styles.shiftText}>{`${shiftInfo.startTime} - ${shiftInfo.endTime}`}</Text> */}
-          <Text style={styles.shiftText}>{shiftInfo.description}</Text>
-          {/* <Text style={styles.shiftText}>{shift.staffName}</Text> */}
-        </View>
-      ));
-    }
-    return <Text style={styles.shiftText}>No Shifts</Text>;
-  };
-
-  return (
-    <View style={styles.container}>
-      <FlatList
-        ref={flatListRef}
-        data={dates}
-        keyExtractor={(item) => item.toString()}
-        renderItem={({ item }) => (
-          <View style={[
-            styles.dateContainer,
-            isToday(item) && styles.selectedDate
-          ]}>
-            <View style={[styles.row, isToday(item) && styles.selectedDay]}>
-              <Text style={styles.dateText} className='text-primary'>{format(item, 'EEE')}</Text>
-              <Text className='text-primary' style={styles.dayName}>{format(item, 'd')}</Text>
-              <Text className='text-primary' style={styles.dateText}>{format(item, 'MMM')}</Text>
+            <View className='bg-white'>
+                <Calender />
             </View>
-            {renderShiftInfo(item)}
-          </View>
-        )}
-        onEndReached={() => loadMoreDates('down')}
-        onEndReachedThreshold={0.5} // Load more dates when scrolled 50% to the end
-        onViewableItemsChanged={handleViewableItemsChanged}
-        viewabilityConfig={viewabilityConfig}
-        showsVerticalScrollIndicator={false}
-        onScroll={handleScroll}
-        onScrollBeginDrag={(event) => {
-          if (event.nativeEvent.contentOffset.y <= 0) {
-            loadMoreDates('up');
-          }
-        }}
-        getItemLayout={getItemLayout}
-        onScrollToIndexFailed={onScrollToIndexFailed}
-      />
-    </View>
-  );
-};
+
+            <View className='flex-1 bg-white'>
+                {!shifts && <View className='px-6 flex-1 text-base'>
+                    <Text style={styles.poppinsRegular} className='mt-10 text-[#606060]'>There are no shifts on this date </Text>
+
+                    <View className=' mt-auto pb-6 items-end'>
+                        <TouchableOpacity className='bg-primary flex-row py-3 px-4 rounded-xl  mb-5' >
+
+
+                            <CalenderIcon />
+
+                            <Text
+                                style={styles.poppinsRegular}
+                                className='text-white ml-2'>request shift</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => setAddTimeOff(!addTimeOff)}
+                            className='bg-primary flex-row py-3 px-3 rounded-xl mb-5'  >
+                            <Clock />
+                            <Text
+                                style={styles.poppinsRegular}
+                                className='text-white ml-2'
+                            >request time off</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity >
+                            <Upload />
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
+
+
+                }
+                {
+                    shifts && <View className='px-6 mt-10 flex-1'>
+                        <Shift />
+                        <Shift />
+
+                        <View className='mt-auto'>
+                            <TouchableOpacity className='   items-end absolute right-20 bottom-14'>
+                                <Redo />
+
+                            </TouchableOpacity>
+                            <TouchableOpacity className='   items-end pb-4'>
+                                <Pencil />
+
+                            </TouchableOpacity>
+                            <TouchableOpacity className='   items-end pb-6'>
+                                <Cancel fill='#175B57' />
+                            </TouchableOpacity>
+                        </View>
+
+                    </View>
+                }
+
+            </View>
+
+            {
+                addTimeOff && <View className='bg-[#00000073] flex-1 h-full w-full absolute'>
+
+                    <ScrollView
+                        showsVerticalScrollIndicator={false}
+                        className='mt-24 bg-primary mx-3 px-6 rounded-xl py-7 mb-10'>
+                        <View className='flex-row justify-between pb-8 items-center'>
+
+                            <Text className='text-white text-2xl ' style={styles.poppinsRegular}>Request for time off</Text>
+                            <TouchableOpacity onPress={() => setAddTimeOff(!addTimeOff)}>
+
+                                <Cancel />
+                            </TouchableOpacity>
+                        </View>
+                        <View className='mb-14'>
+                            <TimeOffHeader
+                                head={'Select type of time off'}
+                            />
+                            <CustomSelect header={'Holiday'} options={options} onSelect={handleSelect} />
+
+                        </View>
+                        <View className='mb-14'>
+                            <TimeOffHeader
+                                head={'Type in your display text:'}
+                            />
+                            <CustomSelect header={'I'} options={options} onSelect={handleSelect} />
+
+                        </View>
+                        {/* Calender select */}
+                        <View className='mb-14 justify-center items-center  flex-row gap-x-5'>
+                            <View>
+                                <TimeOffHeader
+                                    head={'Select days:'}
+                                />
+                                <Text
+                                    className='text-white text-base'
+                                    style={styles.poppinsRegular}
+                                >First day off:</Text>
+                                <CustomCalendarSelect onSelect={handleDateSelection} />
+                            </View>
+                            <View className='mt-14'>
+
+                                <Arrow />
+                            </View>
+                            <View>
+                                <TimeOffHeader
+                                    head={'Select days:'}
+                                />
+                                <Text
+                                    className='text-white text-base'
+                                    style={styles.poppinsRegular}
+                                >Last day off:</Text>
+                                <CustomCalendarSelect onSelect={handleDateSelection} />
+
+                            </View>
+                        </View>
+
+                        {/* Included days */}
+                        <View>
+                            <TimeOffHeader
+                                head={'Included days'}
+                            />
+                            <View className='flex-row justify-between items-end'>
+
+                                <Text style={styles.poppinsRegular} className='text-white py-3 px-4 rounded-xl bg-[#27736E]'>M</Text>
+                                <Text style={styles.poppinsRegular} className='text-white py-3 px-4 rounded-xl bg-[#27736E]'>T</Text>
+                                <Text style={styles.poppinsRegular} className='text-white py-3 px-4 rounded-xl bg-[#27736E]'>W</Text>
+                                <Text style={styles.poppinsRegular} className='text-white py-3 px-4 rounded-xl bg-[#27736E]'>T</Text>
+                                <Text style={styles.poppinsRegular} className='text-white py-3 px-4 rounded-xl bg-[#27736E]'>F</Text>
+                                <Text style={styles.poppinsRegular} className='text-white py-3 px-4 rounded-xl bg-[#27736E]'>S</Text>
+                                <Text style={styles.poppinsRegular} className='text-white py-3 px-4 rounded-xl bg-[#27736E]'>S</Text>
+
+
+                            </View>
+                        </View>
+
+                        {/* Repetition */}
+                        <View className='mb-14'>
+                            <TimeOffHeader
+                                head={'Repetition'}
+                            />
+                            <View className='flex-row justify-between items-end'>
+                                <View>
+                                    <Text style={styles.poppinsRegular} className='text-white'>Every</Text>
+                                    <View className='flex-row gap-x-2'>
+                                        <Text style={styles.poppinsRegular} className='text-white py-3 px-6 rounded-xl bg-[#27736E]'>1</Text>
+                                        <View className='py-3 pr-4 pl-6 rounded-xl bg-[#27736E]'>
+                                            <Chevron />
+                                        </View>
+                                    </View>
+                                </View>
+                                <View>
+
+                                    <Text style={styles.poppinsRegular} className='text-white py-3 px-6 rounded-xl bg-[#27736E]'>18/03/2025</Text>
+                                </View>
+                            </View>
+                        </View>
+
+                        {/* Buttons */}
+                        <View className='flex-row justify-end pb-14'>
+                            <View className='mr-20'>
+
+                                <Cancel />
+                            </View>
+                            <Check />
+                        </View>
+
+
+                    </ScrollView>
+
+                </View >
+            }
+
+
+            {
+                showHeaderCalendar && <View className='bg-[#00000073] flex-1 h-full w-full absolute'>
+                    <View className=''>
+                        <HeaderCalendar setShowHeaderCalendar={setShowHeaderCalendar} showHeaderCalendar={showHeaderCalendar} onSelect={handleDateSelection} />
+                    </View>
+
+
+                </View >
+            }
+
+            <StatusBar style="auto" />
+        </View >
+
+    )
+}
+export default HomeScreen
 
 const styles = StyleSheet.create({
-  poppinsLight: {
-    fontFamily: 'PoppinsLight',
-  },
-  dayName: {
-    fontFamily: 'PoppinsSemiBold',
-    fontSize: 18,
-  },
-  container: {
-    paddingHorizontal: 16,
-    borderRadius: 24,
-    flex: 1,
-  },
-  monthHeader: {
-    fontSize: 18,
-    fontFamily: 'PoppinsLight',
-    color: 'white',
-  },
-  dateContainer: {
-    borderBottomColor: '#E9E9E9',
-    borderBottomWidth: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 16,
-    minHeight: 160,
-  },
-  selectedDate: {
-    // backgroundColor: 'yellow',
-    borderRadius: 14,
-  },
-  selectedDay: {
-    borderBottomColor: '#175B57',
-    borderBottomWidth: 1,
-  },
-  dateText: {
-    fontFamily: 'PoppinsLight',
-    fontSize: 18,
-  },
-  row: {
-    flexDirection: 'row',
-    gap: 4,
-  },
-  shiftContainer: {
-    marginTop: 4,
-  },
-  shiftText: {
-    fontFamily: 'PoppinsRegular',
-    paddingTop: 4,
-    fontSize: 16,
-  },
-});
+    poppinsRegular: {
+        fontFamily: 'PoppinsRegular',
+    },
+    poppinsSemiBold: {
+        fontFamily: 'PoppinsSemiBold',
+    },
 
-export default VerticalDatePicker;
+
+
+})
