@@ -108,14 +108,14 @@ const CustomCalendarSelect = ({ onSelect, showHeaderCalendar, setShowHeaderCalen
                         </View>
                         <View className='flex-row pt-8'>
 
-                            <View className='mr-4 p-4 rounded-xl bg-[#27736E]'>
+                            {/* <View className='mr-4 p-4 rounded-xl bg-[#27736E]'>
 
                                 <Pin />
-                            </View>
-                            <View className='mr-4 p-4 rounded-xl bg-[#27736E]'>
+                            </View> */}
+                            {/* <View className='mr-4 p-4 rounded-xl bg-[#27736E]'>
 
                                 <Star />
-                            </View>
+                            </View> */}
                             <View className='mr-4 p-4 rounded-xl bg-[#27736E]'>
 
                                 <Expand />

@@ -27,8 +27,8 @@ export enum Role {
 const Index = (props: Props) => {
     const [isChecked, setChecked] = useState(false);
     const [passwordVisible, setPasswordVisible] = useState(false);
-    const [password, setPassword] = useState('12345678');
-    const [email, setEmail] = useState('sadiq@gmail.com');
+    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
     const [isOffline, setIsOffline] = useState(false);
     const [showError, setShowError] = useState(false);
     const [errorField, setErrorField] = useState('');

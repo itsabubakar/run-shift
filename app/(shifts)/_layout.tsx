@@ -173,7 +173,7 @@ const handleLogout = async () => {
                         )
                     }}
                 />
-                <Drawer.Screen
+                {/* <Drawer.Screen
                     name="(notice)" // This is the name of the page and must match the url from root
                     options={{
                         drawerLabel: 'notice board',
@@ -182,7 +182,7 @@ const handleLogout = async () => {
                             <ClipBoard color={color} />
                         )
                     }}
-                />
+                /> */}
                 <Drawer.Screen
                     name="staff" // This is the name of the page and must match the url from root
                     options={{

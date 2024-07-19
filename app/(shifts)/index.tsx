@@ -175,7 +175,7 @@ const HomeScreen = (props: Props) => {
                     </View>
                 </View>}
 
-                <View className='absolute bottom-10 right-4 '>
+                {/* <View className='absolute bottom-10 right-4 '>
                     <View className=''>
                         <TouchableOpacity onPress={()=> setShowRequest!(!showRequest)} className='bg-primary flex-row justify-between space-x-4  py-3 px-2 rounded-xl'>
                             <CalenderIcon />
@@ -186,7 +186,7 @@ const HomeScreen = (props: Props) => {
                             <Text className='text-white' style={styles.poppinsRegular}>request time off</Text>
                         </TouchableOpacity>
                     </View>
-                </View>
+                </View> */}
 
              {
                 addTimeOff && <View className='bg-[#00000073] flex-1 h-full w-full absolute'>
