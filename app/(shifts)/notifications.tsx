@@ -11,13 +11,13 @@ type Props = {}
 const Screen = (props: Props) => {
     const [notifications, setNotifications] = useState([])
     const [loading, setLoading] = useState(true)
-    const { fontSize } = useAppContext()
+    const { fontSize,refreshKey } = useAppContext()
 
 
     useEffect(() => {
         console.log('notifications screen mouted');
 
-        const fetchStaff = async () => {
+        const fetchNotifications = async () => {
             setLoading(true)
             try {
                 // setLoading(false)
@@ -37,9 +37,9 @@ const Screen = (props: Props) => {
             }
         }
 
-        fetchStaff()
+        fetchNotifications()
 
-    }, [])
+    }, [refreshKey])
 
 
     return (
@@ -55,7 +55,7 @@ const Screen = (props: Props) => {
                 {!loading &&
                     <View>
                         {
-                            notifications.length > 0 ? notifications.map((notification: {}, i) => (
+                            notifications.length > 0 ? notifications.map((notification: any, i) => (
                                 <Notice {...notification} key={i} />
 
                             )) : <Text className='mt-2' style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}>No Notifications</Text>

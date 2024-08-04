@@ -35,6 +35,7 @@ const Screen = () => {
                     </View>
 
                     <CheckBox
+                        color={'#FFFFFF40'}
                         isCheck={pushNotifications}
                         onChecked={() => setPushNotifications(!pushNotifications)}
                     />
@@ -67,6 +68,7 @@ const Screen = () => {
                     </View>
 
                     <CheckBox
+                        color={'#FFFFFF40'}
                         isCheck={fingerPrints}
                         onChecked={() => setFingerprints(!fingerPrints)}
                     />
@@ -80,6 +82,7 @@ const Screen = () => {
                     </View>
 
                     <CheckBox
+                        color={'#FFFFFF40'}
                         isCheck={cameraSetup}
                         onChecked={() => setCameraSetup(!cameraSetup)}
                     />
@@ -93,6 +96,7 @@ const Screen = () => {
                     </View>
 
                     <CheckBox
+                         color={'#FFFFFF40'}
                         isCheck={showProfilePicture}
                         onChecked={() => setShowProfilePicture!(!showProfilePicture)}
                     />
@@ -112,6 +116,7 @@ const Screen = () => {
                     </View>
 
                     <CheckBox
+                    color={'#FFFFFF40'}
                         isCheck={weatherForecast}
                         onChecked={() => setWeatherForcast(!weatherForecast)}
                     />

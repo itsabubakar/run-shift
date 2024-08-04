@@ -21,7 +21,7 @@ const Screen = (props: Props) => {
                 }}
             >
                 <View className=' px-6'>
-                    <Text style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]} className='text-white text-base pb-4'>Welcome to Run Shift. These Terms and Conditions ("Terms", "Terms and Conditions") govern your relationship with the Run Shift mobile application (the "Service") operated by Pedagogic Hub ("us", "we", or "our").</Text>
+                    <Text style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]} className='text-white text-base pb-4'>Welcome to Run Shift. These Terms and Conditions ("Terms", "Terms and Conditions") govern your relationship with the Run Shift mobile application (the "Service") operated by Logos360 ("us", "we", or "our").</Text>
                     <Text style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]} className='text-white text-base'>Please read these Terms and Conditions carefully before using our Run Shift app.</Text>
 
                 </View>
@@ -50,7 +50,7 @@ const Screen = (props: Props) => {
                 </View>
                 <View className='pt-4 px-6'>
                     <Text style={[styles.poppinsRegular, { fontSize: fontSize! + 4 }]} className='text-white text-base pb-2'>5. Intellectual Property</Text>
-                    <Text style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]} className='text-white text-base pl-2'>The Service and its original content, features, and functionality are and will remain the exclusive property of Pedagogic Hub and its licensors. The Service is protected by copyright, trademark, and other laws of both your country and foreign countries. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of Pedagogic Hub.</Text>
+                    <Text style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]} className='text-white text-base pl-2'>The Service and its original content, features, and functionality are and will remain the exclusive property of Logos360 and its licensors. The Service is protected by copyright, trademark, and other laws of both your country and foreign countries. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of Logos360.</Text>
                 </View>
                 <View className='pt-4 px-6'>
                     <Text style={[styles.poppinsRegular, { fontSize: fontSize! + 4 }]} className='text-white text-base pb-2'>6. Termination</Text>
@@ -58,7 +58,7 @@ const Screen = (props: Props) => {
                 </View>
                 <View className='pt-4 px-6'>
                     <Text style={[styles.poppinsRegular, { fontSize: fontSize! + 4 }]} className='text-white text-base pb-2'>7. Limitation of Liability</Text>
-                    <Text style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]} className='text-white text-base pl-2'>In no event shall Pedagogic Hub, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from (i) your use or inability to use the Service; (ii) any unauthorized access to or use of our servers and/or any personal information stored therein.
+                    <Text style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]} className='text-white text-base pl-2'>In no event shall Logos360, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from (i) your use or inability to use the Service; (ii) any unauthorized access to or use of our servers and/or any personal information stored therein.
 
                     </Text>
                 </View>

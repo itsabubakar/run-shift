@@ -22,7 +22,10 @@ type Props = {};
   
 const Screen = (props: Props) => {
     const { authState } = useAuth();
-    const email = authState?.email;
+    const companyId = authState?.companyId;
+
+    console.log(companyId, 'auth id');
+    
 
     const { fontSize } = useAppContext();
     const [isVisible, setIsVisible] = useState(false);
@@ -37,7 +40,9 @@ const Screen = (props: Props) => {
         console.log('fetching images');
         
         try {
-            const response = await axiosInstance.get(`/company/imgurl/${email}`);
+            const response = await axiosInstance.get(`/company/imgurl/${companyId}`);
+            console.log(response);
+            
             setUploadedImages(response.data);
         } catch (error) {
             console.error('Error fetching images:', error);
@@ -45,12 +50,9 @@ const Screen = (props: Props) => {
     };
     useEffect(() => {
         // Fetch images on component mount
-
         fetchImages();
        
-       
-        
-    }, [email]);
+    }, []);
 
     const timeAgo = (date: moment.MomentInput) => {
         return moment(date).fromNow();
@@ -101,14 +103,14 @@ const Screen = (props: Props) => {
                         {
                          url: responseData.secure_url, 
                         publicId: responseData.public_id, 
-                        email, 
+                        companyId, 
                         bytes: responseData.bytes,
                         created_at: responseData.created_at
                      });
                     // Fetch images again to update the list
                     const fetchImages = async () => {
                         try {
-                            const response = await axiosInstance.get(`/company/imgurl/${email}`);
+                            const response = await axiosInstance.get(`/company/imgurl/${companyId}`);
                             setUploadedImages(response.data);
                         } catch (error) {
                             console.error('Error fetching images:', error);

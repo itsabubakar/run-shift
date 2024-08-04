@@ -2,7 +2,8 @@ import axios from 'axios';
 // import {store} from '../redux/store'
 
 const axiosInstance = axios.create({
-  baseURL: 'https://run-shift-backend.onrender.com/', //base URL
+  // baseURL: 'https://run-shift-backend.onrender.com/', //base URL
+  baseURL: 'http://192.168.134.163:5000',
   headers: {
     'Content-Type': 'application/json',
   },

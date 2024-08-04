@@ -161,6 +161,7 @@ const Index = (props: Props) => {
                         <View className='pt-8 pb-10 max-w-[308px] w-full flex-row items-center justify-between px-2'>
                             <Text style={styles.poppinsRegular} className='text-white text-left text-lg'>Keep me logged in</Text>
                             <CheckBox
+                            color={'#FFFFFF40'}
                                 isCheck={isChecked}
                                 onChecked={() => setChecked(!isChecked)}
                             />

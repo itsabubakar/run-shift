@@ -21,7 +21,7 @@ const Screen = (props: Props) => {
                 }}
             >
                 <View className=' px-6'>
-                    <Text style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]} className='text-white text-base pb-4'>This Privacy Policy describes how Pedagogic Hub ("we," "us," or "our") collects, uses, and discloses your information through our run shift app (the "App").</Text>
+                    <Text style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]} className='text-white text-base pb-4'>This Privacy Policy describes how Logos360 ("we," "us," or "our") collects, uses, and discloses your information through our run shift app (the "App").</Text>
                     <Text style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]} className='text-white text-base'>Please read these carefully before using our Run Shift app.</Text>
 
                 </View>

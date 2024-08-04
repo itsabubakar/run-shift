@@ -27,6 +27,7 @@ const Screen = () => {
                     </View>
 
                     <CheckBox
+                    color={'#FFFFFF40'}
                         isCheck={isChecked}
                         onChecked={() => setChecked(!isChecked)}
                     />
@@ -53,6 +54,7 @@ const Screen = () => {
                         </View>
 
                         <CheckBox
+                        color={'#FFFFFF40'}
                             isCheck={isChecked}
                             onChecked={() => setChecked(!isChecked)}
                         />
@@ -67,6 +69,7 @@ const Screen = () => {
                         </View>
 
                         <CheckBox
+                        color={'#FFFFFF40'}
                             isCheck={isChecked}
                             onChecked={() => setChecked(!isChecked)}
                         />
@@ -85,6 +88,7 @@ metric units */}
                         </View>
 
                         <CheckBox
+                        color={'#FFFFFF40'}
                             isCheck={isChecked}
                             onChecked={() => setChecked(!isChecked)}
                         />
