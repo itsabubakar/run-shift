@@ -18,6 +18,7 @@ type Props = {
 
 const CustomCalendarSelect = ({ onSelect, showHeaderCalendar, setShowHeaderCalendar }: Props) => {
     const [currentMonth, setCurrentMonth] = useState(new Date());
+    const [expand, setExpand] = useState(false);
 
     const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
@@ -84,8 +85,15 @@ const CustomCalendarSelect = ({ onSelect, showHeaderCalendar, setShowHeaderCalen
         <View>
 
             <Modal visible={showHeaderCalendar} transparent={true} onRequestClose={() => setShowHeaderCalendar!(false)}>
-                <TouchableOpacity style={styles.modalOverlay} onPress={() => setShowHeaderCalendar!(false)}>
-                    <View style={styles.modalContent}>
+                <TouchableOpacity style={[styles.modalOverlay, !expand && {
+                            paddingTop: 80,
+                }]} onPress={() => setShowHeaderCalendar!(false)}>
+                    <View style={[styles.modalContent, !expand && {
+                                 width: '80%',
+                                 marginRight: 10,
+                                height: 'auto',
+
+                    }]}>
                         <View style={styles.header}>
                             <TouchableOpacity onPress={() => changeMonth('prev')}>
                                 <View className='rotate-90'>
@@ -116,10 +124,10 @@ const CustomCalendarSelect = ({ onSelect, showHeaderCalendar, setShowHeaderCalen
 
                                 <Star />
                             </View> */}
-                            <View className='mr-4 p-4 rounded-xl bg-[#27736E]'>
+                            <TouchableOpacity onPress={()=> setExpand(!expand)} className='mr-4 p-4 rounded-xl bg-[#27736E]'>
 
                                 <Expand />
-                            </View>
+                            </TouchableOpacity>
                             <View className=''>
 
                                 <Cancel />
@@ -146,7 +154,6 @@ const styles = StyleSheet.create({
     },
     modalOverlay: {
         flex: 1,
-        paddingTop: 80,
         alignItems: 'flex-end',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
@@ -154,8 +161,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#175B57',
         padding: 20,
         borderRadius: 10,
-        width: '80%',
-        marginRight: 10,
+        height: '100%',
 
     },
     header: {

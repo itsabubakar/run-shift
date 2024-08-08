@@ -92,7 +92,10 @@ const HomeScreen = (props: Props) => {
         console.log('function selected!!');
         
         console.log(date);
-    };
+    }
+
+
+     
 
       
     
@@ -109,11 +112,11 @@ const HomeScreen = (props: Props) => {
                 />
             </SafeAreaView>
             {
-                showHorizontalCalendar && <HorizontalDatePicker />
+                showHorizontalCalendar && <HorizontalDatePicker  />
             }
 
 
-            <VerticalDateList shifts={shifts} />
+           <VerticalDateList shifts={shifts}  />
 
 
             {/* Header Calendar */}

@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FlatList, Text, TouchableOpacity, StyleSheet, View, ViewToken } from 'react-native';
 import { format, addDays } from 'date-fns';
 
+
+
 const HorizontalDatePicker: React.FC = () => {
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [dates, setDates] = useState<Date[]>([]);
@@ -33,6 +35,8 @@ const HorizontalDatePicker: React.FC = () => {
         itemVisiblePercentThreshold: 50,
     };
 
+    
+
     return (
         <View style={styles.container}>
             <Text style={styles.monthHeader}>{currentMonth}</Text>
@@ -42,7 +46,7 @@ const HorizontalDatePicker: React.FC = () => {
                 data={dates}
                 keyExtractor={(item) => item.toString()}
                 renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => setSelectedDate(item)}>
+                    <TouchableOpacity onPress={() => console.log(item)}>
                         <View style={[
                             styles.dateContainer,
                             item.toDateString() === today.toDateString() && styles.activeDate, // Highlight today's date

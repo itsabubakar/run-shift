@@ -135,7 +135,7 @@ const Index = (props: Props) => {
                             <Image className="w-[83px] object-cover" source={logoSm} />
                         </View>
                         <TextInput style={styles.poppinsRegular}
-                            onChangeText={text => setEmail(text)}
+                            onChangeText={text => setEmail(text.toLocaleLowerCase())}
                             placeholderTextColor="#c2c2c2" className='border border-[#FFF]/25 rounded-2xl py-3 px-3 placeholder:text-lg text-white max-w-[308px] min-w-[308px]' placeholder='Email address' />
 
                         <View className=" border border-[#ffffff]/25 rounded-2xl flex flex-row items-center justify-between w-full mt-5 py-3 px-3 max-w-[308px] min-w-[308px]">

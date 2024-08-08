@@ -9,13 +9,12 @@ const options = (props: Props) => {
     return (
         <SafeAreaView className="flex-1 justify-center  bg-primary items-center">
             <View className="px-5">
-
+                    <Link  asChild className="self-center" href={'/'}>
                 <TouchableOpacity className="w-[220px] px-4 py-3 rounded-xl mb-5  justify-between h-[90px]  flex-row  bg-secondary">
-                    <Link className="self-center" href={'/'}>
                         <Text style={styles.poppinsRegular} className="text-white text-lg">Login</Text>
-                    </Link>
                     <Image className="self-end" source={require('../assets/images/arrow.png')} />
                 </TouchableOpacity>
+                    </Link>
 
                 <Link asChild className="self-center" href={'/'}>
                     <TouchableOpacity className="w-[220px] px-4 py-3 rounded-xl mb-5  justify-between h-[90px]  flex-row border border-white/25">
