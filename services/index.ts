@@ -3,11 +3,14 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
   // baseURL: 'https://run-shift-backend.onrender.com/', //base URL
-  baseURL: 'http://192.168.134.163:5000',
+  baseURL: process.env.EXPO_PUBLIC_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-});
+})
+
+console.log(process.env.EXPO_PUBLIC_API_URL);
+
 
 // Add a request interceptor to include the bearer token in the header
 // axiosInstance.interceptors.request.use(
