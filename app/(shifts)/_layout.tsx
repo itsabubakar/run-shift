@@ -153,7 +153,7 @@ const handleLogout = async () => {
 
 
                 <Drawer.Screen
-                    name="index" // This is the name of the page and must match the url from root
+                    name="(shift)/shift" // This is the name of the page and must match the url from root
                     options={{
                         drawerLabel: 'runshift',
                         title: 'runshift',
@@ -269,7 +269,7 @@ const handleLogout = async () => {
                             console.log(pathname);
                             
                             if (pathname === '/') {
-                                router.push(`/(shifts)/`)
+                                router.push(`/(shifts)/(shift)/shift`)
                                 
                             } else {
 
@@ -294,7 +294,8 @@ const handleLogout = async () => {
                             console.log(pathname);
                             
                             if (pathname === '/') {
-                                router.push(`/(shifts)/`)
+                              router.push(`/(shifts)/(shift)/shift`)
+
                                 
                             } else {
 

@@ -93,10 +93,6 @@ const HomeScreen = (props: Props) => {
         
         console.log(date);
     }
-
-
-     
-
       
     
     return (
@@ -327,8 +323,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
 
    }
-    
-   
-    
-});
+})
+
 export default HomeScreen

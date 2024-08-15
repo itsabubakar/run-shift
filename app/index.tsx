@@ -27,8 +27,8 @@ export enum Role {
 const Index = (props: Props) => {
     const [isChecked, setChecked] = useState(false);
     const [passwordVisible, setPasswordVisible] = useState(false);
-    const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('12345678');
+    const [email, setEmail] = useState('sadiq@gmail.com');
     const [isOffline, setIsOffline] = useState(false);
     const [showError, setShowError] = useState(false);
     const [errorField, setErrorField] = useState('');
@@ -88,7 +88,7 @@ const Index = (props: Props) => {
                 await SecureStore.setItemAsync('password', password);
             }
 
-            router.replace('/(shifts)');
+            router.replace('/(shifts)/(shift)/shift');
         } catch (error) {
             setLoading(false);
             if (axios.isAxiosError(error)) {

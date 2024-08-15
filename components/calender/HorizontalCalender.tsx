@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FlatList, Text, TouchableOpacity, StyleSheet, View, ViewToken } from 'react-native';
 import { format, addDays } from 'date-fns';
+import { Link } from 'expo-router';
 
 
 
@@ -46,7 +47,8 @@ const HorizontalDatePicker: React.FC = () => {
                 data={dates}
                 keyExtractor={(item) => item.toString()}
                 renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => console.log(item)}>
+                    <Link asChild className="self-center" href={'/(shifts)/(shift)/index'}>
+                    <TouchableOpacity onPress={() => console.log(item, 'clicked')}>
                         <View style={[
                             styles.dateContainer,
                             item.toDateString() === today.toDateString() && styles.activeDate, // Highlight today's date
@@ -56,6 +58,8 @@ const HorizontalDatePicker: React.FC = () => {
                             <Text style={styles.dateText}>{format(item, 'd')}</Text>
                         </View>
                     </TouchableOpacity>
+                </Link>
+                    
                 )}
                 onEndReached={loadMoreDates}
                 onEndReachedThreshold={0.5} // Load more dates when scrolled 50% to the end
