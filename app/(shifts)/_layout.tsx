@@ -153,7 +153,7 @@ const handleLogout = async () => {
 
 
                 <Drawer.Screen
-                    name="(shift)/shift" // This is the name of the page and must match the url from root
+                    name="(shift)" // This is the name of the page and must match the url from root
                     options={{
                         drawerLabel: 'runshift',
                         title: 'runshift',
