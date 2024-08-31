@@ -15,6 +15,7 @@ import Redo from "@/assets/icons/shifts/Redo";
 import Pin from "@/assets/icons/Pin";
 import Star from "@/assets/icons/Star";
 import Expand from "@/assets/icons/Expand";
+import { Link } from "expo-router";
 
 type Props = {
   onSelect: (date: Date) => void;
@@ -38,10 +39,13 @@ const CustomCalendarSelect = ({
     const selectedDate = new Date(
       currentMonth.getFullYear(),
       currentMonth.getMonth(),
-      day
+      day,
+      12 // Set the time to noon to avoid timezone issues
     );
     onSelect(selectedDate);
     setShowHeaderCalendar!(false);
+
+    console.log(selectedDate, "selected date in header calender");
   };
 
   const renderDaysOfWeek = () => {
@@ -54,20 +58,18 @@ const CustomCalendarSelect = ({
 
   const renderDays = () => {
     const daysInMonth = getDaysInMonth(currentMonth);
-    // Start from the first day of the current month
     const firstDayOfMonth = new Date(
       currentMonth.getFullYear(),
       currentMonth.getMonth(),
       1
     );
-    // Get the day of the week for the first day of the current month
     const dayOfWeek = getDay(firstDayOfMonth);
     const days = [];
     const today = new Date();
 
     // Fill in the blanks for the days before the first day of the month
     for (let i = 0; i < dayOfWeek; i++) {
-      days.push(<View key={`empty-${i}`} style={styles.day} />);
+      days.push(<View key={`empty-start-${i}`} style={styles.day} />);
     }
 
     // Fill in the days of the month
@@ -78,24 +80,35 @@ const CustomCalendarSelect = ({
         currentMonth.getFullYear() === today.getFullYear();
 
       days.push(
-        <TouchableOpacity
-          key={day}
-          style={isToday ? styles.currentDay : styles.day}
-          onPress={() => handleSelectDay(day)}
+        <Link
+          key={`day-${day}`}
+          asChild
+          className="self-center"
+          href={`/(shifts)/(shift)/${new Date(
+            currentMonth.getFullYear(),
+            currentMonth.getMonth(),
+            day,
+            12
+          )}`}
         >
-          <Text
-            style={[
-              isToday ? { color: "white" } : null,
-              { fontFamily: "PoppinsRegular", color: "#ffffff" },
-            ]}
+          <TouchableOpacity
+            style={isToday ? styles.currentDay : styles.day}
+            onPress={() => handleSelectDay(day)}
           >
-            {day}
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={[
+                isToday ? { color: "white" } : null,
+                { fontFamily: "PoppinsRegular", color: "#ffffff" },
+              ]}
+            >
+              {day}
+            </Text>
+          </TouchableOpacity>
+        </Link>
       );
     }
 
-    // Calculate the number of empty cells to add at the end of the month to fill the row
+    // Fill in the blanks for the days after the last day of the month
     const totalSlots = Math.ceil((dayOfWeek + daysInMonth) / 7) * 7;
     const emptySlotsAfter = totalSlots - (dayOfWeek + daysInMonth);
     for (let i = 0; i < emptySlotsAfter; i++) {
@@ -111,6 +124,10 @@ const CustomCalendarSelect = ({
         ? add(currentMonth, { months: 1 })
         : sub(currentMonth, { months: 1 });
     setCurrentMonth(newMonth);
+  };
+
+  const handleSelect = () => {
+    console.log("clicked");
   };
 
   return (

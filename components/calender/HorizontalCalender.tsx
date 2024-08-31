@@ -53,6 +53,7 @@ const HorizontalDatePicker: React.FC<HorizontalDatePickerProps> = ({
 
   const handleDatePress = (date: Date) => {
     setInternalSelectedDate(date);
+    console.log(date, "this is what is being passed");
   };
 
   const scrollToSelectedDate = (date: Date) => {

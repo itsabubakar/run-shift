@@ -11,6 +11,8 @@ import { StyleSheet } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { format, parseISO } from "date-fns";
 import ProfilePicture from "@/assets/icons/ProfilePicture";
+import { formatDate } from "@/utils";
+// import formatDate from "@/utils/formatDate";
 
 type Props = {};
 
@@ -23,15 +25,11 @@ const Shift = (props: Props) => {
   const { showHorizontalCalendar, refreshKey } = useAppContext();
   const [shifts, setShifts] = useState<Shift[]>([]);
   const { authState } = useAuth();
-  const { shift } = useLocalSearchParams();
+  const { shift } = useLocalSearchParams<any>();
   const [loading, setLoading] = useState(false);
 
-  const formatDate = (dateString: string | number | Date) => {
-    const date = new Date(dateString);
-    return format(date, "yyyy-MM-dd");
-  };
-
   const dateParams = formatDate(shift);
+  // const dateParams = shift;
 
   useEffect(() => {
     const getSingleDayShift = async () => {
@@ -107,7 +105,7 @@ const Shift = (props: Props) => {
 
     return (
       <Text style={styles.noShiftsText}>
-        There are no shifts on this date that match your filter.
+        There are no shifts on this date that match your filter. {dateParams}
       </Text>
     );
   };
