@@ -129,8 +129,6 @@ const Index = (props: Props) => {
     setErrorField("");
   };
 
-  console.log(isChecked);
-
   return (
     <>
       {!isOffline ? (

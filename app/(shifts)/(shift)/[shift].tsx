@@ -1,7 +1,7 @@
 import HorizontalDatePicker from "@/components/calender/HorizontalCalender";
 import Header from "@/components/header/Header";
 import { useAppContext } from "@/context/AppContext";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LoadingSpinner from "@/components/utils/LoadingSpinner";
 import { useEffect, useState } from "react";
@@ -13,6 +13,7 @@ import { format, parseISO } from "date-fns";
 import ProfilePicture from "@/assets/icons/ProfilePicture";
 import { formatDate } from "@/utils";
 // import formatDate from "@/utils/formatDate";
+import { useRouter, useFocusEffect } from "expo-router";
 
 type Props = {};
 
@@ -30,6 +31,21 @@ const Shift = (props: Props) => {
 
   const dateParams = formatDate(shift);
   // const dateParams = shift;
+
+  const router = useRouter();
+
+  useFocusEffect(() => {
+    const onBackPress = () => {
+      router.replace("/(shift)/shift");
+      return true; // Prevent default back action
+    };
+
+    BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    };
+  });
 
   useEffect(() => {
     const getSingleDayShift = async () => {
