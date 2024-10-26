@@ -1,7 +1,6 @@
 import { Link, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
-  Alert,
   Image,
   StyleSheet,
   Text,
@@ -24,6 +23,7 @@ import ErrorModal from "@/components/login/ErrorModal";
 import NetInfo from "@react-native-community/netinfo";
 import * as SecureStore from "expo-secure-store";
 import CheckBox from "@/components/settings/CheckBox";
+import React from "react";
 
 type Props = {};
 

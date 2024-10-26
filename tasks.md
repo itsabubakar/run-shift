@@ -1,0 +1,14 @@
+- [] rename run shift after installation to Run Shift 1 hour
+- [] Fix button cutting out on phones like moms 1 hour
+- [] Rethink shift request feature 1 day
+- [] Add time to notifications 1 hour
+- [] Create texting feature in notice board 1 day
+- [] In upload, allow multiple image size upload, or allow all image size upload 1 day
+- [] Decide on what to push as a notification and push it 1 day
+- [] Test login with finger print 1 hour
+- [] Add time off 1 day
+- []
+- []
+- []
+- []
+- [x] Review screens
