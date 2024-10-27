@@ -1,7 +1,9 @@
 import { Link, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
+  Alert,
   Image,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -24,6 +26,7 @@ import NetInfo from "@react-native-community/netinfo";
 import * as SecureStore from "expo-secure-store";
 import CheckBox from "@/components/settings/CheckBox";
 import React from "react";
+import * as LocalAuthentication from "expo-local-authentication";
 
 type Props = {};
 
@@ -33,6 +36,7 @@ export enum Role {
 }
 
 const Index = (props: Props) => {
+  const [isBiometricSupported, setIsBiometricSupported] = useState(false);
   const [isChecked, setChecked] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [password, setPassword] = useState("12345678");
@@ -47,6 +51,40 @@ const Index = (props: Props) => {
   const router = useRouter();
 
   console.log(process.env.EXPO_PUBLIC_API_URL);
+  useEffect(() => {
+    (async () => {
+      const compatible = await LocalAuthentication.hasHardwareAsync();
+
+      setIsBiometricSupported(compatible);
+    })();
+  });
+
+  const handleNoBiometricAuth = async () => {
+    const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
+    if (savedBiometrics)
+      return Alert.alert(
+        "Biometric record not found",
+        "Please verify your identity with your password"
+      );
+  };
+  const handleBiometricAuth = async () => {
+    try {
+      const biometricAuth = await LocalAuthentication.authenticateAsync({
+        promptMessage: "Login with your finger print",
+        cancelLabel: "Cancel", // Optional: custom cancel label
+        disableDeviceFallback: true,
+      });
+
+      if (biometricAuth.success) {
+        console.log("Authenticated successfully!");
+        // Proceed with your authenticated actions here
+      } else {
+        console.log("Authentication failed");
+      }
+    } catch (error) {
+      console.error("Error during biometric authentication:", error);
+    }
+  };
 
   useEffect(() => {
     const checkStoredLogin = async () => {
@@ -136,13 +174,13 @@ const Index = (props: Props) => {
           className={`${showError ? "bg-primary" : "bg-primary"}`}
           style={styles.flexContainer}
           resetScrollToCoords={{ x: 0, y: 0 }}
-          scrollEnabled={false}
+          // scrollEnabled={false}
         >
           <SafeAreaView
             style={styles.flexContainer}
             className={`flex-1   justify-between `}
           >
-            <View className="flex-col flex-1 justify-center items-center pt-[50%]">
+            <View className="flex-col flex-1 justify-center items-center pt-[35%]">
               <View className="pb-8  w-full max-w-[308px] mx-auto">
                 <Image className="w-[83px] object-cover" source={logoSm} />
               </View>
@@ -173,6 +211,18 @@ const Index = (props: Props) => {
                   {passwordVisible ? <EyeClose /> : <EyeOpen />}
                 </TouchableOpacity>
               </View>
+
+              <Pressable
+                onPress={handleBiometricAuth}
+                className="pt-4 max-w-[308px] w-full  px-2"
+              >
+                <Text
+                  style={styles.poppinsRegular}
+                  className="text-white text-left"
+                >
+                  Log in with fingerprint?
+                </Text>
+              </Pressable>
 
               <View className="pt-8 pb-10 max-w-[308px] w-full flex-row items-center justify-between px-2">
                 <Text

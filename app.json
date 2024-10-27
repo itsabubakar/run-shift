@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "run-shift",
+    "name": "Run Shift",
     "slug": "run-shift",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -12,9 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#175B57"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -34,7 +32,8 @@
       "expo-secure-store",
       "expo-router",
       "expo-image-picker",
-      "expo-font"
+      "expo-font",
+      "expo-local-authentication"
     ],
     "experiments": {
       "typedRoutes": true

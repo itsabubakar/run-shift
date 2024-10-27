@@ -187,16 +187,14 @@ const Layout = (props: Props) => {
             drawerIcon: ({ color }: any) => <Notification color={color} />,
           }}
         />
-        {/* <Drawer.Screen
-                    name="(notice)" // This is the name of the page and must match the url from root
-                    options={{
-                        drawerLabel: 'notice board',
-                        title: 'notice board',
-                        drawerIcon: ({ color }: any) => (
-                            <ClipBoard color={color} />
-                        )
-                    }}
-                /> */}
+        <Drawer.Screen
+          name="(notice)" // This is the name of the page and must match the url from root
+          options={{
+            drawerLabel: "notice board",
+            title: "notice board",
+            drawerIcon: ({ color }: any) => <ClipBoard color={color} />,
+          }}
+        />
         <Drawer.Screen
           name="staff" // This is the name of the page and must match the url from root
           options={{
