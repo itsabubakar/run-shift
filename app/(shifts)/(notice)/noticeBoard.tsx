@@ -33,6 +33,7 @@ const Screen = () => {
     { id: "id2", title: "hello my neibour!!! I sabi this code thing" },
   ]);
   const [newPostTitle, setNewPostTitle] = useState("");
+  const [selectedPostId, setSelectedPostId] = useState(null); // Track post to delete
   const slideAnim = useRef(new Animated.Value(screenHeight)).current;
   const { fontSize } = useAppContext();
 
@@ -41,6 +42,12 @@ const Screen = () => {
     setPosts([...posts, newPost]);
     setNewPostTitle(""); // Clear the input field
     setShowAddPost(false); // Close the add post modal
+  };
+
+  const handleDeletePost = () => {
+    setPosts(posts.filter((post) => post.id !== selectedPostId)); // Delete post by id
+    setShowDelete(false); // Close delete confirmation
+    setSelectedPostId(null); // Clear selected post
   };
 
   useEffect(() => {
@@ -69,7 +76,7 @@ const Screen = () => {
         resetScrollToCoords={{ x: 0, y: 0 }}
       >
         <ScrollView className="p-6 flex-1 bg-white max-h-full">
-          {posts ? (
+          {posts.length > 0 ? (
             posts.map((post) => (
               <Link
                 key={post.id}
@@ -78,7 +85,10 @@ const Screen = () => {
                 href={`/(shifts)/(notice)/${post.title}` as any}
               >
                 <TouchableOpacity
-                  onLongPress={() => setShowDelete(!showDelete)}
+                  onLongPress={() => {
+                    setSelectedPostId(post.id);
+                    setShowDelete(true);
+                  }}
                 >
                   <Notice notification={post.title} />
                 </TouchableOpacity>
@@ -103,13 +113,18 @@ const Screen = () => {
         <View style={styles.overlay}>
           <View style={styles.deleteContainer}>
             <Text style={styles.deleteText}>
-              Are you sure you want to delete the selected message?
+              Are you sure you want to delete this post?
             </Text>
             <View style={styles.modalButtons}>
-              <TouchableOpacity onPress={() => setShowDelete(false)}>
+              <TouchableOpacity onPress={handleDeletePost}>
                 <Check />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => setShowDelete(false)}>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowDelete(false);
+                  setSelectedPostId(null);
+                }}
+              >
                 <Cancel />
               </TouchableOpacity>
             </View>

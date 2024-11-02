@@ -77,7 +77,9 @@ const Index = (props: Props) => {
 
       if (biometricAuth.success) {
         console.log("Authenticated successfully!");
-        // Proceed with your authenticated actions here
+        await SecureStore.setItemAsync("email", email);
+        await SecureStore.setItemAsync("password", password);
+        router.replace("/(shifts)/(shift)/shift");
       } else {
         console.log("Authentication failed");
       }

@@ -1,8 +1,10 @@
 import ProfilePicture from "@/assets/icons/ProfilePicture";
 import { useAuth } from "@/context/AuthContext";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-type Props = {};
-const NoticeMessage = (props: Props) => {
+type Props = {
+  message: string;
+};
+const NoticeMessage = ({ message }: Props) => {
   const { authState, setAuthState } = useAuth();
 
   return (
@@ -28,10 +30,7 @@ const NoticeMessage = (props: Props) => {
             style={styles.poppinsRegular}
             className="bg-[#A4A705] text-white px-3 py-3 rounded-xl text-[14px] max-w-[240px]"
           >
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam vel
-            voluptatem, totam distinctio est magni aliquid, iste quod aliquam
-            repellat libero sint ratione cum! Qui veniam iure ipsam nobis
-            voluptatibus. Brood on this idea,
+            {message}
           </Text>
           <Text
             className="text-[12px]   self-end pt-2  text-[#175B57]"
