@@ -14,7 +14,7 @@ const Screen = (props: Props) => {
   const { fontSize, refreshKey } = useAppContext();
 
   useEffect(() => {
-    console.log("notifications screen mouted");
+    console.log("notifications screen mounted");
 
     const fetchNotifications = async () => {
       setLoading(true);

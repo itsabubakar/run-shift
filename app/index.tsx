@@ -39,7 +39,7 @@ const Index = (props: Props) => {
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
   const [isChecked, setChecked] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [password, setPassword] = useState("12345678");
+  const [password, setPassword] = useState("eosns");
   const [email, setEmail] = useState("sadiq@gmail.com");
   const [isOffline, setIsOffline] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -50,7 +50,6 @@ const Index = (props: Props) => {
   const { setAuthState } = useAuth();
   const router = useRouter();
 
-  console.log(process.env.EXPO_PUBLIC_API_URL);
   useEffect(() => {
     (async () => {
       const compatible = await LocalAuthentication.hasHardwareAsync();
@@ -119,10 +118,11 @@ const Index = (props: Props) => {
     }
     setLoading(true);
     try {
-      const res = await axiosInstance.post(`/company/login`, {
+      const res = await axiosInstance.post(`/staff/login`, {
         email,
         password,
       });
+      console.log(res.data);
 
       if (setAuthState) {
         setAuthState({
@@ -130,18 +130,20 @@ const Index = (props: Props) => {
           role: res.data.role,
           email: email,
           firstName: res.data.firstName,
+          lastName: res.data.lastName,
           token: res.data.token,
-          companyId: res.data.companyId,
+          companyId: res.data.company.id,
         });
       }
 
-      if (isChecked && !autoLogin) {
-        await SecureStore.setItemAsync("email", email);
-        await SecureStore.setItemAsync("password", password);
-      }
+      // if (isChecked && !autoLogin) {
+      //   await SecureStore.setItemAsync("email", email);
+      //   await SecureStore.setItemAsync("password", password);
+      // }
 
       router.replace("/(shifts)/(shift)/shift");
     } catch (error) {
+      console.error(error);
       setLoading(false);
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 401) {

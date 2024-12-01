@@ -1,6 +1,6 @@
 import axios from "axios";
 // import {store} from '../redux/store'
-
+console.log(process.env.EXPO_PUBLIC_API_URL);
 const axiosInstance = axios.create({
   // baseURL: 'https://run-shift-backend.onrender.com/', //base URL
   baseURL: process.env.EXPO_PUBLIC_API_URL,

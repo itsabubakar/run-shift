@@ -31,9 +31,11 @@ const Screen = (props: Props) => {
     setLoading(true);
     try {
       const response = await axiosInstance.get(
-        `/staff/${authState?.companyId}`
+        `/company/${authState?.companyId}`
       );
-      setStaff(response.data);
+      setStaff(response.data.shifts[0].team);
+
+      console.log(response.data.shifts[0].team);
     } catch (error) {
       console.log(error);
     } finally {

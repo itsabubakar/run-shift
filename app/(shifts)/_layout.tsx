@@ -63,6 +63,7 @@ const Layout = (props: Props) => {
       role: null,
       email: "",
       firstName: "",
+      lastName: "",
       token: "",
       companyId: "",
     });
