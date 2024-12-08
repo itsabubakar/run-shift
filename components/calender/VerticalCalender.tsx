@@ -9,7 +9,7 @@ import {
   NativeScrollEvent,
   TouchableOpacity,
 } from "react-native";
-import { format, addDays, subDays, isToday, parseISO } from "date-fns";
+import { format, addDays, subDays, isToday, parseISO, parse } from "date-fns";
 import { useAppContext } from "@/context/AppContext";
 import ProfilePicture from "@/assets/icons/ProfilePicture";
 import LoadingSpinner from "../utils/LoadingSpinner";
@@ -148,62 +148,47 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
 
   const renderShiftInfo = (date: Date) => {
     const shiftsForDate = shifts
-      ?.filter(
-        (shift) =>
-          format(parseISO(shift.date), "yyyy-MM-dd") ===
-          format(date, "yyyy-MM-dd")
-      )
-      .filter((shift) =>
+      ?.filter((shift) => {
+        // Convert MM-DD-YYYY to YYYY-MM-DD
+        const formattedDate = parse(shift.date, "MM-dd-yyyy", new Date());
+        return (
+          format(formattedDate, "yyyy-MM-dd") === format(date, "yyyy-MM-dd")
+        );
+      })
+      ?.filter((shift) =>
         emailFilter ? shift.staff.email === emailFilter : true
       );
 
     if (shiftsForDate && shiftsForDate.length > 0) {
-      const shiftsByStaff = shiftsForDate.reduce<
-        Record<string, { staff: Shift["staff"]; shifts: string[][] }>
-      >((acc, shift) => {
-        if (!acc[shift.staff.email]) {
-          acc[shift.staff.email] = {
-            staff: shift.staff,
-            shifts: [],
-          };
-        }
-        acc[shift.staff.email].shifts.push(shift.description);
-        return acc;
-      }, {});
-
-      return Object.keys(shiftsByStaff).map((email, index) => {
-        const staffShift = shiftsByStaff[email];
-        return (
-          <View key={index} style={styles.shiftContainer}>
-            <View className="flex-row space-x-4">
-              <View className="flex-col">
-                <ProfilePicture width={20} />
-                <Text className="-mt-2 w-20" style={styles.shiftHeader}>
-                  {staffShift.staff.firstName.charAt(0).toUpperCase() +
-                    staffShift.staff.firstName.slice(1)}
-                </Text>
-              </View>
-              <View className="flex-1">
-                {staffShift.shifts.map((shiftInfoArray, shiftIndex) => (
-                  <View className="" key={shiftIndex}>
-                    {shiftInfoArray.map((shiftInfo, descriptionIndex) => (
-                      <TouchableOpacity
-                        onPress={() => console.log(staffShift.staff)}
-                        onLongPress={() => setShowRequest!(!showRequest)}
-                        className="pt-2 flex-row justify-between w-full"
-                        key={descriptionIndex}
-                      >
-                        <Text style={styles.shiftText}>{shiftInfo}</Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                ))}
-              </View>
+      return shiftsForDate.map((shift, index) => (
+        <View key={index} style={styles.shiftContainer}>
+          {/* Render staff details */}
+          <View className="flex-row space-x-4">
+            <View className="flex-col">
+              <ProfilePicture width={20} />
+              <Text className="-mt-2 w-20" style={styles.shiftHeader}>
+                {shift.staff?.firstName
+                  ? shift.staff.firstName.charAt(0).toUpperCase() +
+                    shift.staff.firstName.slice(1)
+                  : "Unknown"}
+              </Text>
+            </View>
+            <View className="flex-1">
+              {/* Loop through descriptions */}
+              <TouchableOpacity
+                onPress={() => console.log(shift.staff)}
+                // onLongPress={() => setShowRequest(!showRequest)}
+                className="pt-2 flex-row justify-between w-full"
+              >
+                <Text style={styles.shiftText}>{shift.description}</Text>
+              </TouchableOpacity>
             </View>
           </View>
-        );
-      });
+        </View>
+      ));
     }
+
+    // Return a default message if no shifts are found
     return <Text style={styles.shiftText}>No Shifts</Text>;
   };
 
@@ -217,6 +202,7 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
           <View
             style={[styles.dateContainer, isToday(item) && styles.selectedDate]}
           >
+            {/* Render the calendar date */}
             <View style={[styles.row, isToday(item) && styles.selectedDay]}>
               <Text style={styles.dateText} className="text-primary">
                 {format(item, "EEE")}
@@ -228,6 +214,7 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
                 {format(item, "MMM")}
               </Text>
             </View>
+            {/* Render shifts for this date */}
             {renderShiftInfo(item)}
           </View>
         )}

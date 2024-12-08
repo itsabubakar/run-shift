@@ -52,29 +52,51 @@ const HomeScreen = (props: Props) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log("index shift screen mounted");
-
     const getShifts = async () => {
       setLoading(true);
       try {
-        // setLoading(false)
-        const shifts = await axiosInstance.get(
-          `/shifts/company/${authState?.companyId}`
+        // Fetch data from the API
+        const response = await axiosInstance.get(
+          `/company/${authState?.companyId}`
         );
-        // console.log(shifts.data);
 
-        setShifts(shifts.data);
+        // Log the raw response to inspect the structure
+        console.log("Raw Response:", response.data);
+
+        // Access the 'shifts' array safely
+        const shifts = response.data.shifts || [];
+
+        // Extract information from 'shifts.data'
+        const formattedShifts = shifts.flatMap((shiftGroup) =>
+          shiftGroup.data?.flatMap((dataEntry) =>
+            dataEntry.shifts?.flatMap((shift) =>
+              shift.shift?.map(
+                ({ id, date, status, staffId, description }) => ({
+                  id,
+                  date,
+                  status,
+                  staffId,
+                  description: description?.join(", ") || "",
+                })
+              )
+            )
+          )
+        );
+
+        // Log the formatted shifts
+        console.log("Formatted Shifts:", formattedShifts);
+
+        // Update the state with formatted shifts
+        setShifts(formattedShifts);
       } catch (error) {
-        setLoading(false);
-
-        console.log(error);
+        console.error("Error fetching shifts:", error);
       } finally {
         setLoading(false);
       }
     };
 
     getShifts();
-  }, [refreshKey]);
+  }, [authState?.companyId, refreshKey]);
 
   const [selectedValue, setSelectedValue] = useState(null);
 
