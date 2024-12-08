@@ -167,10 +167,7 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
             <View className="flex-col">
               <ProfilePicture width={20} />
               <Text className="-mt-2 w-20" style={styles.shiftHeader}>
-                {shift.staff?.firstName
-                  ? shift.staff.firstName.charAt(0).toUpperCase() +
-                    shift.staff.firstName.slice(1)
-                  : "Unknown"}
+                {shift?.firstName + shift?.lastName}
               </Text>
             </View>
             <View className="flex-1">

@@ -60,25 +60,48 @@ const HomeScreen = (props: Props) => {
           `/company/${authState?.companyId}`
         );
 
-        // Log the raw response to inspect the structure
-        console.log("Raw Response:", response.data);
-
         // Access the 'shifts' array safely
         const shifts = response.data.shifts || [];
 
-        // Extract information from 'shifts.data'
+        // Aggregate the 'team' array from all shift groups
+        const team = shifts.flatMap((shiftGroup) => shiftGroup.team || []);
+
+        // Log the raw team data
+        console.log("Team Data:", team);
+
+        // Create a mapping of `staffId` to team member for quick lookup
+        const teamByStaffId = team.reduce((acc, member) => {
+          acc[member.id] = member; // Use `id` here because it matches `staffId` in shifts
+          return acc;
+        }, {});
+
+        // Log the team mapping
+        console.log("Team Mapping (teamByStaffId):", teamByStaffId);
+
+        // Extract and enrich information from 'shifts.data'
         const formattedShifts = shifts.flatMap((shiftGroup) =>
           shiftGroup.data?.flatMap((dataEntry) =>
             dataEntry.shifts?.flatMap((shift) =>
-              shift.shift?.map(
-                ({ id, date, status, staffId, description }) => ({
+              shift.shift?.map(({ id, date, status, staffId, description }) => {
+                // Log the staffId being processed
+                console.log("Processing staffId:", staffId);
+
+                // Find the matching team member
+                const teamMember = teamByStaffId[staffId];
+
+                // Log the result of the lookup
+                console.log("Matched Team Member:", teamMember);
+
+                return {
                   id,
                   date,
                   status,
                   staffId,
                   description: description?.join(", ") || "",
-                })
-              )
+                  firstName: teamMember?.firstName || "Unknown",
+                  lastName: teamMember?.lastName || "",
+                };
+              })
             )
           )
         );
