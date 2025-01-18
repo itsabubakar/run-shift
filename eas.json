@@ -9,7 +9,7 @@
       "distribution": "internal",
       "channel": "development",
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://run-shift-backend.onrender.com"
+        "EXPO_PUBLIC_API_URL": "https://api.runshift360.com/"
       }
     },
     "preview": {
@@ -17,7 +17,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://run-shift-backend.onrender.com"
+        "EXPO_PUBLIC_API_URL": "https://api.runshift360.com/"
       }
     },
     "preview2": {
