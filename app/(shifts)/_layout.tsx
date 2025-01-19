@@ -121,7 +121,7 @@ const Layout = (props: Props) => {
                 marginLeft: -14,
               }}
               onPress={() => {
-                Linking.openURL("https://www.runmyshift.com").catch((err) => {
+                Linking.openURL("https://www.runshift360.com").catch((err) => {
                   console.error("An error occurred", err);
                 });
               }}
@@ -188,14 +188,7 @@ const Layout = (props: Props) => {
             drawerIcon: ({ color }: any) => <Notification color={color} />,
           }}
         />
-        <Drawer.Screen
-          name="(notice)" // This is the name of the page and must match the url from root
-          options={{
-            drawerLabel: "notice board",
-            title: "notice board",
-            drawerIcon: ({ color }: any) => <ClipBoard color={color} />,
-          }}
-        />
+
         <Drawer.Screen
           name="staff" // This is the name of the page and must match the url from root
           options={{
@@ -204,22 +197,7 @@ const Layout = (props: Props) => {
             drawerIcon: ({ color }: any) => <Staff color={color} />,
           }}
         />
-        <Drawer.Screen
-          name="facilities" // This is the name of the page and must match the url from root
-          options={{
-            drawerLabel: "facilities",
-            title: "facilities",
-            drawerIcon: ({ color }: any) => <Facilities color={color} />,
-          }}
-        />
-        <Drawer.Screen
-          name="upload" // This is the name of the page and must match the url from root
-          options={{
-            drawerLabel: "upload",
-            title: "upload",
-            drawerIcon: ({ color }: any) => <Upload color={color} />,
-          }}
-        />
+
         {/* <Drawer.Screen
                     name="refresh" // This is the name of the page and must match the url from root
                     options={{
@@ -239,14 +217,7 @@ const Layout = (props: Props) => {
             drawerIcon: ({ color }: any) => <Settings color={color} />,
           }}
         />
-        <Drawer.Screen
-          name="calender" // This is the name of the page and must match the url from root
-          options={{
-            drawerLabel: "calendar feeds",
-            title: "calendar",
-            drawerIcon: ({ color }: any) => <CalenderFeeds color={color} />,
-          }}
-        />
+
         {/* <Drawer.Screen
                     name="language" // This is the name of the page and must match the url from root
                     options={{

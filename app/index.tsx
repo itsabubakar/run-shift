@@ -39,8 +39,8 @@ const Index = (props: Props) => {
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
   const [isChecked, setChecked] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [password, setPassword] = useState("12345678");
-  const [email, setEmail] = useState("sd@gmail.com");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [isOffline, setIsOffline] = useState(false);
   const [showError, setShowError] = useState(false);
   const [errorField, setErrorField] = useState("");
@@ -216,7 +216,7 @@ const Index = (props: Props) => {
                 </TouchableOpacity>
               </View>
 
-              <Pressable
+              {/* <Pressable
                 onPress={handleBiometricAuth}
                 className="pt-4 max-w-[308px] w-full  px-2"
               >
@@ -226,7 +226,7 @@ const Index = (props: Props) => {
                 >
                   Log in with fingerprint?
                 </Text>
-              </Pressable>
+              </Pressable> */}
 
               <View className="pt-8 pb-10 max-w-[308px] w-full flex-row items-center justify-between px-2">
                 <Text
