@@ -151,9 +151,9 @@ const HomeScreen = (props: Props) => {
         <Header
           title="runshift"
           calendar={true}
-          filter={true}
+          // filter={true}
           moreOptions={true}
-          persons={true}
+          // persons={true}
         />
       </SafeAreaView>
       {showHorizontalCalendar && <HorizontalDatePicker />}
