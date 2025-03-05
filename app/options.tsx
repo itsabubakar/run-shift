@@ -1,7 +1,14 @@
 import MoreOptionsButton from "@/components/login/MoreOptionsButton";
 import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  Linking,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type Props = {};
@@ -20,7 +27,7 @@ const options = (props: Props) => {
             />
           </TouchableOpacity>
         </Link>
-
+        {/* 
         <Link asChild className="self-center" href={"/"}>
           <TouchableOpacity className="w-[220px] px-4 py-3 rounded-xl mb-5  justify-between h-[90px]  flex-row border border-white/25">
             <Text style={styles.poppinsRegular} className="text-white text-lg">
@@ -31,9 +38,9 @@ const options = (props: Props) => {
               source={require("../assets/images/scan.png")}
             />
           </TouchableOpacity>
-        </Link>
+        </Link> */}
 
-        <Link asChild className="self-center" href={"/"}>
+        {/* <Link asChild className="self-center" href={"/"}>
           <TouchableOpacity className="border border-white/25 w-[220px] px-4 py-3 rounded-xl mb-5  justify-between h-[90px]  flex-row  ">
             <Text style={styles.poppinsRegular} className="text-white text-lg">
               Demo
@@ -43,9 +50,9 @@ const options = (props: Props) => {
               source={require("../assets/images/pc.png")}
             />
           </TouchableOpacity>
-        </Link>
+        </Link> */}
 
-        <Link asChild className="self-center" href={"/"}>
+        {/* <Link asChild className="self-center" href={"/"}>
           <TouchableOpacity className="border border-white/25 w-[220px] px-4 py-3 rounded-xl mb-5  justify-between h-[90px]  flex-row  ">
             <Text style={styles.poppinsRegular} className="text-white text-lg">
               English (UK)
@@ -55,10 +62,17 @@ const options = (props: Props) => {
               source={require("../assets/images/web.png")}
             />
           </TouchableOpacity>
-        </Link>
+        </Link> */}
 
         <Link asChild className="self-center" href={"/"}>
-          <TouchableOpacity className="border border-white/25 w-[220px] px-4 py-3 rounded-xl mb-5  justify-between h-[90px]  flex-row  ">
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL("https://www.runshift360.com").catch((err) => {
+                console.error("An error occurred", err);
+              });
+            }}
+            className="border border-white/25 w-[220px] px-4 py-3 rounded-xl mb-5  justify-between h-[90px]  flex-row  "
+          >
             <Text style={styles.poppinsRegular} className="text-white text-lg">
               Desktop Site
             </Text>

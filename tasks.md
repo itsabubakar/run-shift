@@ -15,7 +15,6 @@
 - [] Decide on what to push as a notification and push it 1 day
 - [] Add time off 1 day
 - [] Rebuild index screen file structure
-- [] Switch flatlist with flashlist
+- [x] Switch flatlist with flashlist
 - []
-- [] Rewrite backend, make it cleaner
 - [x] Review screens

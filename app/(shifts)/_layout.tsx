@@ -1,7 +1,6 @@
 import { BackHandler, Linking, StyleSheet, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
-import Persons from "@/assets/icons/header/Persons";
 // import CustomDrawerContent from '@/components/header/CustomDrawerHeader';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePathname, useRouter } from "expo-router";
@@ -11,20 +10,11 @@ import {
   DrawerItemList,
 } from "@react-navigation/drawer";
 import ProfilePicture from "@/assets/icons/drawer/ProfilePicture";
-import Calender from "@/assets/icons/header/Calender";
 import RunShiftIcon from "@/assets/icons/drawer/RunShiftIcon";
 import Notification from "@/assets/icons/drawer/Notification";
-import ClipBoard from "@/assets/icons/drawer/ClipBoard";
-import Staff from "@/assets/icons/drawer/Staff";
-import Facilities from "@/assets/icons/drawer/Facilities";
-import Upload from "@/assets/icons/drawer/Upload";
 import Refresh from "@/assets/icons/drawer/Refresh";
-import Scan from "@/assets/icons/drawer/Scan";
 import Settings from "@/assets/icons/drawer/Settings";
-import CalenderFeeds from "@/assets/icons/drawer/CalenderFeeds";
-import Language from "@/assets/icons/drawer/Language";
 import Font from "@/assets/icons/drawer/Font";
-import DarkMode from "@/assets/icons/drawer/DarkMode";
 import Terms from "@/assets/icons/drawer/Terms";
 import Privacy from "@/assets/icons/drawer/Privacy";
 import Contact from "@/assets/icons/drawer/Contact";
@@ -36,6 +26,7 @@ import Exit from "@/assets/icons/drawer/Exit";
 import { useAuth } from "@/context/AuthContext";
 import { useAppContext } from "@/context/AppContext";
 import * as SecureStore from "expo-secure-store";
+import { OpenDoor } from "@/assets/icons";
 type Props = {};
 
 const Layout = (props: Props) => {
@@ -190,11 +181,11 @@ const Layout = (props: Props) => {
         />
 
         <Drawer.Screen
-          name="staff" // This is the name of the page and must match the url from root
+          name="openShifts" // This is the name of the page and must match the url from root
           options={{
-            drawerLabel: "staff",
-            title: "staff",
-            drawerIcon: ({ color }: any) => <Staff color={color} />,
+            drawerLabel: "Open Shifts",
+            title: "Open Shifts",
+            drawerIcon: ({ color }: any) => <OpenDoor color={color} />,
           }}
         />
 
