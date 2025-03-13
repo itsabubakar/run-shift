@@ -4,6 +4,7 @@ import { format, addDays, subDays, isToday, parse } from "date-fns";
 import { useAppContext } from "@/context/AppContext";
 import ProfilePicture from "@/assets/icons/ProfilePicture";
 import { FlashList } from "@shopify/flash-list";
+import { useAuth } from "@/context/AuthContext";
 
 interface Shift {
   date: string; // Date in 'yyyy-MM-dd' format
@@ -25,30 +26,32 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
   const [dates, setDates] = useState<Date[]>([]);
   const flatListRef = useRef<FlashList<Date>>(null);
   const today = new Date();
-  const dateHeight = 160;
+  const { authState } = useAuth();
 
   // Initialize with a large set of dates (10,000 in the past and 10,000 in the future)
   useEffect(() => {
-    const pastDates = Array.from({ length: 10000 }).map((_, index) =>
-      subDays(today, 10000 - index)
-    );
-    const futureDates = Array.from({ length: 10000 }).map((_, index) =>
-      addDays(today, index + 1)
-    );
-    const initialDates = [...pastDates, today, ...futureDates];
-    setDates(initialDates);
+    if (shifts) {
+      const pastDates = Array.from({ length: 10000 }).map((_, index) =>
+        subDays(today, 10000 - index)
+      );
+      const futureDates = Array.from({ length: 10000 }).map((_, index) =>
+        addDays(today, index + 1)
+      );
+      const initialDates = [...pastDates, today, ...futureDates];
+      setDates(initialDates);
 
-    // Scroll to today's date after the list is initialized
-    setTimeout(() => {
-      if (flatListRef.current) {
-        const todayIndex = 10000; // Today is at the center of the initial dates
-        flatListRef.current.scrollToIndex({
-          index: todayIndex,
-          animated: false,
-        });
-      }
-    }, 10); // Add a small delay to ensure the list is ready
-  }, []);
+      // Scroll to today's date after the list is initialized
+      setTimeout(() => {
+        if (flatListRef.current) {
+          const todayIndex = 10000; // Today is at the center of the initial dates
+          flatListRef.current.scrollToIndex({
+            index: todayIndex,
+            animated: false,
+          });
+        }
+      }, 10); // Add a small delay to ensure the list is ready
+    }
+  }, [shifts]); // Add `shifts` as a dependency
 
   // Render shift information for a specific date
   const renderShiftInfo = useCallback(
@@ -66,19 +69,19 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
 
       if (shiftsForDate && shiftsForDate.length > 0) {
         return shiftsForDate.map((shift, index) => (
-          <View key={index} style={styles.shiftContainer}>
+          <View
+            key={`${shift.date}-${shift.staffId}-${index}`}
+            style={styles.shiftContainer}
+          >
             <View className="flex-row space-x-4">
               <View className="flex-col">
                 <ProfilePicture width={20} />
                 <Text className="-mt-2 w-20" style={styles.shiftHeader}>
-                  {shift?.staff?.firstName} {shift?.staff?.lastName}
+                  {authState?.firstName} {authState?.lastName}
                 </Text>
               </View>
               <View className="flex-1">
-                <TouchableOpacity
-                  onPress={() => console.log(shift?.staff)}
-                  className="pt-2 flex-row justify-between w-full"
-                >
+                <TouchableOpacity className="pt-2 flex-row justify-between w-full">
                   <Text style={styles.shiftText}>{shift.description}</Text>
                 </TouchableOpacity>
               </View>
@@ -89,7 +92,7 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
 
       return <Text style={styles.shiftText}>No Shifts</Text>;
     },
-    [shifts, emailFilter]
+    [shifts, emailFilter, authState]
   );
 
   // Render each date item
@@ -124,6 +127,15 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
         renderItem={renderItem}
         estimatedItemSize={160} // Improve performance
         showsVerticalScrollIndicator={false}
+        onContentSizeChange={() => {
+          if (flatListRef.current) {
+            const todayIndex = 10000;
+            flatListRef.current.scrollToIndex({
+              index: todayIndex,
+              animated: false,
+            });
+          }
+        }}
       />
     </View>
   );

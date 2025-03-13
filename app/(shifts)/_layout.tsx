@@ -57,6 +57,7 @@ const Layout = (props: Props) => {
       lastName: "",
       token: "",
       companyId: "",
+      shift: [],
     });
 
     // Navigate to login screen
@@ -66,6 +67,7 @@ const Layout = (props: Props) => {
   function CustomDrawerContent(props: any) {
     const { top, bottom } = useSafeAreaInsets();
     const router = useRouter();
+
     return (
       <View style={{ flex: 1 }}>
         <DrawerContentScrollView
@@ -89,7 +91,7 @@ const Layout = (props: Props) => {
                 style={styles.poppinsSemiBold}
                 className="text-white text-xl pb-1"
               >
-                Sadiq{" "}
+                {authState?.firstName}
               </Text>
               <Text
                 style={styles.poppinsSemiBold}

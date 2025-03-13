@@ -54,62 +54,22 @@ const HomeScreen = (props: Props) => {
   useEffect(() => {
     const getShifts = async () => {
       setLoading(true);
+      console.log(authState?.shift, "auth state");
+
       try {
-        // Fetch data from the API
-        const response = await axiosInstance.get(
-          `/company/${authState?.companyId}`
+        // Directly mapping over shifts
+        const formattedShifts = authState?.shift.map(
+          ({ id, date, status, staffId, description }) => ({
+            id,
+            date,
+            status,
+            staffId,
+            description: description?.join(", ") || "No description",
+          })
         );
 
-        // Access the 'shifts' array safely
-        const shifts = response.data.shifts || [];
-
-        // Aggregate the 'team' array from all shift groups
-        const team = shifts.flatMap((shiftGroup) => shiftGroup.team || []);
-
-        // Log the raw team data
-        console.log("Team Data:", team);
-
-        // Create a mapping of `staffId` to team member for quick lookup
-        const teamByStaffId = team.reduce((acc, member) => {
-          acc[member.id] = member; // Use `id` here because it matches `staffId` in shifts
-          return acc;
-        }, {});
-
-        // Log the team mapping
-        console.log("Team Mapping (teamByStaffId):", teamByStaffId);
-
-        // Extract and enrich information from 'shifts.data'
-        const formattedShifts = shifts.flatMap((shiftGroup) =>
-          shiftGroup.data?.flatMap((dataEntry) =>
-            dataEntry.shifts?.flatMap((shift) =>
-              shift.shift?.map(({ id, date, status, staffId, description }) => {
-                // Log the staffId being processed
-                console.log("Processing staffId:", staffId);
-
-                // Find the matching team member
-                const teamMember = teamByStaffId[staffId];
-
-                // Log the result of the lookup
-                console.log("Matched Team Member:", teamMember);
-
-                return {
-                  id,
-                  date,
-                  status,
-                  staffId,
-                  description: description?.join(", ") || "",
-                  firstName: teamMember?.firstName || "Unknown",
-                  lastName: teamMember?.lastName || "",
-                };
-              })
-            )
-          )
-        );
-
-        // Log the formatted shifts
         console.log("Formatted Shifts:", formattedShifts);
-
-        // Update the state with formatted shifts
+        console.log("Formatted Shifts:", formattedShifts);
         setShifts(formattedShifts);
       } catch (error) {
         console.error("Error fetching shifts:", error);
@@ -142,8 +102,10 @@ const HomeScreen = (props: Props) => {
     // Handle the selected date here
     console.log("function selected!!");
 
-    console.log(date);
+    console.log(date, "shifts");
   };
+
+  console.log(shifts, "shifts");
 
   return (
     <View className="flex-1">
@@ -226,19 +188,6 @@ const HomeScreen = (props: Props) => {
           </View>
         </View>
       )}
-
-      {/* <View className='absolute bottom-10 right-4 '>
-                    <View className=''>
-                        <TouchableOpacity onPress={()=> setShowRequest!(!showRequest)} className='bg-primary flex-row justify-between space-x-4  py-3 px-2 rounded-xl'>
-                            <CalenderIcon />
-                            <Text  className='text-white' style={styles.poppinsRegular}>request shift</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setAddTimeOff(!addTimeOff)} className='bg-primary flex-row justify-between space-x-4 mt-4  py-3 px-2 rounded-xl'>
-                            <Clock />
-                            <Text className='text-white' style={styles.poppinsRegular}>request time off</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View> */}
 
       {addTimeOff && (
         <View className="bg-[#00000073] flex-1 h-full w-full absolute">

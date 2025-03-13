@@ -7,6 +7,8 @@ export enum Role {
   MANAGER = "manager",
 }
 
+type Shift = any;
+
 interface AuthProps {
   authState: {
     authenticated: boolean | null;
@@ -16,6 +18,7 @@ interface AuthProps {
     firstName: string | null;
     lastName: string | null;
     companyId: string | null;
+    shift: Shift[] | null;
   };
   onLogout: () => void;
   setAuthState: React.Dispatch<
@@ -27,6 +30,7 @@ interface AuthProps {
       firstName: string | null;
       lastName: string | null;
       companyId: string | null;
+      shift: Shift[] | null;
     }>
   >;
 }
@@ -45,7 +49,6 @@ export const AuthProvider = ({ children }: any) => {
       const token = "token";
 
       if (token) {
-        console.log("token", token);
         axiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
         setAuthState({
           authenticated: true,
@@ -55,6 +58,7 @@ export const AuthProvider = ({ children }: any) => {
           firstName: "",
           lastName: "",
           companyId: "",
+          shift: [],
         });
       } else {
         console.log("no token found");
@@ -72,6 +76,7 @@ export const AuthProvider = ({ children }: any) => {
     firstName: string | null;
     lastName: string | null;
     companyId: string | null;
+    shift: Shift[] | null;
   }>({
     authenticated: null,
     role: null,
@@ -80,6 +85,7 @@ export const AuthProvider = ({ children }: any) => {
     firstName: null,
     lastName: null,
     companyId: null,
+    shift: [],
   });
 
   const logout = async () => {
@@ -97,6 +103,7 @@ export const AuthProvider = ({ children }: any) => {
       firstName: null,
       lastName: null,
       companyId: null,
+      shift: [],
     });
   };
 

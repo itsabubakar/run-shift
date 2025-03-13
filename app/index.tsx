@@ -109,6 +109,8 @@ const Index = (props: Props) => {
   }, []);
 
   const Login = async (email: string, password: string, autoLogin = false) => {
+    // router.replace("/(shifts)/(shift)/shift");
+
     if (!email || !password) {
       setErrorField(
         !email ? "Please enter an email address" : "Please enter your password"
@@ -122,7 +124,7 @@ const Index = (props: Props) => {
         email,
         password,
       });
-      console.log(res.data);
+      console.log(res.data, "shift data");
 
       if (setAuthState) {
         setAuthState({
@@ -133,17 +135,18 @@ const Index = (props: Props) => {
           lastName: res.data.lastName,
           token: res.data.token,
           companyId: res.data.company.id,
+          shift: res.data.shift,
         });
       }
 
-      // if (isChecked && !autoLogin) {
-      //   await SecureStore.setItemAsync("email", email);
-      //   await SecureStore.setItemAsync("password", password);
-      // }
+      if (isChecked && !autoLogin) {
+        await SecureStore.setItemAsync("email", email);
+        await SecureStore.setItemAsync("password", password);
+      }
 
       router.replace("/(shifts)/(shift)/shift");
     } catch (error) {
-      console.error(error);
+      console.error(error, " erroring here");
       setLoading(false);
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 401) {
