@@ -21,7 +21,8 @@
         "foregroundImage": "./assets/adaptive-iconOne.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.thetrueseeker.runshift"
+      "package": "com.thetrueseeker.runshift",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",

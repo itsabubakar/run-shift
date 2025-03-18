@@ -24,7 +24,6 @@ const TABS = ["Open Shifts", "Applied", "Accepted"];
 
 const Screen = (props: Props) => {
   const [activeTab, setActiveTab] = useState("Open Shifts");
-  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
   const { fontSize, refreshKey } = useAppContext();
 

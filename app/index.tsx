@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import {
   Alert,
   Image,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -27,6 +28,12 @@ import * as SecureStore from "expo-secure-store";
 import CheckBox from "@/components/settings/CheckBox";
 import React from "react";
 import * as LocalAuthentication from "expo-local-authentication";
+import * as Notifications from "expo-notifications";
+
+import Constants from "expo-constants";
+import { usePushNotifications } from "@/hooks";
+
+const BACKEND_URL = "https://your-backend.com/api/save-token"; //
 
 type Props = {};
 
@@ -47,7 +54,7 @@ const Index = (props: Props) => {
 
   const [loading, setLoading] = useState(false);
 
-  const { setAuthState } = useAuth();
+  const { setAuthState, authState } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -173,6 +180,27 @@ const Index = (props: Props) => {
     setShowError(false);
     setErrorField("");
   };
+
+  const { expoPushToken, notification } = usePushNotifications();
+
+  console.log(expoPushToken, "expoPushToken");
+
+  async function sendTokenToBackend(token: any) {
+    try {
+      const response = await fetch("http://192.168.188.163:5000", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token }),
+      });
+
+      const result = await response.json();
+      console.log("Backend response:", result);
+    } catch (error) {
+      console.error("Error sending token to backend:", error);
+    }
+  }
 
   return (
     <>

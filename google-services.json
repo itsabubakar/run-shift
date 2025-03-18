@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "199680998190",
+    "project_id": "runshift-d5a44",
+    "storage_bucket": "runshift-d5a44.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:199680998190:android:fbb713ae23dbaeb1fa98bf",
+        "android_client_info": {
+          "package_name": "com.thetrueseeker.runshift"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcPJinwWll8vt9aRQEpiE_Pyztd9tKIh4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
