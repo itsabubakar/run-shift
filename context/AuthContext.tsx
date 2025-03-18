@@ -19,6 +19,7 @@ interface AuthProps {
     lastName: string | null;
     companyId: string | null;
     shift: Shift[] | null;
+    staffId: string | null;
   };
   onLogout: () => void;
   setAuthState: React.Dispatch<
@@ -31,6 +32,7 @@ interface AuthProps {
       lastName: string | null;
       companyId: string | null;
       shift: Shift[] | null;
+      staffId: string | null;
     }>
   >;
 }
@@ -59,6 +61,7 @@ export const AuthProvider = ({ children }: any) => {
           lastName: "",
           companyId: "",
           shift: [],
+          staffId: "",
         });
       } else {
         console.log("no token found");
@@ -77,6 +80,7 @@ export const AuthProvider = ({ children }: any) => {
     lastName: string | null;
     companyId: string | null;
     shift: Shift[] | null;
+    staffId: string | null;
   }>({
     authenticated: null,
     role: null,
@@ -86,6 +90,7 @@ export const AuthProvider = ({ children }: any) => {
     lastName: null,
     companyId: null,
     shift: [],
+    staffId: "",
   });
 
   const logout = async () => {
@@ -104,6 +109,7 @@ export const AuthProvider = ({ children }: any) => {
       lastName: null,
       companyId: null,
       shift: [],
+      staffId: "",
     });
   };
 

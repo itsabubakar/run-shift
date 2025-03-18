@@ -143,6 +143,7 @@ const Index = (props: Props) => {
           token: res.data.token,
           companyId: res.data.company.id,
           shift: res.data.shift,
+          staffId: res.data.shift[0].staffId,
         });
       }
 
