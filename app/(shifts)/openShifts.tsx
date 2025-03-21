@@ -8,14 +8,20 @@ import {
   StyleSheet,
   ScrollView,
   Text,
-  TouchableOpacity,
   Pressable,
   ActivityIndicator,
+  RefreshControl,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Modal from "react-native-modal";
 import { Cancel, Check } from "@/assets/icons";
-import { applyFreeShift, getOpenShifts } from "@/api/shifts";
+import {
+  applyFreeShift,
+  getAcceptedOpenShifts,
+  getAppliedOpenShifts,
+  getOpenShifts,
+} from "@/api/shifts";
 import { useAuth } from "@/context/AuthContext";
 import { parse, format } from "date-fns"; // Import date-fns functions
 
@@ -26,12 +32,12 @@ const TABS = ["Open Shifts", "Applied", "Accepted"];
 const Screen = (props: Props) => {
   const [activeTab, setActiveTab] = useState("Open Shifts");
   const [loading, setLoading] = useState(false);
-  const { fontSize, refreshKey } = useAppContext();
-  const { setAuthState, authState } = useAuth();
+  const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
+  const { fontSize } = useAppContext();
+  const { authState } = useAuth();
   const [openShifts, setOpenShifts] = useState([]);
-
-  console.log(authState, "auh");
-  console.log(authState, "auh");
+  const [appliedShifts, setAppliedShifts] = useState([]);
+  const [acceptedShifts, setAcceptedShifts] = useState([]);
 
   // Group shifts by date
   const groupShiftsByDate = (shifts: any) => {
@@ -45,27 +51,76 @@ const Screen = (props: Props) => {
     }, {});
   };
 
-  const groupedShifts = groupShiftsByDate(openShifts);
+  const groupedOpenShifts = groupShiftsByDate(openShifts);
+  const groupedAppliedShifts = groupShiftsByDate(appliedShifts);
+  const groupedAcceptedShifts = groupShiftsByDate(acceptedShifts);
+
+  // Fetch open shifts
+  const fetchOpenShifts = async () => {
+    try {
+      const res = await getOpenShifts(authState?.companyId || "");
+      console.log(res);
+      setOpenShifts(res);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false); // Stop the refreshing indicator
+    }
+  };
+
+  const fetchAppliedShifts = async () => {
+    try {
+      const res = await getAppliedOpenShifts(authState?.staffId || "");
+      setAppliedShifts(res);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false); // Stop the refreshing indicator
+    }
+  };
+
+  const fetchAcceptedShifts = async () => {
+    try {
+      const res = await getAcceptedOpenShifts(authState?.staffId || "");
+      setAcceptedShifts(res);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false); // Stop the refreshing indicator
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true); // Start the refreshing indicator
+    if (activeTab === "Open Shifts") {
+      await fetchOpenShifts();
+    } else if (activeTab === "Applied") {
+      await fetchAppliedShifts();
+    } else if (activeTab === "Accepted") {
+      await fetchAcceptedShifts();
+    }
+    console.log("fetching");
+  };
 
   useEffect(() => {
-    const fetchOpenShifts = async () => {
-      try {
-        const res = await getOpenShifts(authState?.companyId || "");
-        console.log(res);
-        setOpenShifts(res);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchOpenShifts();
+    setLoading(true);
+    if (activeTab === "Open Shifts") {
+      fetchOpenShifts();
+    } else if (activeTab === "Applied") {
+      fetchAppliedShifts();
+    } else if (activeTab === "Accepted") {
+      fetchAcceptedShifts();
+    }
     console.log("notifications screen mounted");
-  }, [authState?.companyId]);
+  }, [authState?.companyId, activeTab]);
 
   return (
     <View className="flex-1 justify-between">
       <SafeAreaView className="bg-primary pb-7" />
-      <Header title="Open Shifts" moreOptions={true} />
+      <Header title="Open Shifts" />
 
       {/* Tab Buttons */}
       <View className="bg-white ">
@@ -91,51 +146,111 @@ const Screen = (props: Props) => {
           ))}
         </View>
       </View>
-
-      <ScrollView className="flex-1 bg-white">
+      <ScrollView
+        className="flex-1 bg-white"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         {!loading && (
-          <View className="pr-4 flex-1 pl-8">
+          <View className="pr-4 flex-1 pl-4">
             {activeTab === "Open Shifts" && (
-              <View className="">
-                {Object.entries(groupedShifts).map(([date, shifts]: any) => {
-                  // Parse the date string using date-fns
-                  const parsedDate = parse(date, "MM-dd-yyyy", new Date());
-                  // Format the parsed date for display
-                  const formattedDate = format(parsedDate, "EEE dd MMM");
+              <View className="pl-4">
+                {Object.entries(groupedOpenShifts).map(
+                  ([date, shifts]: any) => {
+                    // Parse the date string using date-fns
+                    const parsedDate = parse(date, "MM-dd-yyyy", new Date());
+                    // Format the parsed date for display
+                    const formattedDate = format(parsedDate, "EEE dd MMM");
 
-                  return (
-                    <View
-                      key={date}
-                      className="mb-4 border-b pb-4 border-b-[#E9E9E9]"
-                    >
-                      <Text className="text-[#27736E] text-xl mb-4">
-                        {formattedDate}
-                      </Text>
-                      <View className="gap-4">
-                        {shifts.map((shift, index) => (
-                          <OpenShift
-                            staffId={authState?.staffId || ""}
-                            key={index}
-                            shift={shift}
-                            tab={activeTab}
-                          />
-                        ))}
+                    return (
+                      <View
+                        key={date}
+                        className="mb-4 border-b pb-4 border-b-[#E9E9E9]"
+                      >
+                        <Text className="text-[#27736E] text-xl mb-4">
+                          {formattedDate}
+                        </Text>
+                        <View className="gap-4">
+                          {shifts.map((shift: any, index: any) => (
+                            <OpenShift
+                              staffId={authState?.staffId || ""}
+                              key={index}
+                              shift={shift}
+                              tab={activeTab}
+                            />
+                          ))}
+                        </View>
                       </View>
-                    </View>
-                  );
-                })}
+                    );
+                  }
+                )}
               </View>
             )}
             {activeTab === "Applied" && (
-              <View>
-                <OpenShift tab={activeTab} />
-                <OpenShift tab={activeTab} />
+              <View className="pl-4">
+                {Object.entries(groupedAppliedShifts).map(
+                  ([date, shifts]: any) => {
+                    // Parse the date string using date-fns
+                    const parsedDate = parse(date, "MM-dd-yyyy", new Date());
+                    // Format the parsed date for display
+                    const formattedDate = format(parsedDate, "EEE dd MMM");
+
+                    return (
+                      <View
+                        key={date}
+                        className="mb-4 border-b pb-4 border-b-[#E9E9E9]"
+                      >
+                        <Text className="text-[#27736E] text-xl mb-4">
+                          {formattedDate}
+                        </Text>
+                        <View className="gap-4">
+                          {shifts.map((shift: any, index: any) => (
+                            <OpenShift
+                              staffId={authState?.staffId || ""}
+                              key={index}
+                              shift={shift}
+                              tab={activeTab}
+                            />
+                          ))}
+                        </View>
+                      </View>
+                    );
+                  }
+                )}
               </View>
             )}
             {activeTab === "Accepted" && (
-              <View>
-                <OpenShift tab={activeTab} />
-                <OpenShift tab={activeTab} />
+              <View className="pl-4">
+                {Object.entries(groupedAcceptedShifts).map(
+                  ([date, shifts]: any) => {
+                    // Parse the date string using date-fns
+                    const parsedDate = parse(date, "MM-dd-yyyy", new Date());
+                    // Format the parsed date for display
+                    const formattedDate = format(parsedDate, "EEE dd MMM");
+
+                    return (
+                      <View
+                        key={date}
+                        className="mb-4 border-b pb-4 border-b-[#E9E9E9]"
+                      >
+                        <Text className="text-[#27736E] text-xl mb-4">
+                          {formattedDate}
+                        </Text>
+                        <View className="gap-4">
+                          {shifts.map((shift: any, index: any) => (
+                            <OpenShift
+                              staffId={authState?.staffId || ""}
+                              key={index}
+                              shift={shift}
+                              tab={activeTab}
+                            />
+                          ))}
+                        </View>
+                      </View>
+                    );
+                  }
+                )}
               </View>
             )}
           </View>
@@ -167,17 +282,16 @@ const OpenShift = ({
   const handleShiftApplication = async () => {
     setLoading(true);
     try {
-      const res = await applyFreeShift(shift.shiftBoxId, staffId);
+      const res = await applyFreeShift(shift.id, staffId);
       console.log(res);
+      Alert.alert("Success", "Shift application successful");
+      toggleModal();
       setLoading(false);
     } catch (error: any) {
       console.error(error.response.data);
       setLoading(false);
     }
   };
-
-  console.log(staffId, "staff id");
-  console.log(shift.shiftId, staffId);
 
   return (
     <View className="flex-row mt-2 mb-4 justify-between bg-[#F1F1F1] py-4 rounded-2xl px-3 items-center">

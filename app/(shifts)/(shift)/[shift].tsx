@@ -1,11 +1,10 @@
 import HorizontalDatePicker from "@/components/calender/HorizontalCalender";
 import Header from "@/components/header/Header";
 import { useAppContext } from "@/context/AppContext";
-import { View, Text, TouchableOpacity, BackHandler } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LoadingSpinner from "@/components/utils/LoadingSpinner";
-import { useEffect, useState } from "react";
-import axiosInstance from "@/services";
+import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { StyleSheet } from "react-native";
 import { useLocalSearchParams } from "expo-router";
@@ -13,7 +12,6 @@ import { format, parseISO } from "date-fns";
 import ProfilePicture from "@/assets/icons/ProfilePicture";
 import { formatDate } from "@/utils";
 // import formatDate from "@/utils/formatDate";
-import { useRouter, useFocusEffect } from "expo-router";
 
 type Props = {};
 
@@ -31,40 +29,6 @@ const Shift = (props: Props) => {
 
   const dateParams = formatDate(shift);
   // const dateParams = shift;
-
-  const router = useRouter();
-
-  useFocusEffect(() => {
-    const onBackPress = () => {
-      router.replace("/(shift)/shift");
-      return true; // Prevent default back action
-    };
-
-    BackHandler.addEventListener("hardwareBackPress", onBackPress);
-
-    return () => {
-      BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-    };
-  });
-
-  useEffect(() => {
-    const getSingleDayShift = async () => {
-      setLoading(true);
-      try {
-        const shifts = await axiosInstance.get(`/shifts/date/${dateParams}`);
-
-        console.log(dateParams, "date parameter");
-
-        setShifts(shifts.data);
-        console.log(shifts.data);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    getSingleDayShift();
-  }, [refreshKey]);
 
   const renderShiftInfo = () => {
     const shiftsForDate = shifts.filter(
@@ -129,13 +93,7 @@ const Shift = (props: Props) => {
   return (
     <View style={styles.container}>
       <SafeAreaView className="bg-primary pb-10">
-        <Header
-          title="runshift"
-          calendar={true}
-          filter={true}
-          moreOptions={true}
-          persons={true}
-        />
+        <Header title="runshift" calendar={true} />
       </SafeAreaView>
 
       {showHorizontalCalendar && (

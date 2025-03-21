@@ -12,12 +12,8 @@ import {
   View,
 } from "react-native";
 import { Path, Svg } from "react-native-svg";
-import CustomCalendarSelect from "../utils/CustomCalendarSelect";
 import { useState } from "react";
-import HeaderCalendar from "../calender/HeaderCalender";
 import { useAppContext } from "@/context/AppContext";
-import Person from "@/assets/icons/header/Person";
-import Arrow from "@/assets/icons/Arrow";
 import ArrowLarge from "@/assets/icons/ArrowLarge";
 type Props = {
   title?: string;

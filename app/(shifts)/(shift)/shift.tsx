@@ -10,13 +10,10 @@ import MoreOptions from "@/components/header/MoreOptions";
 import LoadingSpinner from "@/components/utils/LoadingSpinner";
 import { SetStateAction, useEffect, useState } from "react";
 import FontSlider from "@/components/FontSlider";
-import axiosInstance from "@/services";
 import { useAuth } from "@/context/AuthContext";
 import Check from "@/assets/icons/Check";
 import Cancel from "@/assets/icons/Cancel";
 import { StyleSheet } from "react-native";
-import CalenderIcon from "@/assets/icons/CalenderIcon";
-import Clock from "@/assets/icons/Clock";
 import TimeOffHeader from "@/components/shifts/TimeOffHeader";
 import CustomSelect from "@/components/utils/CustomSelect";
 import CustomCalendarSelect from "@/components/utils/CustomCalendarSelect";
@@ -30,7 +27,6 @@ const HomeScreen = (props: Props) => {
     setShowHeaderCalendar,
     showHeaderCalendar,
     showAllShifts,
-    setShowAllShifts,
     showMoreOptions,
     showFontSlider,
     showHorizontalCalendar,
@@ -58,17 +54,20 @@ const HomeScreen = (props: Props) => {
 
       try {
         // Directly mapping over shifts
-        const formattedShifts = authState?.shift.map(
+        const formattedShifts: any = authState?.shift?.map(
           ({ id, date, status, staffId, description }) => ({
             id,
             date,
             status,
             staffId,
-            description: description?.join(", ") || "No description",
+            // If description is missing or empty, use status.time
+            description:
+              description?.length > 0
+                ? description.join(", ")
+                : status?.time || "No description",
           })
         );
 
-        console.log("Formatted Shifts:", formattedShifts);
         console.log("Formatted Shifts:", formattedShifts);
         setShifts(formattedShifts);
       } catch (error) {
@@ -105,20 +104,12 @@ const HomeScreen = (props: Props) => {
     console.log(date, "shifts");
   };
 
-  console.log(shifts, "shifts");
-
   return (
     <View className="flex-1">
       <SafeAreaView className="bg-primary pb-10">
-        <Header
-          title="runshift"
-          calendar={true}
-          // filter={true}
-          moreOptions={true}
-          // persons={true}
-        />
+        <Header title="runshift" />
       </SafeAreaView>
-      {showHorizontalCalendar && <HorizontalDatePicker />}
+      {showHorizontalCalendar && <HorizontalDatePicker shifts={shifts} />}
 
       <VerticalDateList shifts={shifts} />
 
