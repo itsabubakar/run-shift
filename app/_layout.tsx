@@ -1,11 +1,12 @@
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Slot } from "expo-router"; // Import Slot
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AuthProvider } from "@/context/AuthContext";
 import { AppProvider } from "@/context/AppContext";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet } from "react-native";
 import * as SystemUI from "expo-system-ui";
+import { useNotificationObserver } from "@/hooks";
 
 SplashScreen.preventAutoHideAsync();
 SystemUI.setBackgroundColorAsync("#175B57");
@@ -17,6 +18,8 @@ export default function RootLayout() {
     PoppinsLight: require("../assets/fonts/Poppins-Light.ttf"),
   });
 
+  const [isLayoutReady, setIsLayoutReady] = useState(false); // Track if layout is ready
+
   useEffect(() => {
     if (error) throw error;
   }, [error]);
@@ -24,8 +27,12 @@ export default function RootLayout() {
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
+      setIsLayoutReady(true); // Mark layout as ready after fonts are loaded
     }
   }, [loaded]);
+
+  // Use the notification observer hook only after the layout is ready
+  // useNotificationObserver();
 
   if (!loaded) {
     return null;
@@ -35,17 +42,8 @@ export default function RootLayout() {
     <AuthProvider>
       <AppProvider>
         <View style={styles.container}>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: {
-                backgroundColor: "green",
-              }, // Apply background color to all screens
-            }}
-          >
-            <Stack.Screen name="index" />
-            <Stack.Screen name="(shifts)" />
-          </Stack>
+          {/* Render a Slot to initialize the navigation system */}
+          <Slot />
         </View>
       </AppProvider>
     </AuthProvider>

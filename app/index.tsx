@@ -49,6 +49,10 @@ const Index = (props: Props) => {
   const [loading, setLoading] = useState(false);
   const { expoPushToken, notification } = usePushNotifications();
 
+  console.log(expoPushToken, "expoPushToken");
+  console.log(expoPushToken, "expoPushToken");
+  console.log(expoPushToken, "expoPushToken");
+
   const { setAuthState, authState } = useAuth();
   const router = useRouter();
 
@@ -92,7 +96,6 @@ const Index = (props: Props) => {
   const handleNotification = async (staffId: any, token: any) => {
     try {
       const res = await sendToken(staffId, token);
-      console.log(res, "response from backend");
     } catch (error) {
       console.error(error, "error");
     }

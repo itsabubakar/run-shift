@@ -38,19 +38,11 @@ const HomeScreen = (props: Props) => {
 
   const { authState } = useAuth();
 
-  // console.log(authState?.role);
-
-  // const handleDateSelection = (date: Date) => {
-  //     // Handle the selected date here
-  //     // console.log(date);
-  // };
-  // Replace after setting up tanstack query
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getShifts = async () => {
       setLoading(true);
-      console.log(authState?.shift, "auth state");
 
       try {
         // Directly mapping over shifts
@@ -68,7 +60,6 @@ const HomeScreen = (props: Props) => {
           })
         );
 
-        console.log("Formatted Shifts:", formattedShifts);
         setShifts(formattedShifts);
       } catch (error) {
         console.error("Error fetching shifts:", error);

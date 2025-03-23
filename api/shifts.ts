@@ -11,7 +11,6 @@ export const getOpenShifts = async (companyId: string) => {
 
 export const applyFreeShift = async (shiftId: any, staffId: any) => {
   const data = { shiftId, staffId };
-  console.log(data, "data");
   try {
     const response = await client.post(`/shift/free/apply`, {
       shiftId,
