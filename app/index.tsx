@@ -3,8 +3,6 @@ import { StatusBar } from "expo-status-bar";
 import {
   Alert,
   Image,
-  Platform,
-  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -22,18 +20,14 @@ import { logoSm, offline, tick } from "@/assets/images";
 import axiosInstance from "@/services";
 import LoadingSpinner from "@/components/utils/LoadingSpinner";
 import axios from "axios";
-import ErrorModal from "@/components/login/ErrorModal";
 import NetInfo from "@react-native-community/netinfo";
 import * as SecureStore from "expo-secure-store";
 import CheckBox from "@/components/settings/CheckBox";
 import React from "react";
 import * as LocalAuthentication from "expo-local-authentication";
-import * as Notifications from "expo-notifications";
 
-import Constants from "expo-constants";
 import { usePushNotifications } from "@/hooks";
-
-const BACKEND_URL = "https://your-backend.com/api/save-token"; //
+import { sendToken } from "@/api/notifications";
 
 type Props = {};
 
@@ -53,6 +47,7 @@ const Index = (props: Props) => {
   const [errorField, setErrorField] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const { expoPushToken, notification } = usePushNotifications();
 
   const { setAuthState, authState } = useAuth();
   const router = useRouter();
@@ -94,6 +89,15 @@ const Index = (props: Props) => {
     }
   };
 
+  const handleNotification = async (staffId: any, token: any) => {
+    try {
+      const res = await sendToken(staffId, token);
+      console.log(res, "response from backend");
+    } catch (error) {
+      console.error(error, "error");
+    }
+  };
+
   useEffect(() => {
     const checkStoredLogin = async () => {
       const storedEmail = await SecureStore.getItemAsync("email");
@@ -131,7 +135,6 @@ const Index = (props: Props) => {
         email,
         password,
       });
-      console.log(res.data, "shift data");
 
       if (setAuthState) {
         setAuthState({
@@ -146,6 +149,7 @@ const Index = (props: Props) => {
           staffId: res.data.shift[0].staffId,
         });
       }
+      handleNotification(res.data.shift[0].staffId, expoPushToken?.data);
 
       if (isChecked && !autoLogin) {
         await SecureStore.setItemAsync("email", email);
@@ -154,7 +158,7 @@ const Index = (props: Props) => {
 
       router.replace("/(shifts)/(shift)/shift");
     } catch (error) {
-      console.error(error, " erroring here");
+      console.error(error, "erroring here");
       setLoading(false);
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 401) {
@@ -181,27 +185,6 @@ const Index = (props: Props) => {
     setShowError(false);
     setErrorField("");
   };
-
-  const { expoPushToken, notification } = usePushNotifications();
-
-  console.log(expoPushToken, "expoPushToken");
-
-  async function sendTokenToBackend(token: any) {
-    try {
-      const response = await fetch("http://192.168.188.163:5000", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token }),
-      });
-
-      const result = await response.json();
-      console.log("Backend response:", result);
-    } catch (error) {
-      console.error("Error sending token to backend:", error);
-    }
-  }
 
   return (
     <>
