@@ -6,22 +6,18 @@ import {
   StyleSheet,
   View,
   Modal,
+  ViewToken,
 } from "react-native";
-import { format, addDays } from "date-fns";
-import { Link } from "expo-router";
+import { format, addDays, isSameDay } from "date-fns";
 
 type HorizontalDatePickerProps = {
-  selectedDate?: Date | null;
   shifts?: any;
 };
 
 const HorizontalDatePicker: React.FC<HorizontalDatePickerProps> = ({
-  selectedDate,
   shifts,
 }) => {
-  const [internalSelectedDate, setInternalSelectedDate] = useState<Date | null>(
-    selectedDate || null
-  );
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [dates, setDates] = useState<Date[]>([]);
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [currentMonth, setCurrentMonth] = useState<string>(
@@ -29,25 +25,12 @@ const HorizontalDatePicker: React.FC<HorizontalDatePickerProps> = ({
   );
   const flatListRef = useRef<FlatList>(null);
   const today = new Date();
-  const [initialScrollDone, setInitialScrollDone] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [selectedShift, setSelectedShift] = useState<any>(null);
 
   useEffect(() => {
     loadMoreDates();
   }, []);
-
-  // Function to check if a date exists in the shifts array
-  const hasShiftOnDate = (date: Date) => {
-    const formattedDate = format(date, "MM-dd-yyyy");
-    return shifts?.some((shift: any) => shift.date === formattedDate);
-  };
-
-  // Function to get shift details for a specific date
-  const getShiftDetails = (date: Date) => {
-    const formattedDate = format(date, "MM-dd-yyyy");
-    return shifts?.find((shift: any) => shift.date === formattedDate);
-  };
 
   const loadMoreDates = () => {
     const newDates = Array.from({ length: 30 }).map((_, index) =>
@@ -57,18 +40,41 @@ const HorizontalDatePicker: React.FC<HorizontalDatePickerProps> = ({
     setStartDate(addDays(startDate, 30));
   };
 
-  const handleDatePress = (date: Date) => {
-    setInternalSelectedDate(date);
+  const handleViewableItemsChanged = ({
+    viewableItems,
+  }: {
+    viewableItems: ViewToken[];
+  }) => {
+    if (viewableItems.length > 0) {
+      const firstVisibleDate = new Date(viewableItems[0].item);
+      setCurrentMonth(format(firstVisibleDate, "MMMM yyyy"));
+    }
+  };
 
-    // Check if the date has a shift
+  const viewabilityConfig = {
+    itemVisiblePercentThreshold: 50,
+  };
+
+  const hasShiftOnDate = (date: Date) => {
+    const formattedDate = format(date, "MM-dd-yyyy");
+    return shifts?.some((shift: any) => shift.date === formattedDate);
+  };
+
+  const getShiftDetails = (date: Date) => {
+    const formattedDate = format(date, "MM-dd-yyyy");
+    return shifts?.find((shift: any) => shift.date === formattedDate);
+  };
+
+  const handleDatePress = (date: Date) => {
+    setSelectedDate(date);
+
     if (hasShiftOnDate(date)) {
       const shiftDetails = getShiftDetails(date);
-      setSelectedShift(shiftDetails); // Set the selected shift details
+      setSelectedShift(shiftDetails);
     } else {
-      setSelectedShift(null); // No shift for this date
+      setSelectedShift(null);
     }
 
-    // Always open the modal
     setIsModalVisible(true);
   };
 
@@ -86,18 +92,16 @@ const HorizontalDatePicker: React.FC<HorizontalDatePickerProps> = ({
         data={dates}
         keyExtractor={(item) => item.toString()}
         renderItem={({ item }) => {
-          const isToday = item.toDateString() === today.toDateString();
-          const isSelected =
-            internalSelectedDate &&
-            item.toDateString() === internalSelectedDate.toDateString();
+          const isToday = isSameDay(item, today);
+          const isSelected = selectedDate && isSameDay(item, selectedDate);
 
           return (
             <TouchableOpacity onPress={() => handleDatePress(item)}>
               <View
                 style={[
                   styles.dateContainer,
-                  isToday && styles.activeDate, // Always apply yellow-green background to today's date
-                  isSelected && !isToday && styles.selectedDate, // Apply gray background only if selected and not today
+                  isToday && styles.activeDate,
+                  isSelected && !isToday && styles.selectedDate,
                 ]}
               >
                 <Text style={styles.dateText}>{format(item, "EEEEEE")}</Text>
@@ -108,10 +112,14 @@ const HorizontalDatePicker: React.FC<HorizontalDatePickerProps> = ({
         }}
         onEndReached={loadMoreDates}
         onEndReachedThreshold={0.5}
+        onViewableItemsChanged={handleViewableItemsChanged}
+        viewabilityConfig={viewabilityConfig}
         showsHorizontalScrollIndicator={false}
+        initialNumToRender={30}
+        windowSize={10}
       />
 
-      {/* Modal to display shift details */}
+      {/* Modal for shift details */}
       <Modal
         visible={isModalVisible}
         transparent={true}
@@ -127,10 +135,7 @@ const HorizontalDatePicker: React.FC<HorizontalDatePickerProps> = ({
                   Date: {selectedShift.date || "N/A"}
                 </Text>
                 <Text style={styles.modalText}>
-                  Time:{" "}
-                  {selectedShift.description
-                    ? String(selectedShift.description)
-                    : "N/A"}
+                  Time: {String(selectedShift.description) || "N/A"}
                 </Text>
               </>
             ) : (
@@ -141,7 +146,6 @@ const HorizontalDatePicker: React.FC<HorizontalDatePickerProps> = ({
                 </Text>
               </>
             )}
-
             <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
               <Text style={styles.closeButtonText}>Close</Text>
             </TouchableOpacity>
@@ -159,7 +163,7 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 24,
     borderRadius: 24,
-    marginTop: -50,
+    marginTop: -24,
   },
   monthHeader: {
     fontSize: 18,
@@ -171,13 +175,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
     alignItems: "center",
+    marginHorizontal: 4,
   },
   selectedDate: {
-    backgroundColor: "#FFFFFF40", // Gray background for selected date
+    backgroundColor: "#FFFFFF40",
     borderRadius: 14,
   },
   activeDate: {
-    backgroundColor: "#A4A705", // Yellow-green background for today's date
+    backgroundColor: "#A4A705",
     borderRadius: 14,
   },
   dateText: {

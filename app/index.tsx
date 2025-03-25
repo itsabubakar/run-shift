@@ -123,8 +123,6 @@ const Index = (props: Props) => {
   }, []);
 
   const Login = async (email: string, password: string, autoLogin = false) => {
-    // router.replace("/(shifts)/(shift)/shift");
-
     if (!email || !password) {
       setErrorField(
         !email ? "Please enter an email address" : "Please enter your password"
