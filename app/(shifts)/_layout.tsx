@@ -58,6 +58,7 @@ const Layout = (props: Props) => {
       token: "",
       companyId: "",
       shift: [],
+      staffId: "",
     });
 
     // Navigate to login screen
@@ -105,6 +106,22 @@ const Layout = (props: Props) => {
 
           <View className="bg-white rounded-t-md">
             <DrawerItemList {...props} />
+            <DrawerItem
+              icon={({ focused, color, size }) => <Rate color={color} />}
+              labelStyle={{
+                fontFamily: "PoppinsRegular",
+                fontSize: 14,
+                marginLeft: -14,
+              }}
+              onPress={() => {
+                Linking.openURL(
+                  "https://play.google.com/store/apps/details?id=com.thetrueseeker.runshift"
+                ).catch((err) => {
+                  console.error("An error occurred", err);
+                });
+              }}
+              label={"rate us on google play"}
+            />
 
             <DrawerItem
               icon={({ focused, color, size }) => <Desktop color={color} />}
@@ -170,15 +187,6 @@ const Layout = (props: Props) => {
             drawerLabel: "runshift",
             title: "runshift",
             drawerIcon: ({ color }: any) => <RunShiftIcon color={color} />,
-          }}
-        />
-
-        <Drawer.Screen
-          name="notifications" // This is the name of the page and must match the url from root
-          options={{
-            drawerLabel: "notifications",
-            title: "notifications",
-            drawerIcon: ({ color }: any) => <Notification color={color} />,
           }}
         />
 
@@ -307,14 +315,14 @@ const Layout = (props: Props) => {
             drawerIcon: ({ color }: any) => <Bug color={color} />,
           }}
         />
-        <Drawer.Screen
+        {/* <Drawer.Screen
           name="rate" // This is the name of the page and must match the url from root
           options={{
             drawerLabel: "rate us on google play",
             title: "rate us on google play",
             drawerIcon: ({ color }: any) => <Rate color={color} />,
           }}
-        />
+        /> */}
       </Drawer>
     </GestureHandlerRootView>
   );

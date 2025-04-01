@@ -1,4 +1,4 @@
-- [] disable refresh for now
-- [] Fix header breaking on particular screens
+- [x] disable refresh for now
+- [x] Fix header breaking on particular screens
 - [] Go through md error list, add them
-- [] Work on open shift
+- [x] Work on open shift
