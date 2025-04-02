@@ -19,7 +19,8 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-iconOne.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "useNextNotificationsApi": true
       },
       "package": "com.thetrueseeker.runshift",
       "googleServicesFile": "./google-services.json"
