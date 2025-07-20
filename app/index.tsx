@@ -264,7 +264,7 @@ const Index = (props: Props) => {
                     style={styles.poppinsRegular}
                     className="text-center bg-secondary py-4  text-lg rounded-2xl max-w-[308px] min-w-[308px] text-white"
                   >
-                    Login
+                    Log in
                   </Text>
                 </TouchableOpacity>
               </View>

@@ -6,7 +6,6 @@ import { AuthProvider } from "@/context/AuthContext";
 import { AppProvider } from "@/context/AppContext";
 import { View, StyleSheet } from "react-native";
 import * as SystemUI from "expo-system-ui";
-import { useNotificationObserver } from "@/hooks";
 
 SplashScreen.preventAutoHideAsync();
 SystemUI.setBackgroundColorAsync("#175B57");
@@ -30,9 +29,6 @@ export default function RootLayout() {
       setIsLayoutReady(true); // Mark layout as ready after fonts are loaded
     }
   }, [loaded]);
-
-  // Use the notification observer hook only after the layout is ready
-  // useNotificationObserver();
 
   if (!loaded) {
     return null;

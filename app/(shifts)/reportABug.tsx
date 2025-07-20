@@ -10,7 +10,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 type Props = {};
 const Screen = (props: Props) => {
   const { fontSize } = useAppContext();
-  const { expoPushToken } = usePushNotifications();
 
   const openEmailApp = () => {
     const email = "info@pedagogichub.com";
@@ -28,10 +27,6 @@ const Screen = (props: Props) => {
   return (
     <SafeAreaView className="flex-1 bg-primary ">
       <Header title="report a bug" moreOptions={true} />
-      <Text selectable style={{ fontSize: 16, color: "black" }}>
-        {expoPushToken?.data || "No token available"}
-      </Text>
-
       <View className="mx-6 mt-10 bg-white  rounded-xl p-4">
         <Text
           style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}
