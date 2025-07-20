@@ -6,3 +6,5 @@
 - [] A shift that has been accepted for me shouldn't show up in either open shift or applied, since it already moved up to the accepted page
 - [] The open shift should only list shifts that the date has not passed yet
   That is, if the shift date is 31st March and today is 1st April, it shouldn't show up again not to talk of staff applying to it
+
+
