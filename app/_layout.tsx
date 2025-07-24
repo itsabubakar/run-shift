@@ -6,6 +6,9 @@ import { AuthProvider } from "@/context/AuthContext";
 import { AppProvider } from "@/context/AppContext";
 import { View, StyleSheet } from "react-native";
 import * as SystemUI from "expo-system-ui";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 SplashScreen.preventAutoHideAsync();
 SystemUI.setBackgroundColorAsync("#175B57");
@@ -35,14 +38,16 @@ export default function RootLayout() {
   }
 
   return (
-    <AuthProvider>
-      <AppProvider>
-        <View style={styles.container}>
-          {/* Render a Slot to initialize the navigation system */}
-          <Slot />
-        </View>
-      </AppProvider>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <AppProvider>
+          <View style={styles.container}>
+            {/* Render a Slot to initialize the navigation system */}
+            <Slot />
+          </View>
+        </AppProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 

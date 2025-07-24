@@ -24,6 +24,7 @@ import {
 } from "@/api/shifts";
 import { useAuth } from "@/context/AuthContext";
 import { parse, format } from "date-fns"; // Import date-fns functions
+import { useFetchQuery } from "@/hooks/useFetchQuery";
 
 type Props = {};
 
@@ -55,11 +56,18 @@ const Screen = (props: Props) => {
   const groupedAppliedShifts = groupShiftsByDate(appliedShifts);
   const groupedAcceptedShifts = groupShiftsByDate(acceptedShifts);
 
+  const {
+    data: openShiftData,
+    isLoading,
+    invalidate,
+  } = useFetchQuery(`/shift/free/company/${authState?.companyId}`);
+
+  console.log("Open Shifts Data:", openShiftData);
+
   // Fetch open shifts
   const fetchOpenShifts = async () => {
     try {
       const res = await getOpenShifts(authState?.companyId || "");
-      console.log(res);
       setOpenShifts(res);
     } catch (error) {
       console.error(error);
@@ -102,7 +110,6 @@ const Screen = (props: Props) => {
     } else if (activeTab === "Accepted") {
       await fetchAcceptedShifts();
     }
-    console.log("fetching");
   };
 
   useEffect(() => {
@@ -114,7 +121,6 @@ const Screen = (props: Props) => {
     } else if (activeTab === "Accepted") {
       fetchAcceptedShifts();
     }
-    console.log("notifications screen mounted");
   }, [authState?.companyId, activeTab]);
 
   return (
@@ -283,7 +289,6 @@ const OpenShift = ({
     setLoading(true);
     try {
       const res = await applyFreeShift(shift.id, staffId);
-      console.log(res);
       Alert.alert("Success", "Shift application successful");
       toggleModal();
       setLoading(false);
