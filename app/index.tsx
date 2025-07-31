@@ -49,10 +49,6 @@ const Index = (props: Props) => {
   const [loading, setLoading] = useState(false);
   const { expoPushToken, notification } = usePushNotifications();
 
-  console.log(expoPushToken, "expoPushToken");
-  console.log(expoPushToken, "expoPushToken");
-  console.log(expoPushToken, "expoPushToken");
-
   const { setAuthState, authState } = useAuth();
   const router = useRouter();
 
@@ -136,7 +132,7 @@ const Index = (props: Props) => {
         email,
         password,
       });
-
+      console.log("Login response:", res.data);
       if (setAuthState) {
         setAuthState({
           authenticated: true,
@@ -148,6 +144,7 @@ const Index = (props: Props) => {
           companyId: res.data.company.id,
           shift: res.data.shift,
           staffId: res.data.shift[0].staffId,
+          acceptedShifts: res.data.acceptedShifts,
         });
       }
       handleNotification(res.data.shift[0].staffId, expoPushToken?.data);
@@ -158,8 +155,8 @@ const Index = (props: Props) => {
       }
 
       router.replace("/(shifts)/(shift)/shift");
-    } catch (error) {
-      console.error(error, "erroring here");
+    } catch (error: any) {
+      console.log(error?.response?.data, "erroring here");
       setLoading(false);
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 401) {

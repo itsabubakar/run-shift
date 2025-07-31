@@ -27,9 +27,15 @@ import { useAuth } from "@/context/AuthContext";
 import { useAppContext } from "@/context/AppContext";
 import * as SecureStore from "expo-secure-store";
 import { OpenDoor } from "@/assets/icons";
+
+import { useNavigation } from "expo-router";
+import { DrawerActions } from "@react-navigation/native";
+
 type Props = {};
 
 const Layout = (props: Props) => {
+  const navigation = useNavigation();
+
   const { authState, setAuthState } = useAuth();
   const { showProfilePicture } = useAppContext();
   const { showFontSlider, setShowFontSlider } = useAppContext();
@@ -98,9 +104,8 @@ const Layout = (props: Props) => {
                 style={styles.poppinsSemiBold}
                 className="font-light text-white"
               >
-                {authState?.email}{" "}
+                {authState?.email}
               </Text>
-              {/* <Text style={styles.poppinsRegular} className='font-light text-white'>alaoIfeoluwa@gmail.com </Text> */}
             </View>
           </View>
 
@@ -120,7 +125,7 @@ const Layout = (props: Props) => {
                   console.error("An error occurred", err);
                 });
               }}
-              label={"rate us on google play"}
+              label={"Rate Us On Google Play"}
             />
 
             <DrawerItem
@@ -135,7 +140,7 @@ const Layout = (props: Props) => {
                   console.error("An error occurred", err);
                 });
               }}
-              label={"desktop site"}
+              label={"Desktop Site"}
             />
             <DrawerItem
               icon={({ focused, color, size }) => <Logout color={color} />}
@@ -182,16 +187,16 @@ const Layout = (props: Props) => {
         }}
       >
         <Drawer.Screen
-          name="(shift)" // This is the name of the page and must match the url from root
+          name="(shift)"
           options={{
-            drawerLabel: "runshift",
+            drawerLabel: "Shifts",
             title: "runshift",
             drawerIcon: ({ color }: any) => <RunShiftIcon color={color} />,
           }}
         />
 
         <Drawer.Screen
-          name="openShifts" // This is the name of the page and must match the url from root
+          name="openShifts"
           options={{
             drawerLabel: "Open Shifts",
             title: "Open Shifts",
@@ -199,36 +204,14 @@ const Layout = (props: Props) => {
           }}
         />
 
-        {/* <Drawer.Screen
-                    name="refresh" // This is the name of the page and must match the url from root
-                    options={{
-                        drawerLabel: 'refresh',
-                        title: 'refresh',
-                        drawerIcon: ({ color }: any) => (
-                            <Refresh color={color} />
-                        )
-                    }}
-                /> */}
-
         <Drawer.Screen
-          name="(settings)" // This is the name of the page and must match the url from root
+          name="(settings)"
           options={{
-            drawerLabel: "settings",
+            drawerLabel: "Settings",
             title: "settings",
             drawerIcon: ({ color }: any) => <Settings color={color} />,
           }}
         />
-
-        {/* <Drawer.Screen
-                    name="language" // This is the name of the page and must match the url from root
-                    options={{
-                        drawerLabel: 'english (uk)',
-                        title: 'english (uk)',
-                        drawerIcon: ({ color }: any) => (
-                            <Language color={color} />
-                        )
-                    }}
-                /> */}
 
         <Drawer.Screen
           name="font"
@@ -250,7 +233,7 @@ const Layout = (props: Props) => {
             },
           }}
         />
-        <Drawer.Screen
+        {/* <Drawer.Screen
           name="refresh"
           options={{
             drawerLabel: "Refresh",
@@ -259,70 +242,45 @@ const Layout = (props: Props) => {
           }}
           listeners={{
             drawerItemPress: (e) => {
-              e.preventDefault(); // Prevent navigation
-              // setShowFontSlider!(true)
+              e.preventDefault();
               handleRefresh();
-
-              if (pathname === "/") {
-                router.push(`/(shifts)/(shift)/shift`);
-              } else {
-                router.push(pathname as any);
-              }
+              navigation.dispatch(DrawerActions.closeDrawer());
             },
           }}
-        />
-
-        {/* <Drawer.Screen
-                    name="mode" // This is the name of the page and must match the url from root
-                    options={{
-                        drawerLabel: 'dark mode',
-                        title: 'dark mode',
-                        drawerIcon: ({ color }: any) => (
-                            <DarkMode color={color} />
-                        )
-                    }}
-                /> */}
+        /> */}
 
         <Drawer.Screen
-          name="terms" // This is the name of the page and must match the url from root
+          name="terms"
           options={{
-            drawerLabel: "terms & conditions",
+            drawerLabel: "Terms & Conditions",
             title: "terms & conditions",
             drawerIcon: ({ color }: any) => <Terms color={color} />,
           }}
         />
         <Drawer.Screen
-          name="privacy" // This is the name of the page and must match the url from root
+          name="privacy"
           options={{
-            drawerLabel: "privacy policy",
+            drawerLabel: "Privacy Policy",
             title: "privacy policy",
             drawerIcon: ({ color }: any) => <Privacy color={color} />,
           }}
         />
         <Drawer.Screen
-          name="getInTouch" // This is the name of the page and must match the url from root
+          name="getInTouch"
           options={{
-            drawerLabel: "get in touch",
+            drawerLabel: "Get In Touch",
             title: "getInTouch",
             drawerIcon: ({ color }: any) => <Contact color={color} />,
           }}
         />
         <Drawer.Screen
-          name="reportABug" // This is the name of the page and must match the url from root
+          name="reportABug"
           options={{
-            drawerLabel: "report a bug",
+            drawerLabel: "Report A Bug",
             title: "report a bug",
             drawerIcon: ({ color }: any) => <Bug color={color} />,
           }}
         />
-        {/* <Drawer.Screen
-          name="rate" // This is the name of the page and must match the url from root
-          options={{
-            drawerLabel: "rate us on google play",
-            title: "rate us on google play",
-            drawerIcon: ({ color }: any) => <Rate color={color} />,
-          }}
-        /> */}
       </Drawer>
     </GestureHandlerRootView>
   );

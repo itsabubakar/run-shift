@@ -93,7 +93,7 @@ const Shift = (props: Props) => {
   return (
     <View style={styles.container}>
       <SafeAreaView className="bg-primary pb-10">
-        <Header title="runshift" calendar={true} />
+        <Header title="RunShift" calendar={true} />
       </SafeAreaView>
 
       {showHorizontalCalendar && (

@@ -90,7 +90,6 @@ const HomeScreen = (props: Props) => {
 
   const handleDateSelection = (date: Date) => {
     // Handle the selected date here
-    console.log("function selected!!");
 
     console.log(date, "shifts");
   };
@@ -98,7 +97,7 @@ const HomeScreen = (props: Props) => {
   return (
     <View className="flex-1">
       <SafeAreaView className="bg-primary pb-10">
-        <Header title="runshift" />
+        <Header title="RunShift" />
       </SafeAreaView>
       {showHorizontalCalendar && <HorizontalDatePicker shifts={shifts} />}
 

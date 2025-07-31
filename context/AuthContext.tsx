@@ -20,6 +20,7 @@ interface AuthProps {
     companyId: string | null;
     shift: Shift[] | null;
     staffId: string | null;
+    acceptedShifts?: Shift[] | null;
   };
   onLogout: () => void;
   setAuthState: React.Dispatch<
@@ -33,6 +34,7 @@ interface AuthProps {
       companyId: string | null;
       shift: Shift[] | null;
       staffId: string | null;
+      acceptedShifts?: Shift[] | null;
     }>
   >;
 }

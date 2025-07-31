@@ -2,7 +2,7 @@ import Header from "@/components/header/Header";
 import LoadingSpinner from "@/components/utils/LoadingSpinner";
 import { useAppContext } from "@/context/AppContext";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -23,8 +23,7 @@ import {
   getOpenShifts,
 } from "@/api/shifts";
 import { useAuth } from "@/context/AuthContext";
-import { parse, format } from "date-fns"; // Import date-fns functions
-import { useFetchQuery } from "@/hooks/useFetchQuery";
+import { parse, format } from "date-fns";
 
 type Props = {};
 
@@ -33,76 +32,84 @@ const TABS = ["Open Shifts", "Applied", "Accepted"];
 const Screen = (props: Props) => {
   const [activeTab, setActiveTab] = useState("Open Shifts");
   const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
+  const [refreshing, setRefreshing] = useState(false);
   const { fontSize } = useAppContext();
   const { authState } = useAuth();
   const [openShifts, setOpenShifts] = useState([]);
   const [appliedShifts, setAppliedShifts] = useState([]);
   const [acceptedShifts, setAcceptedShifts] = useState([]);
+  const [hasFetched, setHasFetched] = useState({
+    open: false,
+    applied: false,
+    accepted: false,
+  });
 
-  // Group shifts by date
-  const groupShiftsByDate = (shifts: any) => {
+  // Memoized function to group shifts by date
+  const groupShiftsByDate = useCallback((shifts: any) => {
+    if (!Array.isArray(shifts)) return {};
     return shifts.reduce((acc: any, shift: any) => {
-      const date = shift.date; // Use the date as the key
+      const date = shift.date;
       if (!acc[date]) {
         acc[date] = [];
       }
       acc[date].push(shift);
       return acc;
     }, {});
-  };
+  }, []);
 
-  const groupedOpenShifts = groupShiftsByDate(openShifts);
+  // Filter out applied shifts from open shifts
+  const filteredOpenShifts = openShifts.filter(
+    (openShift) =>
+      !appliedShifts.some((appliedShift) => appliedShift.id === openShift.id) &&
+      !acceptedShifts.some((acceptedShift) => acceptedShift.id === openShift.id)
+  );
+
+  const groupedOpenShifts = groupShiftsByDate(filteredOpenShifts);
   const groupedAppliedShifts = groupShiftsByDate(appliedShifts);
   const groupedAcceptedShifts = groupShiftsByDate(acceptedShifts);
 
-  const {
-    data: openShiftData,
-    isLoading,
-    invalidate,
-  } = useFetchQuery(`/shift/free/company/${authState?.companyId}`);
-
-  console.log("Open Shifts Data:", openShiftData);
-
   // Fetch open shifts
-  const fetchOpenShifts = async () => {
+  const fetchOpenShifts = useCallback(async () => {
     try {
       const res = await getOpenShifts(authState?.companyId || "");
       setOpenShifts(res);
+      setHasFetched((prev) => ({ ...prev, open: true }));
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
-      setRefreshing(false); // Stop the refreshing indicator
+      setRefreshing(false);
     }
-  };
+  }, [authState?.companyId]);
 
-  const fetchAppliedShifts = async () => {
+  const fetchAppliedShifts = useCallback(async () => {
     try {
       const res = await getAppliedOpenShifts(authState?.staffId || "");
       setAppliedShifts(res);
+      setHasFetched((prev) => ({ ...prev, applied: true }));
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
-      setRefreshing(false); // Stop the refreshing indicator
+      setRefreshing(false);
     }
-  };
+  }, [authState?.staffId]);
 
-  const fetchAcceptedShifts = async () => {
+  const fetchAcceptedShifts = useCallback(async () => {
     try {
       const res = await getAcceptedOpenShifts(authState?.staffId || "");
       setAcceptedShifts(res);
+      setHasFetched((prev) => ({ ...prev, accepted: true }));
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
-      setRefreshing(false); // Stop the refreshing indicator
+      setRefreshing(false);
     }
-  };
+  }, [authState?.staffId]);
 
-  const onRefresh = async () => {
-    setRefreshing(true); // Start the refreshing indicator
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
     if (activeTab === "Open Shifts") {
       await fetchOpenShifts();
     } else if (activeTab === "Applied") {
@@ -110,18 +117,48 @@ const Screen = (props: Props) => {
     } else if (activeTab === "Accepted") {
       await fetchAcceptedShifts();
     }
-  };
+  }, [activeTab, fetchOpenShifts, fetchAppliedShifts, fetchAcceptedShifts]);
 
+  // Handle tab change
+  const handleTabChange = useCallback(
+    (tab: string) => {
+      setActiveTab(tab);
+      setLoading(true);
+
+      // Only fetch if we haven't fetched this tab before
+      if (tab === "Open Shifts" && !hasFetched.open) {
+        fetchOpenShifts();
+      } else if (tab === "Applied" && !hasFetched.applied) {
+        fetchAppliedShifts();
+      } else if (tab === "Accepted" && !hasFetched.accepted) {
+        fetchAcceptedShifts();
+      } else {
+        setLoading(false);
+      }
+    },
+    [hasFetched, fetchOpenShifts, fetchAppliedShifts, fetchAcceptedShifts]
+  );
+
+  // Initial load
   useEffect(() => {
-    setLoading(true);
-    if (activeTab === "Open Shifts") {
-      fetchOpenShifts();
-    } else if (activeTab === "Applied") {
-      fetchAppliedShifts();
-    } else if (activeTab === "Accepted") {
-      fetchAcceptedShifts();
-    }
-  }, [authState?.companyId, activeTab]);
+    const initialFetch = async () => {
+      setLoading(true);
+      try {
+        await Promise.all([
+          fetchOpenShifts(),
+          fetchAppliedShifts(),
+          fetchAcceptedShifts(),
+        ]);
+      } catch (error) {
+        console.error("Failed to fetch initial shift data", error);
+        Alert.alert("Error", "Could not load shift data. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initialFetch();
+  }, [fetchOpenShifts, fetchAppliedShifts, fetchAcceptedShifts]);
 
   return (
     <View className="flex-1 justify-between">
@@ -132,7 +169,7 @@ const Screen = (props: Props) => {
       <View className="bg-white ">
         <View className="flex-row mb-6 bg-[#F1F1F1] rounded-xl justify-around mt-4 mx-4 py-[5px] px-[4px]">
           {TABS.map((tab, index) => (
-            <Pressable key={index} onPress={() => setActiveTab(tab)}>
+            <Pressable key={index} onPress={() => handleTabChange(tab)}>
               <Text
                 className="py-4 px-4 rounded-2xl text-sm"
                 style={[
@@ -164,9 +201,7 @@ const Screen = (props: Props) => {
               <View className="pl-4">
                 {Object.entries(groupedOpenShifts).map(
                   ([date, shifts]: any) => {
-                    // Parse the date string using date-fns
                     const parsedDate = parse(date, "MM-dd-yyyy", new Date());
-                    // Format the parsed date for display
                     const formattedDate = format(parsedDate, "EEE dd MMM");
 
                     return (
@@ -184,6 +219,13 @@ const Screen = (props: Props) => {
                               key={index}
                               shift={shift}
                               tab={activeTab}
+                              onApplySuccess={() => {
+                                // Add to applied shifts and remove from open shifts
+                                setAppliedShifts((prev) => [...prev, shift]);
+                                setOpenShifts((prev) =>
+                                  prev.filter((s) => s.id !== shift.id)
+                                );
+                              }}
                             />
                           ))}
                         </View>
@@ -197,9 +239,7 @@ const Screen = (props: Props) => {
               <View className="pl-4">
                 {Object.entries(groupedAppliedShifts).map(
                   ([date, shifts]: any) => {
-                    // Parse the date string using date-fns
                     const parsedDate = parse(date, "MM-dd-yyyy", new Date());
-                    // Format the parsed date for display
                     const formattedDate = format(parsedDate, "EEE dd MMM");
 
                     return (
@@ -230,9 +270,7 @@ const Screen = (props: Props) => {
               <View className="pl-4">
                 {Object.entries(groupedAcceptedShifts).map(
                   ([date, shifts]: any) => {
-                    // Parse the date string using date-fns
                     const parsedDate = parse(date, "MM-dd-yyyy", new Date());
-                    // Format the parsed date for display
                     const formattedDate = format(parsedDate, "EEE dd MMM");
 
                     return (
@@ -273,10 +311,12 @@ const OpenShift = ({
   shift,
   tab,
   staffId,
+  onApplySuccess,
 }: {
   shift?: any;
   tab: string;
   staffId?: string;
+  onApplySuccess?: () => void;
 }) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -286,14 +326,18 @@ const OpenShift = ({
   };
 
   const handleShiftApplication = async () => {
-    setLoading(true);
     try {
+      setLoading(true);
       const res = await applyFreeShift(shift.id, staffId);
       Alert.alert("Success", "Shift application successful");
       toggleModal();
-      setLoading(false);
+      if (onApplySuccess) {
+        onApplySuccess();
+      }
     } catch (error: any) {
-      console.error(error.response.data);
+      console.error(error.response?.data || error.message);
+      Alert.alert("Error", "Failed to apply for shift");
+    } finally {
       setLoading(false);
     }
   };
@@ -318,7 +362,7 @@ const OpenShift = ({
       >
         <View className="justify-between h-[320px]  bg-[#175B57] px-8 py-12 rounded-[20px]">
           <Text className="text-white text-2xl">
-            Are you sure you want to apply for this shift ?
+            Are you sure you want to apply for this shift?
           </Text>
 
           <View className="flex-row justify-end gap-16">
@@ -326,7 +370,7 @@ const OpenShift = ({
               onPress={handleShiftApplication}
               className="items-center justify-center "
             >
-              {loading ? <ActivityIndicator /> : <Check />}
+              {loading ? <ActivityIndicator color="white" /> : <Check />}
             </Pressable>
             <Pressable onPress={toggleModal}>
               <Cancel />

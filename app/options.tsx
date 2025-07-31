@@ -1,4 +1,3 @@
-import MoreOptionsButton from "@/components/login/MoreOptionsButton";
 import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -27,42 +26,6 @@ const options = (props: Props) => {
             />
           </TouchableOpacity>
         </Link>
-        {/* 
-        <Link asChild className="self-center" href={"/"}>
-          <TouchableOpacity className="w-[220px] px-4 py-3 rounded-xl mb-5  justify-between h-[90px]  flex-row border border-white/25">
-            <Text style={styles.poppinsRegular} className="text-white text-lg">
-              Scan a QR code
-            </Text>
-            <Image
-              className="self-end"
-              source={require("../assets/images/scan.png")}
-            />
-          </TouchableOpacity>
-        </Link> */}
-
-        {/* <Link asChild className="self-center" href={"/"}>
-          <TouchableOpacity className="border border-white/25 w-[220px] px-4 py-3 rounded-xl mb-5  justify-between h-[90px]  flex-row  ">
-            <Text style={styles.poppinsRegular} className="text-white text-lg">
-              Demo
-            </Text>
-            <Image
-              className="self-end"
-              source={require("../assets/images/pc.png")}
-            />
-          </TouchableOpacity>
-        </Link> */}
-
-        {/* <Link asChild className="self-center" href={"/"}>
-          <TouchableOpacity className="border border-white/25 w-[220px] px-4 py-3 rounded-xl mb-5  justify-between h-[90px]  flex-row  ">
-            <Text style={styles.poppinsRegular} className="text-white text-lg">
-              English (UK)
-            </Text>
-            <Image
-              className="self-end"
-              source={require("../assets/images/web.png")}
-            />
-          </TouchableOpacity>
-        </Link> */}
 
         <Link asChild className="self-center" href={"/"}>
           <TouchableOpacity

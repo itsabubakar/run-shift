@@ -28,6 +28,8 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
   const today = new Date();
   const { authState } = useAuth();
 
+  console.log("Authstate:", authState?.acceptedShifts);
+
   // Initialize with a large set of dates (10,000 in the past and 10,000 in the future)
   useEffect(() => {
     if (shifts) {
@@ -56,43 +58,79 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
   // Render shift information for a specific date
   const renderShiftInfo = useCallback(
     (date: Date) => {
-      const shiftsForDate = shifts
-        ?.filter((shift) => {
-          const formattedDate = parse(shift.date, "MM-dd-yyyy", new Date());
-          return (
-            format(formattedDate, "yyyy-MM-dd") === format(date, "yyyy-MM-dd")
-          );
-        })
-        ?.filter((shift) =>
-          emailFilter ? shift.staff.email === emailFilter : true
-        );
+      const formattedCurrentDate = format(date, "MM-dd-yyyy");
 
-      if (shiftsForDate && shiftsForDate.length > 0) {
-        return shiftsForDate.map((shift, index) => (
-          <View
-            key={`${shift.date}-${shift.staffId}-${index}`}
-            style={styles.shiftContainer}
-          >
-            <View className="flex-row space-x-4">
-              <View className="flex-col">
-                <ProfilePicture width={20} />
-                <Text className="-mt-2 w-20" style={styles.shiftHeader}>
-                  {authState?.firstName} {authState?.lastName}
-                </Text>
-              </View>
-              <View className="flex-1">
-                <TouchableOpacity className="pt-2 flex-row justify-between w-full">
-                  <Text style={styles.shiftText}>{shift.description}</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        ));
+      const normalShifts = authState?.shift?.filter((shift) => {
+        return (
+          shift.date === formattedCurrentDate &&
+          (!emailFilter || shift.staff?.email === emailFilter)
+        );
+      });
+
+      const acceptedShifts = authState?.acceptedShifts?.filter((shift) => {
+        return shift.date === formattedCurrentDate;
+      });
+
+      const hasAnyShifts =
+        (normalShifts?.length || 0) + (acceptedShifts?.length || 0) > 0;
+
+      if (!hasAnyShifts) {
+        return <Text style={styles.shiftText}>No Shifts</Text>;
       }
 
-      return <Text style={styles.shiftText}>No Shifts</Text>;
+      return (
+        <>
+          {/* Normal Shifts */}
+          {normalShifts?.map((shift, index) => (
+            <View
+              key={`normal-${shift.id}-${index}`}
+              style={styles.shiftContainer}
+            >
+              <View className="flex-row space-x-4">
+                <View className="flex-col">
+                  <ProfilePicture width={20} />
+                  <Text className="-mt-2 w-20" style={styles.shiftHeader}>
+                    {authState?.firstName} {authState?.lastName}
+                  </Text>
+                </View>
+                <View className="flex-1">
+                  <TouchableOpacity className="pt-2 flex-row justify-between w-full">
+                    <Text style={styles.shiftText}>
+                      {shift.description?.join(", ") || "No description"}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          ))}
+
+          {/* Accepted Shifts (with different style) */}
+          {acceptedShifts?.map((shift, index) => (
+            <View
+              key={`accepted-${shift.id}-${index}`}
+              style={[styles.shiftContainer, styles.acceptedShift]}
+            >
+              <View className="flex-row space-x-4">
+                <View className="flex-col">
+                  <ProfilePicture width={20} />
+                  <Text className="-mt-2 w-20" style={styles.shiftHeader}>
+                    {authState?.firstName} {authState?.lastName}
+                  </Text>
+                </View>
+                <View className="flex-1">
+                  <TouchableOpacity className="pt-2 flex-row justify-between w-full">
+                    <Text style={styles.acceptedShiftText}>
+                      Accepted Shift at {shift.time}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          ))}
+        </>
+      );
     },
-    [shifts, emailFilter, authState]
+    [authState, emailFilter]
   );
 
   // Render each date item
@@ -142,6 +180,16 @@ const VerticalDatePicker: React.FC<Props> = ({ shifts }) => {
 };
 
 const styles = StyleSheet.create({
+  acceptedShift: {
+    marginTop: 8,
+  },
+
+  acceptedShiftText: {
+    fontFamily: "PoppinsSemiBold",
+    color: "#333333",
+    fontSize: 14,
+  },
+
   container: {
     paddingHorizontal: 16,
     borderRadius: 24,

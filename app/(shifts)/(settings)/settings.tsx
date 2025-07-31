@@ -26,7 +26,7 @@ const Screen = () => {
   const [cameraSetup, setCameraSetup] = useState(false);
   // const [showProfilePictures, setShowProfilePictures] = useState(true)
   const [weatherForecast, setWeatherForcast] = useState(false);
-  const [version, setVersion] = useState("r9y3ri3yry93ry93yry3r ri3yri3rirrh");
+  const [version, setVersion] = useState("1.1.1");
 
   const copyToClipboard = async () => {
     await Clipboard.setStringAsync(version);
@@ -60,7 +60,7 @@ const Screen = () => {
       </View>
       <ScrollView className="px-6 ">
         {/* Push notifications */}
-        <View className="flex-row items-start pt-8">
+        {/* <View className="flex-row items-start pt-8">
           <View>
             <Text
               style={[styles.poppinsRegular, { fontSize: fontSize! + 10 }]}
@@ -81,10 +81,10 @@ const Screen = () => {
             isCheck={pushNotifications}
             onChecked={() => setPushNotifications(!pushNotifications)}
           />
-        </View>
+        </View> */}
 
         {/* font size slider */}
-        <View className=" items-start pt-20">
+        <View className=" items-start">
           <View className="w-[90%]">
             <Text
               style={[styles.poppinsRegular, { fontSize: fontSize! + 10 }]}
@@ -114,7 +114,7 @@ const Screen = () => {
         </View>
 
         {/* Login with fingerprint */}
-        <View className="flex-row items-start pt-20">
+        {/* <View className="flex-row items-start pt-20">
           <View className=" w-[90%]">
             <Text
               style={[styles.poppinsRegular, { fontSize: fontSize! + 10 }]}
@@ -136,7 +136,7 @@ const Screen = () => {
             isCheck={fingerPrints}
             onChecked={() => setFingerprints(!fingerPrints)}
           />
-        </View>
+        </View> */}
 
         {/* camera */}
         <View className="flex-row items-start pt-20">
@@ -187,7 +187,7 @@ const Screen = () => {
         </View>
 
         {/* Weather forecast */}
-        <View className="flex-row items-start pt-20">
+        {/* <View className="flex-row items-start pt-20">
           <View className="w-[90%]">
             <Text
               style={[styles.poppinsRegular, { fontSize: fontSize! + 10 }]}
@@ -219,7 +219,7 @@ const Screen = () => {
             isCheck={weatherForecast}
             onChecked={() => setWeatherForcast(!weatherForecast)}
           />
-        </View>
+        </View> */}
 
         {/* Reset the app */}
         <View className=" items-start pt-20">

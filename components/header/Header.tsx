@@ -102,7 +102,7 @@ const Header = ({
               style={styles.poppinsRegular}
               className="text-white text-2xl pl-1"
             >
-              {title || "runshift"}
+              {title || "RunShift"}
             </Text>
           )}
         </TouchableOpacity>
