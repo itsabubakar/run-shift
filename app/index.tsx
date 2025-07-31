@@ -191,21 +191,22 @@ const Index = (props: Props) => {
           className={`${showError ? "bg-primary" : "bg-primary"}`}
           style={styles.flexContainer}
           resetScrollToCoords={{ x: 0, y: 0 }}
-          // scrollEnabled={false}
         >
-          <SafeAreaView
-            style={styles.flexContainer}
-            className={`flex-1   justify-between `}
-          >
-            <View className="flex-col flex-1 justify-center items-center pt-[35%]">
-              <View className="pb-8  w-full max-w-[308px] mx-auto">
+          <SafeAreaView style={{ flex: 1, paddingHorizontal: 16 }}>
+            <View className="flex-col flex-1 justify-center items-center ">
+              <View className="pb-8 pt-8  w-full max-w-[308px] mx-auto">
                 <Image className="w-[83px] object-cover" source={logoSm} />
               </View>
               <TextInput
-                style={styles.poppinsRegular}
+                style={{
+                  fontFamily: "PoppinsRegular",
+                  borderWidth: 1,
+                  width: "100%",
+                  padding: 10,
+                  backgroundColor: "#ffffff",
+                }}
                 onChangeText={(text) => setEmail(text.toLocaleLowerCase())}
                 placeholderTextColor="#c2c2c2"
-                className="border border-[#FFF]/25 rounded-2xl py-3 px-3 placeholder:text-lg text-white max-w-[308px] min-w-[308px]"
                 placeholder="Email address"
               />
 

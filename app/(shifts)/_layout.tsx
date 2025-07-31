@@ -11,8 +11,6 @@ import {
 } from "@react-navigation/drawer";
 import ProfilePicture from "@/assets/icons/drawer/ProfilePicture";
 import RunShiftIcon from "@/assets/icons/drawer/RunShiftIcon";
-import Notification from "@/assets/icons/drawer/Notification";
-import Refresh from "@/assets/icons/drawer/Refresh";
 import Settings from "@/assets/icons/drawer/Settings";
 import Font from "@/assets/icons/drawer/Font";
 import Terms from "@/assets/icons/drawer/Terms";
@@ -29,7 +27,6 @@ import * as SecureStore from "expo-secure-store";
 import { OpenDoor } from "@/assets/icons";
 
 import { useNavigation } from "expo-router";
-import { DrawerActions } from "@react-navigation/native";
 
 type Props = {};
 
