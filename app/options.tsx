@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
   Image,
@@ -9,55 +9,53 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { BackHandler } from "react-native";
+import { Platform } from "react-native";
 
 type Props = {};
+
 const options = (props: Props) => {
   return (
-    <SafeAreaView className="flex-1 justify-center  bg-primary items-center">
-      <View className="px-5">
-        <Link asChild className="self-center" href={"/"}>
-          <TouchableOpacity className="w-[220px] px-4 py-3 rounded-xl mb-5  justify-between h-[90px]  flex-row  bg-secondary">
-            <Text style={styles.poppinsRegular} className="text-white text-lg">
-              Login
-            </Text>
-            <Image
-              className="self-end"
-              source={require("../assets/images/arrow.png")}
-            />
-          </TouchableOpacity>
-        </Link>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <TouchableOpacity
+          onPress={() => router.replace("/")}
+          style={[styles.button, styles.filledButton]}
+        >
+          <Text style={styles.buttonText}>Login</Text>
+          <Image
+            style={styles.icon}
+            source={require("../assets/images/arrow.png")}
+          />
+        </TouchableOpacity>
 
-        <Link asChild className="self-center" href={"/"}>
+        <TouchableOpacity
+          onPress={() => {
+            Linking.openURL("https://www.runshift360.com").catch((err) =>
+              console.error("An error occurred", err)
+            );
+          }}
+          style={[styles.button, styles.outlinedButton]}
+        >
+          <Text style={styles.buttonText}>Desktop Site</Text>
+          <Image
+            style={styles.icon}
+            source={require("../assets/images/desktop.png")}
+          />
+        </TouchableOpacity>
+
+        {Platform.OS === "android" && (
           <TouchableOpacity
-            onPress={() => {
-              Linking.openURL("https://www.runshift360.com").catch((err) => {
-                console.error("An error occurred", err);
-              });
-            }}
-            className="border border-white/25 w-[220px] px-4 py-3 rounded-xl mb-5  justify-between h-[90px]  flex-row  "
+            style={[styles.button, styles.outlinedButton]}
+            onPress={() => BackHandler.exitApp()}
           >
-            <Text style={styles.poppinsRegular} className="text-white text-lg">
-              Desktop Site
-            </Text>
+            <Text style={styles.buttonText}>Exit</Text>
             <Image
-              className="self-end"
-              source={require("../assets/images/desktop.png")}
-            />
-          </TouchableOpacity>
-        </Link>
-
-        <Link className="self-center text-white text-lg" asChild href="/">
-          <TouchableOpacity className="border border-white/25 w-[220px] px-4 py-3 rounded-xl mb-5  justify-between h-[90px]  flex-row  ">
-            <Text style={styles.poppinsRegular} className="text-white text-lg">
-              Exit
-            </Text>
-
-            <Image
-              className="self-end"
+              style={styles.icon}
               source={require("../assets/images/arrow.png")}
             />
           </TouchableOpacity>
-        </Link>
+        )}
       </View>
 
       <StatusBar style="auto" />
@@ -66,11 +64,43 @@ const options = (props: Props) => {
 };
 
 const styles = StyleSheet.create({
-  poppinsRegular: {
-    fontFamily: "PoppinsRegular",
+  safeArea: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#175B57", // primary
   },
-  poppinsSemiBold: {
-    fontFamily: "PoppinsSemiBold",
+  container: {
+    paddingHorizontal: 20,
+  },
+  button: {
+    width: 220,
+    height: 90,
+    borderRadius: 16,
+    marginBottom: 20,
+    paddingHorizontal: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderWidth: 1,
+  },
+  filledButton: {
+    backgroundColor: "#A4A705", // secondary
+    borderColor: "#A4A705",
+  },
+  outlinedButton: {
+    backgroundColor: "transparent",
+    borderColor: "rgba(255, 255, 255, 0.25)",
+  },
+  buttonText: {
+    fontFamily: "PoppinsRegular",
+    color: "#FFFFFF",
+    fontSize: 18,
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    resizeMode: "contain",
   },
 });
 

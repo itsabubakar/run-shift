@@ -1,11 +1,25 @@
-import { View, Text, ActivityIndicator } from 'react-native'
-type Props = {}
-const LoadingSpinner = (props: Props) => {
-    return (
-        <View className=" h-full border-2 absolute w-full justify-center items-center  bg-[#000000b0]">
+import { View, ActivityIndicator, StyleSheet } from "react-native";
 
-            <ActivityIndicator size="large" color={"bg-primary"} />
-        </View>
-    )
-}
-export default LoadingSpinner
+type Props = {};
+
+const LoadingSpinner = (props: Props) => {
+  return (
+    <View style={styles.overlay}>
+      <ActivityIndicator size="large" color="#175B57" />
+    </View>
+  );
+};
+
+export default LoadingSpinner;
+
+const styles = StyleSheet.create({
+  overlay: {
+    position: "absolute",
+    height: "100%",
+    width: "100%",
+    backgroundColor: "#000000b0", // semi-transparent black
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 999, // ensure it overlays content
+  },
+});

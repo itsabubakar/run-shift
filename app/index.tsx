@@ -36,7 +36,7 @@ export enum Role {
   ADMIN = "admin",
 }
 
-const Index = (props: Props) => {
+const Index = () => {
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
   const [isChecked, setChecked] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -45,34 +45,41 @@ const Index = (props: Props) => {
   const [isOffline, setIsOffline] = useState(false);
   const [showError, setShowError] = useState(false);
   const [errorField, setErrorField] = useState("");
-
   const [loading, setLoading] = useState(false);
-  const { expoPushToken, notification } = usePushNotifications();
 
-  const { setAuthState, authState } = useAuth();
+  const { expoPushToken } = usePushNotifications();
+  const { setAuthState } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     (async () => {
       const compatible = await LocalAuthentication.hasHardwareAsync();
-
       setIsBiometricSupported(compatible);
     })();
-  });
+  }, []);
 
-  const handleNoBiometricAuth = async () => {
-    const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
-    if (savedBiometrics)
-      return Alert.alert(
-        "Biometric record not found",
-        "Please verify your identity with your password"
-      );
-  };
+  useEffect(() => {
+    const checkStoredLogin = async () => {
+      const storedEmail = await SecureStore.getItemAsync("email");
+      const storedPassword = await SecureStore.getItemAsync("password");
+      if (storedEmail && storedPassword) {
+        await Login(storedEmail, storedPassword, true);
+      }
+    };
+
+    checkStoredLogin();
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setIsOffline(!(state.isConnected && state.isInternetReachable));
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const handleBiometricAuth = async () => {
     try {
       const biometricAuth = await LocalAuthentication.authenticateAsync({
         promptMessage: "Login with your finger print",
-        cancelLabel: "Cancel", // Optional: custom cancel label
+        cancelLabel: "Cancel",
         disableDeviceFallback: true,
       });
 
@@ -91,32 +98,11 @@ const Index = (props: Props) => {
 
   const handleNotification = async (staffId: any, token: any) => {
     try {
-      const res = await sendToken(staffId, token);
+      await sendToken(staffId, token);
     } catch (error) {
-      console.error(error, "error");
+      console.error(error);
     }
   };
-
-  useEffect(() => {
-    const checkStoredLogin = async () => {
-      const storedEmail = await SecureStore.getItemAsync("email");
-      const storedPassword = await SecureStore.getItemAsync("password");
-
-      if (storedEmail && storedPassword) {
-        await Login(storedEmail, storedPassword, true); // auto-login
-      }
-    };
-
-    checkStoredLogin();
-
-    const unsubscribe = NetInfo.addEventListener(
-      (state: { isConnected: any; isInternetReachable: any }) => {
-        setIsOffline(!(state.isConnected && state.isInternetReachable));
-      }
-    );
-
-    return () => unsubscribe();
-  }, []);
 
   const Login = async (email: string, password: string, autoLogin = false) => {
     if (!email || !password) {
@@ -128,16 +114,13 @@ const Index = (props: Props) => {
     }
     setLoading(true);
     try {
-      const res = await axiosInstance.post(`/staff/login`, {
-        email,
-        password,
-      });
-      console.log("Login response:", res.data);
+      const res = await axiosInstance.post(`/staff/login`, { email, password });
+
       if (setAuthState) {
         setAuthState({
           authenticated: true,
           role: res.data.role,
-          email: email,
+          email,
           firstName: res.data.firstName,
           lastName: res.data.lastName,
           token: res.data.token,
@@ -147,6 +130,7 @@ const Index = (props: Props) => {
           acceptedShifts: res.data.acceptedShifts,
         });
       }
+
       handleNotification(res.data.shift[0].staffId, expoPushToken?.data);
 
       if (isChecked && !autoLogin) {
@@ -156,29 +140,23 @@ const Index = (props: Props) => {
 
       router.replace("/(shifts)/(shift)/shift");
     } catch (error: any) {
-      console.log(error?.response?.data, "erroring here");
       setLoading(false);
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 401) {
           setErrorField("Invalid email or password");
-          setShowError(true);
         } else {
           setErrorField("An error occurred. Please try again later.");
-          setShowError(true);
         }
       } else {
         setErrorField("An error occurred. Please try again later.");
-        setShowError(true);
       }
+      setShowError(true);
     } finally {
       setLoading(false);
     }
   };
 
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
-  };
-
+  const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible);
   const resetError = () => {
     setShowError(false);
     setErrorField("");
@@ -187,32 +165,23 @@ const Index = (props: Props) => {
   return (
     <>
       {!isOffline ? (
-        <KeyboardAwareScrollView
-          className={`${showError ? "bg-primary" : "bg-primary"}`}
-          style={styles.flexContainer}
-          resetScrollToCoords={{ x: 0, y: 0 }}
-        >
-          <SafeAreaView style={{ flex: 1, paddingHorizontal: 16 }}>
-            <View className="flex-col flex-1 justify-center items-center ">
-              <View className="pb-8 pt-8  w-full max-w-[308px] mx-auto">
-                <Image className="w-[83px] object-cover" source={logoSm} />
+        <KeyboardAwareScrollView contentContainerStyle={styles.flexContainer}>
+          <SafeAreaView style={styles.flexContainer}>
+            <View style={styles.centeredContainer}>
+              <View style={styles.logoContainer}>
+                <Image style={styles.logo} source={logoSm} />
               </View>
+
               <TextInput
-                style={{
-                  fontFamily: "PoppinsRegular",
-                  borderWidth: 1,
-                  width: "100%",
-                  padding: 10,
-                  backgroundColor: "#ffffff",
-                }}
-                onChangeText={(text) => setEmail(text.toLocaleLowerCase())}
+                style={[styles.input, styles.poppinsRegular]}
+                onChangeText={(text) => setEmail(text.toLowerCase())}
                 placeholderTextColor="#c2c2c2"
                 placeholder="Email address"
               />
 
-              <View className=" border border-[#ffffff]/25 rounded-2xl flex flex-row items-center justify-between w-full mt-5 py-3 px-3 max-w-[308px] min-w-[308px]">
+              <View style={styles.passwordWrapper}>
                 <TextInput
-                  style={styles.poppinsRegular}
+                  style={[styles.passwordInput, styles.poppinsRegular]}
                   placeholderTextColor="#c2c2c2"
                   placeholder="Password"
                   secureTextEntry={!passwordVisible}
@@ -223,120 +192,76 @@ const Index = (props: Props) => {
                   underlineColorAndroid="transparent"
                   selectionColor="white"
                   maxLength={32}
-                  className="  w-[80%] placeholder:text-lg  text-white "
                 />
                 <TouchableOpacity onPress={togglePasswordVisibility}>
                   {passwordVisible ? <EyeClose /> : <EyeOpen />}
                 </TouchableOpacity>
               </View>
 
-              {/* <Pressable
-                onPress={handleBiometricAuth}
-                className="pt-4 max-w-[308px] w-full  px-2"
-              >
-                <Text
-                  style={styles.poppinsRegular}
-                  className="text-white text-left"
-                >
-                  Log in with fingerprint?
-                </Text>
-              </Pressable> */}
-
-              <View className="pt-8 pb-10 max-w-[308px] w-full flex-row items-center justify-between px-2">
-                <Text
-                  style={styles.poppinsRegular}
-                  className="text-white text-left text-lg"
-                >
+              <View style={styles.checkboxRow}>
+                <Text style={[styles.poppinsRegular, styles.checkboxLabel]}>
                   Keep me logged in
                 </Text>
                 <CheckBox
-                  color={"#FFFFFF40"}
+                  color="#FFFFFF40"
                   isCheck={isChecked}
                   onChecked={() => setChecked(!isChecked)}
                 />
               </View>
 
-              <View>
-                <TouchableOpacity onPress={() => Login(email, password)}>
-                  <Text
-                    style={styles.poppinsRegular}
-                    className="text-center bg-secondary py-4  text-lg rounded-2xl max-w-[308px] min-w-[308px] text-white"
-                  >
-                    Log in
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <View className="pt-8 pb-10 max-w-[308px] w-full">
-                <Link
-                  href={"/reset"}
-                  style={styles.poppinsRegular}
-                  className="text-white text-lg"
-                >
-                  Forgotten your password?
+              <TouchableOpacity onPress={() => Login(email, password)}>
+                <Text style={[styles.loginButton, styles.poppinsRegular]}>
+                  Log in
+                </Text>
+              </TouchableOpacity>
+
+              {/* <View style={styles.resetLinkContainer}>
+                <Link href={"/reset"} style={styles.poppinsRegular}>
+                  <Text style={styles.resetLink}>Forgotten your password?</Text>
                 </Link>
-              </View>
+              </View> */}
             </View>
 
-            <View className="flex justify-end items-end pr-8 pb-8">
+            <View style={styles.optionsIconContainer}>
               <Link href={"/options"} asChild>
                 <TouchableOpacity>
-                  {/* Change to an icon */}
                   <Image source={require("../assets/images/LoginMenu.png")} />
                 </TouchableOpacity>
               </Link>
             </View>
 
-            {/* Shows error if any */}
-
             {showError && (
-              <View className=" h-full absolute w-full flex-col flex-1 bg-[#000000b0]">
-                <View className=" h-[67%]  bottom-0 w-full rounded-t-[20px] justify-center items-center"></View>
-                <View className="bg-primary h-full bottom-0 w-full rounded-t-[60px] justify-center items-center">
-                  <Text
-                    style={styles.poppinsRegular}
-                    className="text-white text-2xl pb-8 text-center -mt-[500px] max-w-[208px]"
-                  >
+              <View style={styles.errorOverlay}>
+                <View style={styles.errorContent}>
+                  <Text style={[styles.errorText, styles.poppinsRegular]}>
                     {errorField}
                   </Text>
                   <TouchableOpacity onPress={resetError}>
-                    {/* Change to an icon */}
-                    <Image className="w-[51px] object-cover" source={tick} />
+                    <Image style={styles.tickIcon} source={tick} />
                   </TouchableOpacity>
                 </View>
               </View>
             )}
-
             <StatusBar style="auto" />
           </SafeAreaView>
-          {/* Loading spinner */}
         </KeyboardAwareScrollView>
       ) : (
-        <>
-          <SafeAreaView className="flex-1  bg-primary">
-            <View className="pb-8 pt-24  w-full max-w-[308px] mx-auto">
-              <Image className="w-[213px] object-cover" source={offline} />
-            </View>
+        <SafeAreaView style={styles.offlineContainer}>
+          <View style={styles.offlineImageContainer}>
+            <Image style={styles.offlineImage} source={offline} />
+          </View>
 
-            <View className="flex-1 max-w-[308px] mx-auto">
-              <View>
-                <Text
-                  style={styles.poppinsSemiBold}
-                  className="text-white  text-4xl pb-8"
-                >
-                  You are offline
-                </Text>
-                <Text
-                  style={styles.poppinsRegular}
-                  className="text-white text-lg"
-                >
-                  We are not able to connect to the internet from your device.
-                  Please check your settings and try again.
-                </Text>
-              </View>
-            </View>
-            <StatusBar style="auto" />
-          </SafeAreaView>
-        </>
+          <View style={styles.offlineTextContainer}>
+            <Text style={[styles.poppinsSemiBold, styles.offlineTitle]}>
+              You are offline
+            </Text>
+            <Text style={[styles.poppinsRegular, styles.offlineMessage]}>
+              We are not able to connect to the internet from your device.
+              Please check your settings and try again.
+            </Text>
+          </View>
+          <StatusBar style="auto" />
+        </SafeAreaView>
       )}
 
       {loading && <LoadingSpinner />}
@@ -351,9 +276,139 @@ const styles = StyleSheet.create({
   poppinsSemiBold: {
     fontFamily: "PoppinsSemiBold",
   },
-
   flexContainer: {
     flex: 1,
+    backgroundColor: "#175B57",
+  },
+  centeredContainer: {
+    flex: 1,
+    alignItems: "center",
+    paddingTop: "35%",
+  },
+  logoContainer: {
+    paddingBottom: 32,
+    width: "100%",
+    maxWidth: 308,
+    alignSelf: "center",
+  },
+  logo: {
+    width: 83,
+    resizeMode: "contain",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.25)",
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    fontSize: 16,
+    color: "#FFFFFF",
+    width: 308,
+  },
+  passwordWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.25)",
+    borderRadius: 16,
+    paddingVertical: 2,
+    paddingHorizontal: 12,
+    width: 308,
+    marginTop: 20,
+  },
+  passwordInput: {
+    width: "80%",
+    fontSize: 16,
+    color: "white",
+  },
+  checkboxRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: 308,
+    paddingVertical: 24,
+  },
+  checkboxLabel: {
+    color: "white",
+    fontSize: 18,
+  },
+  loginButton: {
+    textAlign: "center",
+    backgroundColor: "#A4A705",
+    paddingVertical: 16,
+    fontSize: 18,
+    borderRadius: 16,
+    color: "white",
+    width: 308,
+  },
+  resetLinkContainer: {
+    paddingVertical: 24,
+    width: 308,
+  },
+  resetLink: {
+    color: "white",
+    fontSize: 18,
+  },
+  optionsIconContainer: {
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
+    paddingRight: 32,
+    paddingBottom: 32,
+  },
+  errorOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.7)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorContent: {
+    backgroundColor: "#175B57",
+    borderTopLeftRadius: 60,
+    borderTopRightRadius: 60,
+    alignItems: "center",
+    padding: 32,
+    width: "100%",
+    // height: 200,
+    marginTop: "auto",
+  },
+  errorText: {
+    color: "white",
+    fontSize: 24,
+    textAlign: "center",
+    maxWidth: 208,
+    marginBottom: 16,
+  },
+  tickIcon: {
+    width: 51,
+    resizeMode: "contain",
+  },
+  offlineContainer: {
+    flex: 1,
+    backgroundColor: "#A4A705",
+  },
+  offlineImageContainer: {
+    paddingBottom: 32,
+    paddingTop: 96,
+    alignItems: "center",
+  },
+  offlineImage: {
+    width: 213,
+    resizeMode: "contain",
+  },
+  offlineTextContainer: {
+    paddingHorizontal: 24,
+    alignItems: "center",
+  },
+  offlineTitle: {
+    fontSize: 32,
+    color: "white",
+    paddingBottom: 16,
+  },
+  offlineMessage: {
+    fontSize: 18,
+    color: "white",
+    textAlign: "center",
   },
 });
 

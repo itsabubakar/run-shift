@@ -15,6 +15,7 @@ import { Path, Svg } from "react-native-svg";
 import { useState } from "react";
 import { useAppContext } from "@/context/AppContext";
 import ArrowLarge from "@/assets/icons/ArrowLarge";
+
 type Props = {
   title?: string;
   calendar?: boolean;
@@ -22,7 +23,9 @@ type Props = {
   moreOptions?: boolean;
   persons?: boolean;
   subhead?: string | string[];
+  transparent?: boolean;
 };
+
 const Header = ({
   title,
   calendar,
@@ -30,10 +33,10 @@ const Header = ({
   moreOptions,
   persons,
   subhead,
+  transparent,
 }: Props) => {
   const navigation = useNavigation();
 
-  // const [showHeaderCalendar, setShowHeaderCalendar] = useState(false)
   const {
     setShowHeaderCalendar,
     showHeaderCalendar,
@@ -49,15 +52,9 @@ const Header = ({
 
   const [localEmail, setLocalEmail] = useState(emailFilter || "");
   const [filterApplied, setFilterApplied] = useState(false);
-  console.log(emailFilter);
 
   const onToggle = () => {
     navigation.dispatch(DrawerActions.openDrawer());
-  };
-
-  const handleDateSelection = (date: Date) => {
-    // Handle the selected date here
-    console.log(date);
   };
 
   const handleArrowClick = () => {
@@ -74,15 +71,14 @@ const Header = ({
 
   return (
     <View
-      className={`bg-[#175B57] px-6   py-6  w-full  mx-auto  rounded-b-3xl ${
-        subhead ? "" : "pb-10"
-      }`}
+      style={[
+        styles.header,
+        transparent && styles.transparentBackground,
+        !subhead && { paddingBottom: 40 },
+      ]}
     >
-      <View className="flex-row justify-between items-center">
-        <TouchableOpacity
-          onPress={onToggle}
-          className="flex-row  gap-x-2 items-center"
-        >
+      <View style={styles.rowBetween}>
+        <TouchableOpacity onPress={onToggle} style={styles.rowStart}>
           <Svg width="30" height="30" viewBox="0 0 30 30" fill="none">
             <Path
               d="M10 15H10.0112M15.0063 15H15.0162M19.9888 15H20"
@@ -98,17 +94,14 @@ const Header = ({
             />
           </Svg>
           {!showFilter && (
-            <Text
-              style={styles.poppinsRegular}
-              className="text-white text-2xl pl-1"
-            >
+            <Text style={[styles.poppinsRegular, styles.title]}>
               {title || "RunShift"}
             </Text>
           )}
         </TouchableOpacity>
 
         {!showFilter && (
-          <View className="flex-row gap-x-4">
+          <View style={styles.rowGap}>
             {calendar && (
               <TouchableOpacity
                 onPress={() => setShowHeaderCalendar!(!showHeaderCalendar)}
@@ -116,7 +109,6 @@ const Header = ({
                 <Calender />
               </TouchableOpacity>
             )}
-
             {persons && (
               <TouchableOpacity
                 onPress={() => setShowAllShifts!(!showAllShifts)}
@@ -124,17 +116,15 @@ const Header = ({
                 <Persons />
               </TouchableOpacity>
             )}
-
             {filter && (
               <TouchableOpacity onPress={() => setShowFilter!(!showFilter)}>
                 <View
-                  className={filterApplied ? `bg-secondary rounded-full` : ""}
+                  style={filterApplied ? styles.filterIconActive : undefined}
                 >
                   <Filter />
                 </View>
               </TouchableOpacity>
             )}
-
             {moreOptions && (
               <TouchableOpacity
                 onPress={() => setMoreOptions!(!showMoreOptions)}
@@ -146,14 +136,13 @@ const Header = ({
         )}
 
         {showFilter && (
-          <View className="flex-1 flex-row justify-between border-b ml-4 w-full border-white pr-6">
+          <View style={styles.filterInputRow}>
             <TextInput
-              style={styles.poppinsRegular}
+              style={[styles.poppinsRegular, styles.filterInput]}
               placeholder="filter"
-              className="text-xl pt-2 text-white w-full"
-              placeholderTextColor={"white"}
+              placeholderTextColor="white"
               value={localEmail}
-              onChangeText={(text) => setLocalEmail(text)}
+              onChangeText={setLocalEmail}
             />
             <TouchableOpacity onPress={handleArrowClick}>
               <ArrowLarge />
@@ -163,14 +152,17 @@ const Header = ({
       </View>
 
       {filterApplied && (
-        <View className="pt-4 -mb-4 flex-row space-x-2">
-          <Text style={styles.poppinsRegular} className="text-white">
+        <View style={styles.filterNotice}>
+          <Text style={[styles.poppinsRegular, styles.whiteText]}>
             Your view is being filtered
           </Text>
           <TouchableOpacity onPress={handleRemoveFilter}>
             <Text
-              style={styles.poppinsRegular}
-              className="text-white underline"
+              style={[
+                styles.poppinsRegular,
+                styles.whiteText,
+                styles.underline,
+              ]}
             >
               Remove filter
             </Text>
@@ -179,12 +171,7 @@ const Header = ({
       )}
 
       {subhead && (
-        <Text
-          style={styles.poppinsRegular}
-          className="text-white pt-6 text-base pl-1"
-        >
-          {subhead}
-        </Text>
+        <Text style={[styles.poppinsRegular, styles.subhead]}>{subhead}</Text>
       )}
     </View>
   );
@@ -193,10 +180,80 @@ const Header = ({
 export default Header;
 
 const styles = StyleSheet.create({
+  transparentBackground: {
+    backgroundColor: "transparent",
+  },
+
+  header: {
+    backgroundColor: "#175B57",
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 24,
+    width: "100%",
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+  },
   poppinsRegular: {
     fontFamily: "PoppinsRegular",
   },
   poppinsSemiBold: {
     fontFamily: "PoppinsSemiBold",
+  },
+  rowBetween: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  rowStart: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  rowGap: {
+    flexDirection: "row",
+    gap: 16,
+  },
+  title: {
+    color: "white",
+    fontSize: 24,
+    paddingLeft: 4,
+  },
+  filterInputRow: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 16,
+    paddingRight: 24,
+    borderBottomWidth: 1,
+    borderBottomColor: "white",
+  },
+  filterInput: {
+    flex: 1,
+    color: "white",
+    fontSize: 18,
+    paddingTop: 8,
+  },
+  filterIconActive: {
+    backgroundColor: "#FF9F1C", // Replace with your 'bg-secondary' if different
+    borderRadius: 999,
+    padding: 4,
+  },
+  filterNotice: {
+    flexDirection: "row",
+    paddingTop: 16,
+    marginBottom: -16,
+    gap: 8,
+  },
+  whiteText: {
+    color: "white",
+  },
+  underline: {
+    textDecorationLine: "underline",
+  },
+  subhead: {
+    color: "white",
+    paddingTop: 24,
+    paddingLeft: 4,
+    fontSize: 16,
   },
 });

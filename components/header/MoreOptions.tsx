@@ -1,171 +1,192 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet } from 'react-native';
-import Person from '@/assets/icons/header/Person';
-import CheckBox from '../settings/CheckBox';
-import Persons from '@/assets/icons/header/Persons';
-import { useAppContext } from '@/context/AppContext';
-import Settings from '@/assets/icons/drawer/Settings';
-import CalenderIcon from '@/assets/icons/CalenderIcon';
-import WeatherIcon from '@/assets/icons/WeatherIcon';
-import Help from '@/assets/icons/Help';
-import { Link, usePathname } from 'expo-router';
-import EyeClose from '@/assets/icons/EyeClose';
-
-
+import React from "react";
+import { View, Text, TouchableOpacity, Modal, StyleSheet } from "react-native";
+import Person from "@/assets/icons/header/Person";
+import CheckBox from "../settings/CheckBox";
+import Settings from "@/assets/icons/drawer/Settings";
+import CalenderIcon from "@/assets/icons/CalenderIcon";
+import Help from "@/assets/icons/Help";
+import EyeClose from "@/assets/icons/EyeClose";
+import { useAppContext } from "@/context/AppContext";
+import { Link, usePathname } from "expo-router";
 
 const MoreOptions = () => {
-    const {
-        showMoreOptions,
-        setShowHorizontalCalendar, showHorizontalCalendar,
-        setMoreOptions, showProfilePicture, setShowProfilePicture, pushNotifications, setPushNotifications, hideReadMessages, setHideReadMessages } = useAppContext()
+  const {
+    showMoreOptions,
+    setMoreOptions,
+    showHorizontalCalendar,
+    setShowHorizontalCalendar,
+    showProfilePicture,
+    setShowProfilePicture,
+    pushNotifications,
+    setPushNotifications,
+    hideReadMessages,
+    setHideReadMessages,
+  } = useAppContext();
 
-    const pathname = usePathname();
-    console.log(pathname);
+  const pathname = usePathname();
 
-    return (
-        <View className=''>
+  return (
+    <View>
+      <Modal
+        visible={showMoreOptions}
+        transparent
+        onRequestClose={() => setMoreOptions?.(!showMoreOptions)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          onPress={() => setMoreOptions?.(!showMoreOptions)}
+          activeOpacity={1}
+        >
+          <View style={styles.modalContent}>
+            {/* Home Page Options */}
+            {pathname === "/" && (
+              <TouchableOpacity
+                style={styles.optionRow}
+                onPress={() =>
+                  setShowHorizontalCalendar?.(!showHorizontalCalendar)
+                }
+              >
+                <CalenderIcon />
+                <Text style={[styles.optionText, styles.poppinsRegular]}>
+                  Calendar
+                </Text>
+                <CheckBox
+                  color="white"
+                  isCheck={showHorizontalCalendar}
+                  onChecked={() =>
+                    setShowHorizontalCalendar?.(!showHorizontalCalendar)
+                  }
+                />
+              </TouchableOpacity>
+            )}
 
-            <Modal visible={showMoreOptions} transparent={true} onRequestClose={() => setMoreOptions!(!showMoreOptions)}>
-                <TouchableOpacity style={styles.modalOverlay} onPress={() => setMoreOptions!(!showMoreOptions)}>
-                    <View style={styles.modalContent}>
+            {/* Notifications Page */}
+            {pathname === "/notifications" && (
+              <TouchableOpacity
+                style={styles.optionRow}
+                onPress={() => setPushNotifications?.(!pushNotifications)}
+              >
+                <CalenderIcon />
+                <Text style={[styles.optionText, styles.poppinsRegular]}>
+                  Push notifications
+                </Text>
+                <CheckBox
+                  color="white"
+                  isCheck={pushNotifications}
+                  onChecked={() => setPushNotifications?.(!pushNotifications)}
+                />
+              </TouchableOpacity>
+            )}
 
-                        {/* Home page */}
+            {/* Notice Board Page */}
+            {pathname === "/noticeBoard" && (
+              <TouchableOpacity
+                style={styles.optionRow}
+                onPress={() => setHideReadMessages?.(!hideReadMessages)}
+              >
+                <EyeClose />
+                <Text style={[styles.optionText, styles.poppinsRegular]}>
+                  Hide read messages
+                </Text>
+                <CheckBox
+                  color="white"
+                  isCheck={hideReadMessages}
+                  onChecked={() => setHideReadMessages?.(!hideReadMessages)}
+                />
+              </TouchableOpacity>
+            )}
 
-                        {
-                            pathname === '/' && <>
-                                <TouchableOpacity className='py-3 flex-row ' onPress={() => setShowHorizontalCalendar!(!showHorizontalCalendar)}>
-                                    <CalenderIcon />
-                                    <Text className="ml-4 text-white text-sm" style={styles.poppinsRegular}>Calender</Text>
-                                    <CheckBox
-                                        color={'white'}
-                                        isCheck={showHorizontalCalendar}
-                                        onChecked={() => setShowHorizontalCalendar!(!showHorizontalCalendar)}
-                                    />
-                                </TouchableOpacity>
+            {/* Facilities Page */}
+            {pathname === "/facilities" && (
+              <TouchableOpacity style={styles.optionRow}>
+                <Person />
+                <Text style={[styles.optionText, styles.poppinsRegular]}>
+                  Show facility colours
+                </Text>
+                <CheckBox
+                  color="white"
+                  isCheck={true}
+                  onChecked={() => console.log("Facility toggle")}
+                />
+              </TouchableOpacity>
+            )}
 
-                                {/* <TouchableOpacity className='py-3 flex-row '>
-                                    <WeatherIcon />
-                                    <Text className="ml-4 text-white text-sm" style={styles.poppinsRegular}>weather forecast</Text>
-                                    <CheckBox
-                                        color={'white'}
-                                        isCheck={true}
-                                        onChecked={() => console.log('hello')
-                                        }
-                                    />
-                                </TouchableOpacity> */}
-
-                            </>
-                        }
-
-                        {/* Notifications */}
-
-                        {
-                            pathname === '/notifications' && <>
-                                <TouchableOpacity className='py-3 flex-row ' onPress={() => setPushNotifications!(!pushNotifications)}>
-                                    <CalenderIcon />
-                                    <Text className="ml-4 text-white text-sm" style={styles.poppinsRegular}>push notifications</Text>
-                                    <CheckBox
-                                        color={'white'}
-                                        isCheck={pushNotifications}
-                                        onChecked={() => setPushNotifications!(!pushNotifications)}
-                                    />
-                                </TouchableOpacity>
-
-                            </>
-                        }
-
-                        {/* Notice board */}
-                        {
-                            pathname === '/noticeBoard' && <>
-                                <TouchableOpacity className='py-3 flex-row ' onPress={() => setHideReadMessages!(!hideReadMessages)}>
-                                    <EyeClose />
-                                    <Text className="ml-4 text-white text-sm" style={styles.poppinsRegular}>hide read messages</Text>
-                                    <CheckBox
-                                        color={'white'}
-                                        isCheck={hideReadMessages}
-                                        onChecked={() => setHideReadMessages!(!hideReadMessages)}
-                                    />
-                                </TouchableOpacity>
-
-
-                            </>
-                        }
-
-
-                        {
-                            pathname === "/facilities" && <>
-                                <TouchableOpacity className='py-3 flex-row '>
-                                    <Person />
-                                    <Text className="ml-4 text-white text-sm" style={styles.poppinsRegular}>show facility colours</Text>
-                                    <CheckBox
-                                        color={'white'}
-                                        isCheck={true}
-                                        onChecked={() => console.log('hello')
-                                        }
-                                    />
-                                </TouchableOpacity>
-                            </>
-                        }
-
-
-                        {
-                            pathname !== "/settings" && pathname !== "/facilities" && <>
-                                <TouchableOpacity className='py-3 flex-row ' onPress={() => setShowProfilePicture!(!showProfilePicture)}>
-                                    <Person />
-                                    <Text className="ml-4 text-white text-sm" style={styles.poppinsRegular}>show profile pictures</Text>
-                                    <CheckBox
-                                        color={'white'}
-                                        isCheck={showProfilePicture}
-                                        onChecked={() => setShowProfilePicture!(!showProfilePicture)}
-
-                                    />
-                                </TouchableOpacity>
-                                <TouchableOpacity className='py-3 flex-row '>
-                                    <Help />
-                                    <Text className="ml-4 text-white text-sm" style={styles.poppinsRegular}>help</Text>
-
-                                </TouchableOpacity>
-                            </>
-                        }
-
-                        <Link href={'/settings'} asChild>
-                            <TouchableOpacity className='py-3 flex-row '>
-                                <Settings color={'white'} />
-                                <Text className="ml-4 text-white text-sm" style={styles.poppinsRegular}>settings</Text>
-
-                            </TouchableOpacity>
-                        </Link>
-
-                    </View>
+            {/* General Options */}
+            {pathname !== "/settings" && pathname !== "/facilities" && (
+              <>
+                <TouchableOpacity
+                  style={styles.optionRow}
+                  onPress={() => setShowProfilePicture?.(!showProfilePicture)}
+                >
+                  <Person />
+                  <Text style={[styles.optionText, styles.poppinsRegular]}>
+                    Show profile pictures
+                  </Text>
+                  <CheckBox
+                    color="white"
+                    isCheck={showProfilePicture}
+                    onChecked={() =>
+                      setShowProfilePicture?.(!showProfilePicture)
+                    }
+                  />
                 </TouchableOpacity>
 
-            </Modal>
-        </View>
-    );
+                <TouchableOpacity style={styles.optionRow}>
+                  <Help />
+                  <Text style={[styles.optionText, styles.poppinsRegular]}>
+                    Help
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
+
+            {/* Settings Link */}
+            <Link href="/settings" asChild>
+              <TouchableOpacity style={styles.optionRow}>
+                <Settings color="white" />
+                <Text style={[styles.optionText, styles.poppinsRegular]}>
+                  Settings
+                </Text>
+              </TouchableOpacity>
+            </Link>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-
-    modalOverlay: {
-        flex: 1,
-        paddingTop: 80,
-        alignItems: 'flex-end',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    modalContent: {
-        backgroundColor: '#175B57',
-        padding: 20,
-        borderRadius: 10,
-        width: '80%',
-        marginRight: 10,
-    },
-
-    poppinsRegular: {
-        fontFamily: 'PoppinsRegular',
-    },
-    poppinsSemiBold: {
-        fontFamily: 'PoppinsSemiBold',
-    },
+  modalOverlay: {
+    flex: 1,
+    paddingTop: 80,
+    alignItems: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#175B57",
+    padding: 20,
+    borderRadius: 10,
+    width: "80%",
+    marginRight: 10,
+  },
+  optionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    gap: 16,
+  },
+  optionText: {
+    color: "white",
+    fontSize: 14,
+    flex: 1,
+  },
+  poppinsRegular: {
+    fontFamily: "PoppinsRegular",
+  },
+  poppinsSemiBold: {
+    fontFamily: "PoppinsSemiBold",
+  },
 });
 
 export default MoreOptions;

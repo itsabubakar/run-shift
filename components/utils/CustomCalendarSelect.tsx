@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet } from 'react-native';
-import { format, add, sub, getDaysInMonth, getDay } from 'date-fns';
-import Chevron from '@/assets/icons/Chevron';
-import Cancel from '@/assets/icons/Cancel';
-import Check from '@/assets/icons/Check';
-import Redo from '@/assets/icons/shifts/Redo';
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, Modal, StyleSheet } from "react-native";
+import { format, add, sub, getDaysInMonth, getDay } from "date-fns";
+import Chevron from "@/assets/icons/Chevron";
+import Cancel from "@/assets/icons/Cancel";
+import Check from "@/assets/icons/Check";
+import Redo from "@/assets/icons/shifts/Redo";
 
 type Props = {
   onSelect: (date: Date) => void;
@@ -14,23 +14,33 @@ const CustomCalendarSelect = ({ onSelect }: Props) => {
   const [isVisible, setIsVisible] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
-  const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+  const daysOfWeek = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
   const handleSelectDay = (day: number) => {
-    const selectedDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+    const selectedDate = new Date(
+      currentMonth.getFullYear(),
+      currentMonth.getMonth(),
+      day
+    );
     onSelect(selectedDate);
     setIsVisible(false);
   };
 
   const renderDaysOfWeek = () => {
     return daysOfWeek.map((day, index) => (
-      <Text key={index} style={styles.dayOfWeek}>{day}</Text>
+      <Text key={index} style={styles.dayOfWeek}>
+        {day}
+      </Text>
     ));
   };
 
   const renderDays = () => {
     const daysInMonth = getDaysInMonth(currentMonth);
-    const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+    const firstDayOfMonth = new Date(
+      currentMonth.getFullYear(),
+      currentMonth.getMonth(),
+      1
+    );
     const dayOfWeek = getDay(firstDayOfMonth);
     const days = [];
     const today = new Date();
@@ -51,7 +61,7 @@ const CustomCalendarSelect = ({ onSelect }: Props) => {
           style={isToday ? styles.currentDay : styles.day}
           onPress={() => handleSelectDay(day)}
         >
-          <Text style={[isToday ? { color: 'white' } : null, { fontFamily: 'PoppinsRegular', color: '#ffffff' }]}>{day}</Text>
+          <Text style={styles.dayText}>{day}</Text>
         </TouchableOpacity>
       );
     }
@@ -65,41 +75,62 @@ const CustomCalendarSelect = ({ onSelect }: Props) => {
     return days;
   };
 
-  const changeMonth = (direction: 'next' | 'prev') => {
-    const newMonth = direction === 'next' ? add(currentMonth, { months: 1 }) : sub(currentMonth, { months: 1 });
+  const changeMonth = (direction: "next" | "prev") => {
+    const newMonth =
+      direction === "next"
+        ? add(currentMonth, { months: 1 })
+        : sub(currentMonth, { months: 1 });
     setCurrentMonth(newMonth);
   };
 
   return (
     <View>
-      <TouchableOpacity onPress={() => setIsVisible(true)} style={styles.button}>
-        <Text className='text-white' style={styles.poppinsRegular}>{format(new Date(), 'dd/MM/yyyy')}</Text>
+      <TouchableOpacity
+        onPress={() => setIsVisible(true)}
+        style={styles.button}
+      >
+        <Text style={styles.buttonText}>
+          {format(new Date(), "dd/MM/yyyy")}
+        </Text>
       </TouchableOpacity>
-      <Modal visible={isVisible} transparent={true} onRequestClose={() => setIsVisible(false)}>
-        <TouchableOpacity style={styles.modalOverlay} onPress={() => setIsVisible(false)}>
+
+      <Modal
+        visible={isVisible}
+        transparent
+        onRequestClose={() => setIsVisible(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPressOut={() => setIsVisible(false)}
+        >
           <View style={styles.modalContent}>
             <View style={styles.header}>
-              <TouchableOpacity onPress={() => changeMonth('prev')}>
-                <View className='rotate-90'>
+              <TouchableOpacity onPress={() => changeMonth("prev")}>
+                <View style={styles.rotateChevron}>
                   <Chevron />
                 </View>
               </TouchableOpacity>
-              <Text className='text-white' style={styles.poppinsSemiBold}>{format(currentMonth, 'MMMM yyyy')}</Text>
-              <TouchableOpacity onPress={() => changeMonth('next')}>
-                <View className='-rotate-90'>
+              <Text style={styles.headerText}>
+                {format(currentMonth, "MMMM yyyy")}
+              </Text>
+              <TouchableOpacity onPress={() => changeMonth("next")}>
+                <View style={styles.rotateChevronBack}>
                   <Chevron />
                 </View>
               </TouchableOpacity>
             </View>
+
             <View style={styles.calendar}>
               {renderDaysOfWeek()}
               {renderDays()}
             </View>
-            <View className='flex-row pt-8'>
-              <View className='mr-auto'>
+
+            <View style={styles.footer}>
+              <View style={styles.iconLeft}>
                 <Redo fill="#27736E" />
               </View>
-              <View className='mr-8'>
+              <View style={styles.iconCenter}>
                 <Cancel />
               </View>
               <Check />
@@ -113,64 +144,86 @@ const CustomCalendarSelect = ({ onSelect }: Props) => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#27736E',
+    backgroundColor: "#27736E",
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
     margin: 10,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "white",
+    fontFamily: "PoppinsRegular",
   },
   modalOverlay: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    backgroundColor: '#175B57',
+    backgroundColor: "#175B57",
     padding: 20,
     borderRadius: 10,
-    width: '80%',
+    width: "80%",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 20,
   },
+  headerText: {
+    color: "white",
+    fontFamily: "PoppinsSemiBold",
+  },
+  rotateChevron: {
+    transform: [{ rotate: "90deg" }],
+  },
+  rotateChevronBack: {
+    transform: [{ rotate: "-90deg" }],
+  },
   calendar: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "flex-end",
   },
   dayOfWeek: {
-    width: '14%',
-    textAlign: 'center',
+    width: "14%",
+    textAlign: "center",
     marginBottom: 5,
-    fontFamily: 'PoppinsRegular',
-    color: 'white',
+    fontFamily: "PoppinsRegular",
+    color: "white",
   },
   day: {
-    width: '14%',
-    alignItems: 'center',
+    width: "14%",
+    alignItems: "center",
     padding: 10,
     marginVertical: 2,
     borderRadius: 5,
-    fontFamily: 'PoppinsRegular',
   },
   currentDay: {
-    width: '14%',
-    alignItems: 'center',
+    width: "14%",
+    alignItems: "center",
     padding: 10,
     marginVertical: 2,
     borderRadius: 5,
-    backgroundColor: '#A4A705',
+    backgroundColor: "#A4A705",
   },
-  poppinsRegular: {
-    fontFamily: 'PoppinsRegular',
+  dayText: {
+    fontFamily: "PoppinsRegular",
+    color: "#ffffff",
   },
-  poppinsSemiBold: {
-    fontFamily: 'PoppinsSemiBold',
+  footer: {
+    flexDirection: "row",
+    paddingTop: 20,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  iconLeft: {
+    marginRight: "auto",
+  },
+  iconCenter: {
+    marginRight: 32,
   },
 });
 

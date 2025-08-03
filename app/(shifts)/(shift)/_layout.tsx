@@ -9,7 +9,6 @@ const _layout = (props: Props) => {
       }}
     >
       <Stack.Screen name="shift" />
-      {/* <Stack.Screen name="text" /> */}
     </Stack>
   );
 };

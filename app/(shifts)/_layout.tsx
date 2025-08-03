@@ -1,7 +1,6 @@
 import { BackHandler, Linking, StyleSheet, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
-// import CustomDrawerContent from '@/components/header/CustomDrawerHeader';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePathname, useRouter } from "expo-router";
 import {
@@ -25,33 +24,24 @@ import { useAuth } from "@/context/AuthContext";
 import { useAppContext } from "@/context/AppContext";
 import * as SecureStore from "expo-secure-store";
 import { OpenDoor } from "@/assets/icons";
-
 import { useNavigation } from "expo-router";
 
-type Props = {};
-
-const Layout = (props: Props) => {
+const Layout = () => {
   const navigation = useNavigation();
-
   const { authState, setAuthState } = useAuth();
-  const { showProfilePicture } = useAppContext();
-  const { showFontSlider, setShowFontSlider } = useAppContext();
+  const {
+    showProfilePicture,
+    showFontSlider,
+    setShowFontSlider,
+    setRefreshKey,
+  } = useAppContext();
   const router = useRouter();
-
   const pathname = usePathname();
-  const { setRefreshKey } = useAppContext();
 
-  const handleRefresh = () => {
-    setRefreshKey!((prevKey) => prevKey + 1);
-  };
-
-  // Logout function
   const handleLogout = async () => {
-    // Remove stored email and password
     await SecureStore.deleteItemAsync("email");
     await SecureStore.deleteItemAsync("password");
 
-    // Clear authentication state
     setAuthState!({
       authenticated: false,
       role: null,
@@ -64,102 +54,76 @@ const Layout = (props: Props) => {
       staffId: "",
     });
 
-    // Navigate to login screen
-    router.replace("/"); // Replace this with the correct route to your login screen
+    router.replace("/");
+  };
+
+  const handleRefresh = () => {
+    setRefreshKey!((prevKey) => prevKey + 1);
   };
 
   function CustomDrawerContent(props: any) {
     const { top, bottom } = useSafeAreaInsets();
-    const router = useRouter();
 
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.drawerContainer}>
         <DrawerContentScrollView
-          className=""
-          contentContainerStyle={{
-            backgroundColor: "#175B57",
-          }}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.drawerScrollContainer}
           {...props}
         >
-          <View className="px-6 bg-[#175B57] rounded-b-[30px] flex-row items-center h-[125px] justify-center gap-x-[10px] ">
-            {/* Profile image */}
+          <View style={styles.profileContainer}>
             {showProfilePicture && (
-              <View className=" h-[50] w-[50] rounded-full justify-center items-center">
+              <View style={styles.profileImageWrapper}>
                 <ProfilePicture />
               </View>
             )}
-
-            {/* name and email */}
-            <View className="">
-              <Text
-                style={styles.poppinsSemiBold}
-                className="text-white text-xl pb-1"
-              >
+            <View>
+              <Text style={[styles.poppinsSemiBold, styles.profileName]}>
                 {authState?.firstName}
               </Text>
-              <Text
-                style={styles.poppinsSemiBold}
-                className="font-light text-white"
-              >
+              <Text style={[styles.poppinsSemiBold, styles.profileEmail]}>
                 {authState?.email}
               </Text>
             </View>
           </View>
 
-          <View className="bg-white rounded-t-md">
+          <View style={styles.drawerItemWrapper}>
             <DrawerItemList {...props} />
+
             <DrawerItem
-              icon={({ focused, color, size }) => <Rate color={color} />}
-              labelStyle={{
-                fontFamily: "PoppinsRegular",
-                fontSize: 14,
-                marginLeft: -14,
-              }}
+              icon={({ color }) => <Rate color={color} />}
+              label=" Rate Us On Google Play"
+              labelStyle={styles.drawerLabel}
               onPress={() => {
                 Linking.openURL(
                   "https://play.google.com/store/apps/details?id=com.thetrueseeker.runshift"
-                ).catch((err) => {
-                  console.error("An error occurred", err);
-                });
+                ).catch(console.error);
               }}
-              label={"Rate Us On Google Play"}
             />
 
             <DrawerItem
-              icon={({ focused, color, size }) => <Desktop color={color} />}
-              labelStyle={{
-                fontFamily: "PoppinsRegular",
-                fontSize: 14,
-                marginLeft: -14,
-              }}
+              icon={({ color }) => <Desktop color={color} />}
+              label=" Desktop Site"
+              labelStyle={styles.drawerLabel}
               onPress={() => {
-                Linking.openURL("https://www.runshift360.com").catch((err) => {
-                  console.error("An error occurred", err);
-                });
+                Linking.openURL("https://www.runshift360.com").catch(
+                  console.error
+                );
               }}
-              label={"Desktop Site"}
             />
+
             <DrawerItem
-              icon={({ focused, color, size }) => <Logout color={color} />}
-              labelStyle={{
-                fontFamily: "PoppinsRegular",
-                fontSize: 14,
-                marginLeft: -14,
-              }}
+              icon={({ color }) => <Logout color={color} />}
+              label=" Logout"
+              labelStyle={styles.drawerLabel}
               onPress={handleLogout}
-              label={"Logout"}
             />
+
             <DrawerItem
-              icon={({ focused, color, size }) => <Exit color={color} />}
-              labelStyle={{
-                fontFamily: "PoppinsRegular",
-                fontSize: 14,
-                marginLeft: -14,
-              }}
-              onPress={() => {
-                BackHandler.exitApp(); // This exits the app
-              }}
-              label={"Exit"}
+              icon={({ color }) => <Exit color={color} />}
+              label=" Exit"
+              labelStyle={styles.drawerLabel}
+              onPress={() => BackHandler.exitApp()}
             />
           </View>
         </DrawerContentScrollView>
@@ -168,60 +132,51 @@ const Layout = (props: Props) => {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1, backgroundColor: "white" }}>
+    <GestureHandlerRootView style={styles.root}>
       <Drawer
         drawerContent={CustomDrawerContent}
         screenOptions={{
           headerShown: false,
           drawerActiveBackgroundColor: "#A4A705",
           drawerActiveTintColor: "white",
-
-          drawerLabelStyle: {
-            marginLeft: -14,
-            fontFamily: "PoppinsRegular",
-            fontSize: 14,
-          },
+          drawerLabelStyle: styles.drawerLabel,
         }}
       >
         <Drawer.Screen
           name="(shift)"
           options={{
-            drawerLabel: "Shifts",
+            drawerLabel: "  Shifts",
             title: "runshift",
-            drawerIcon: ({ color }: any) => <RunShiftIcon color={color} />,
+            drawerIcon: ({ color }) => <RunShiftIcon color={color} />,
           }}
         />
-
         <Drawer.Screen
           name="openShifts"
           options={{
-            drawerLabel: "Open Shifts",
+            drawerLabel: "  Open Shifts",
             title: "Open Shifts",
-            drawerIcon: ({ color }: any) => <OpenDoor color={color} />,
+            drawerIcon: ({ color }) => <OpenDoor color={color} />,
           }}
         />
-
         <Drawer.Screen
           name="(settings)"
           options={{
-            drawerLabel: "Settings",
+            drawerLabel: "  Settings",
             title: "settings",
-            drawerIcon: ({ color }: any) => <Settings color={color} />,
+            drawerIcon: ({ color }) => <Settings color={color} />,
           }}
         />
-
-        <Drawer.Screen
+        {/* <Drawer.Screen
           name="font"
           options={{
-            drawerLabel: "Font Size",
+            drawerLabel: "  Font Size",
             title: "Font Size",
             drawerIcon: ({ color }) => <Font color={color} />,
           }}
           listeners={{
             drawerItemPress: (e) => {
-              e.preventDefault(); // Prevent navigation
+              e.preventDefault();
               setShowFontSlider!(true);
-
               if (pathname === "/") {
                 router.push(`/(shifts)/(shift)/shift`);
               } else {
@@ -229,53 +184,37 @@ const Layout = (props: Props) => {
               }
             },
           }}
-        />
-        {/* <Drawer.Screen
-          name="refresh"
-          options={{
-            drawerLabel: "Refresh",
-            title: "Refresh",
-            drawerIcon: ({ color }) => <Refresh color={color} />,
-          }}
-          listeners={{
-            drawerItemPress: (e) => {
-              e.preventDefault();
-              handleRefresh();
-              navigation.dispatch(DrawerActions.closeDrawer());
-            },
-          }}
         /> */}
-
         <Drawer.Screen
           name="terms"
           options={{
-            drawerLabel: "Terms & Conditions",
+            drawerLabel: "  Terms & Conditions",
             title: "terms & conditions",
-            drawerIcon: ({ color }: any) => <Terms color={color} />,
+            drawerIcon: ({ color }) => <Terms color={color} />,
           }}
         />
         <Drawer.Screen
           name="privacy"
           options={{
-            drawerLabel: "Privacy Policy",
+            drawerLabel: "  Privacy Policy",
             title: "privacy policy",
-            drawerIcon: ({ color }: any) => <Privacy color={color} />,
+            drawerIcon: ({ color }) => <Privacy color={color} />,
           }}
         />
         <Drawer.Screen
           name="getInTouch"
           options={{
-            drawerLabel: "Get In Touch",
+            drawerLabel: "  Get In Touch",
             title: "getInTouch",
-            drawerIcon: ({ color }: any) => <Contact color={color} />,
+            drawerIcon: ({ color }) => <Contact color={color} />,
           }}
         />
         <Drawer.Screen
           name="reportABug"
           options={{
-            drawerLabel: "Report A Bug",
+            drawerLabel: "  Report A Bug",
             title: "report a bug",
-            drawerIcon: ({ color }: any) => <Bug color={color} />,
+            drawerIcon: ({ color }) => <Bug color={color} />,
           }}
         />
       </Drawer>
@@ -286,8 +225,57 @@ const Layout = (props: Props) => {
 export default Layout;
 
 const styles = StyleSheet.create({
-  poppinsRegular: {
+  root: {
+    flex: 1,
+  },
+  drawerContainer: {
+    flex: 1,
+  },
+  drawerScrollContainer: {
+    // backgroundColor: "#175B57",
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingStart: 0,
+    paddingEnd: 0,
+  },
+  profileContainer: {
+    // paddingHorizontal: 24,
+    backgroundColor: "#175B57",
+    borderBottomLeftRadius: 30,
+    flexDirection: "row",
+    alignItems: "center",
+    height: 125,
+    justifyContent: "center",
+    gap: 10,
+  },
+  profileImageWrapper: {
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  profileName: {
+    color: "white",
+    fontSize: 20,
+    paddingBottom: 4,
+  },
+  profileEmail: {
+    color: "white",
+    fontSize: 14,
+  },
+  drawerItemWrapper: {
+    backgroundColor: "white",
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    paddingHorizontal: 12,
+    paddingBottom: 8,
+    paddingTop: 12,
+  },
+  drawerLabel: {
     fontFamily: "PoppinsRegular",
+    fontSize: 14,
+    marginLeft: -14,
   },
   poppinsSemiBold: {
     fontFamily: "PoppinsSemiBold",

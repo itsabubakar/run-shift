@@ -1,19 +1,8 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Modal, StyleSheet } from "react-native";
-import {
-  format,
-  startOfWeek,
-  add,
-  sub,
-  getDaysInMonth,
-  getDay,
-} from "date-fns";
+import { format, add, sub, getDaysInMonth, getDay } from "date-fns";
 import Chevron from "@/assets/icons/Chevron";
 import Cancel from "@/assets/icons/Cancel";
-import Check from "@/assets/icons/Check";
-import Redo from "@/assets/icons/shifts/Redo";
-import Pin from "@/assets/icons/Pin";
-import Star from "@/assets/icons/Star";
 import Expand from "@/assets/icons/Expand";
 import { Link } from "expo-router";
 
@@ -40,21 +29,18 @@ const CustomCalendarSelect = ({
       currentMonth.getFullYear(),
       currentMonth.getMonth(),
       day,
-      12 // Set the time to noon to avoid timezone issues
+      12
     );
     onSelect(selectedDate);
-    setShowHeaderCalendar!(false);
-
-    console.log(selectedDate, "selected date in header calender");
+    setShowHeaderCalendar?.(false);
   };
 
-  const renderDaysOfWeek = () => {
-    return daysOfWeek.map((day, index) => (
+  const renderDaysOfWeek = () =>
+    daysOfWeek.map((day, index) => (
       <Text key={index} style={styles.dayOfWeek}>
         {day}
       </Text>
     ));
-  };
 
   const renderDays = () => {
     const daysInMonth = getDaysInMonth(currentMonth);
@@ -67,38 +53,33 @@ const CustomCalendarSelect = ({
     const days = [];
     const today = new Date();
 
-    // Fill in the blanks for the days before the first day of the month
     for (let i = 0; i < dayOfWeek; i++) {
       days.push(<View key={`empty-start-${i}`} style={styles.day} />);
     }
 
-    // Fill in the days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const isToday =
         day === today.getDate() &&
         currentMonth.getMonth() === today.getMonth() &&
         currentMonth.getFullYear() === today.getFullYear();
 
+      const dateObj = new Date(
+        currentMonth.getFullYear(),
+        currentMonth.getMonth(),
+        day,
+        12
+      );
+
       days.push(
-        <Link
-          key={`day-${day}`}
-          asChild
-          className="self-center"
-          href={`/(shifts)/(shift)/${new Date(
-            currentMonth.getFullYear(),
-            currentMonth.getMonth(),
-            day,
-            12
-          )}`}
-        >
+        <Link key={`day-${day}`} asChild href={`/(shifts)/(shift)/${dateObj}`}>
           <TouchableOpacity
             style={isToday ? styles.currentDay : styles.day}
             onPress={() => handleSelectDay(day)}
           >
             <Text
               style={[
-                isToday ? { color: "white" } : null,
-                { fontFamily: "PoppinsRegular", color: "#ffffff" },
+                styles.poppinsRegular,
+                { color: isToday ? "white" : "#ffffff" },
               ]}
             >
               {day}
@@ -108,7 +89,6 @@ const CustomCalendarSelect = ({
       );
     }
 
-    // Fill in the blanks for the days after the last day of the month
     const totalSlots = Math.ceil((dayOfWeek + daysInMonth) / 7) * 7;
     const emptySlotsAfter = totalSlots - (dayOfWeek + daysInMonth);
     for (let i = 0; i < emptySlotsAfter; i++) {
@@ -126,71 +106,51 @@ const CustomCalendarSelect = ({
     setCurrentMonth(newMonth);
   };
 
-  const handleSelect = () => {
-    console.log("clicked");
-  };
-
   return (
     <View>
       <Modal
         visible={showHeaderCalendar}
-        transparent={true}
-        onRequestClose={() => setShowHeaderCalendar!(false)}
+        transparent
+        onRequestClose={() => setShowHeaderCalendar?.(false)}
       >
         <TouchableOpacity
-          style={[
-            styles.modalOverlay,
-            !expand && {
-              paddingTop: 80,
-            },
-          ]}
-          onPress={() => setShowHeaderCalendar!(false)}
+          style={[styles.modalOverlay, !expand && styles.overlayPadding]}
+          onPress={() => setShowHeaderCalendar?.(false)}
+          activeOpacity={1}
         >
-          <View
-            style={[
-              styles.modalContent,
-              !expand && {
-                width: "80%",
-                marginRight: 10,
-                height: "auto",
-              },
-            ]}
-          >
+          <View style={[styles.modalContent, !expand && styles.compactContent]}>
             <View style={styles.header}>
               <TouchableOpacity onPress={() => changeMonth("prev")}>
-                <View className="rotate-90">
+                <View style={{ transform: [{ rotate: "90deg" }] }}>
                   <Chevron />
                 </View>
               </TouchableOpacity>
-              <Text className="text-white" style={styles.poppinsSemiBold}>
+
+              <Text style={[styles.poppinsSemiBold, styles.headerText]}>
                 {format(currentMonth, "MMMM yyyy")}
               </Text>
+
               <TouchableOpacity onPress={() => changeMonth("next")}>
-                <View className="-rotate-90">
+                <View style={{ transform: [{ rotate: "-90deg" }] }}>
                   <Chevron />
                 </View>
               </TouchableOpacity>
             </View>
+
             <View style={styles.calendar}>
               {renderDaysOfWeek()}
               {renderDays()}
             </View>
-            <View className="flex-row pt-8">
-              {/* <View className='mr-4 p-4 rounded-xl bg-[#27736E]'>
 
-                                <Pin />
-                            </View> */}
-              {/* <View className='mr-4 p-4 rounded-xl bg-[#27736E]'>
-
-                                <Star />
-                            </View> */}
+            <View style={styles.actions}>
               <TouchableOpacity
                 onPress={() => setExpand(!expand)}
-                className="mr-4 p-4 rounded-xl bg-[#27736E]"
+                style={styles.expandBtn}
               >
                 <Expand />
               </TouchableOpacity>
-              <View className="">
+
+              <View>
                 <Cancel />
               </View>
             </View>
@@ -202,18 +162,13 @@ const CustomCalendarSelect = ({
 };
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: "#27736E",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
-    justifyContent: "center",
-    margin: 10,
-  },
   modalOverlay: {
     flex: 1,
     alignItems: "flex-end",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  overlayPadding: {
+    paddingTop: 80,
   },
   modalContent: {
     backgroundColor: "#175B57",
@@ -221,11 +176,20 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height: "100%",
   },
+  compactContent: {
+    width: "80%",
+    marginRight: 10,
+    height: "auto",
+  },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 20,
+  },
+  headerText: {
+    color: "white",
+    fontSize: 16,
   },
   calendar: {
     flexDirection: "row",
@@ -245,7 +209,6 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 2,
     borderRadius: 5,
-    fontFamily: "PoppinsRegular",
   },
   currentDay: {
     width: "14%",
@@ -254,6 +217,17 @@ const styles = StyleSheet.create({
     marginVertical: 2,
     borderRadius: 5,
     backgroundColor: "#A4A705",
+  },
+  actions: {
+    flexDirection: "row",
+    paddingTop: 32,
+    gap: 16,
+  },
+  expandBtn: {
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: "#27736E",
+    marginRight: 16,
   },
   poppinsRegular: {
     fontFamily: "PoppinsRegular",

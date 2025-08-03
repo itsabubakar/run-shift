@@ -11,36 +11,46 @@ import {
   Linking,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 const GetInTouch = () => {
   const { fontSize } = useAppContext();
+
   const openEmailApp = () => {
     const email = "info@pedagogichub.com";
     const url = `mailto:${email}`;
-
     Linking.openURL(url).catch((err) =>
       console.error("Error opening email app:", err)
     );
   };
+
   return (
-    <SafeAreaView className="flex-1 bg-primary ">
-      <Header title="get in touch" moreOptions={true} />
-      <View className="mx-6 mt-10 bg-white  rounded-xl p-4">
+    <SafeAreaView style={styles.container}>
+      <Header title="get in touch" />
+
+      <View style={styles.messageBox}>
         <Text
-          style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}
-          className="text-black text-base"
+          style={[
+            styles.poppinsRegular,
+            styles.messageText,
+            { fontSize: fontSize! + 2 },
+          ]}
         >
           The options below are exclusively for reaching out to the Runshift
           support team. If you wish to communicate with your manager, please
           contact them directly.
         </Text>
-        <View className="items-end">
+        <View style={styles.exclamationIcon}>
           <Exclamination />
         </View>
       </View>
-      <View className=" pt-10 px-6">
+
+      <View style={styles.infoBox}>
         <Text
-          style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}
-          className="text-white text-base"
+          style={[
+            styles.poppinsRegular,
+            styles.infoText,
+            { fontSize: fontSize! + 2 },
+          ]}
         >
           Have questions about this app? Feel free to reach out to our support
           team, available online from 12 am to 10 pm (GMT), Monday through
@@ -49,10 +59,7 @@ const GetInTouch = () => {
         </Text>
       </View>
 
-      <TouchableOpacity
-        onPress={openEmailApp}
-        className="mt-auto bg-[#27736E] justify-end align-end ml-auto mr-6 mb-10 p-4 rounded-xl"
-      >
+      <TouchableOpacity onPress={openEmailApp} style={styles.emailButton}>
         <Letter />
       </TouchableOpacity>
 
@@ -62,6 +69,42 @@ const GetInTouch = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#175B57", // Equivalent of bg-primary
+  },
+  messageBox: {
+    marginHorizontal: 24,
+    marginTop: 40,
+    backgroundColor: "white",
+    borderRadius: 12,
+    padding: 16,
+  },
+  messageText: {
+    color: "black",
+  },
+  exclamationIcon: {
+    alignItems: "flex-end",
+    marginTop: 8,
+  },
+  infoBox: {
+    paddingTop: 40,
+    paddingHorizontal: 24,
+  },
+  infoText: {
+    color: "white",
+  },
+  emailButton: {
+    marginTop: "auto",
+    backgroundColor: "#27736E",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "flex-end",
+    marginRight: 24,
+    marginBottom: 40,
+    padding: 16,
+    borderRadius: 12,
+  },
   poppinsRegular: {
     fontFamily: "PoppinsRegular",
     lineHeight: 24,
@@ -70,4 +113,5 @@ const styles = StyleSheet.create({
     fontFamily: "PoppinsSemiBold",
   },
 });
+
 export default GetInTouch;

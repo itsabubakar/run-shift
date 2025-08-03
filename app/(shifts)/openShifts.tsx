@@ -25,11 +25,9 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { parse, format } from "date-fns";
 
-type Props = {};
-
 const TABS = ["Open Shifts", "Applied", "Accepted"];
 
-const Screen = (props: Props) => {
+const Screen = () => {
   const [activeTab, setActiveTab] = useState("Open Shifts");
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -44,31 +42,26 @@ const Screen = (props: Props) => {
     accepted: false,
   });
 
-  // Memoized function to group shifts by date
   const groupShiftsByDate = useCallback((shifts: any) => {
     if (!Array.isArray(shifts)) return {};
     return shifts.reduce((acc: any, shift: any) => {
       const date = shift.date;
-      if (!acc[date]) {
-        acc[date] = [];
-      }
+      if (!acc[date]) acc[date] = [];
       acc[date].push(shift);
       return acc;
     }, {});
   }, []);
 
-  // Filter out applied shifts from open shifts
   const filteredOpenShifts = openShifts.filter(
-    (openShift) =>
-      !appliedShifts.some((appliedShift) => appliedShift.id === openShift.id) &&
-      !acceptedShifts.some((acceptedShift) => acceptedShift.id === openShift.id)
+    (s) =>
+      !appliedShifts.some((a) => a.id === s.id) &&
+      !acceptedShifts.some((a) => a.id === s.id)
   );
 
   const groupedOpenShifts = groupShiftsByDate(filteredOpenShifts);
   const groupedAppliedShifts = groupShiftsByDate(appliedShifts);
   const groupedAcceptedShifts = groupShiftsByDate(acceptedShifts);
 
-  // Fetch open shifts
   const fetchOpenShifts = useCallback(async () => {
     try {
       const res = await getOpenShifts(authState?.companyId || "");
@@ -119,27 +112,19 @@ const Screen = (props: Props) => {
     }
   }, [activeTab, fetchOpenShifts, fetchAppliedShifts, fetchAcceptedShifts]);
 
-  // Handle tab change
   const handleTabChange = useCallback(
     (tab: string) => {
       setActiveTab(tab);
       setLoading(true);
-
-      // Only fetch if we haven't fetched this tab before
-      if (tab === "Open Shifts" && !hasFetched.open) {
-        fetchOpenShifts();
-      } else if (tab === "Applied" && !hasFetched.applied) {
-        fetchAppliedShifts();
-      } else if (tab === "Accepted" && !hasFetched.accepted) {
+      if (tab === "Open Shifts" && !hasFetched.open) fetchOpenShifts();
+      else if (tab === "Applied" && !hasFetched.applied) fetchAppliedShifts();
+      else if (tab === "Accepted" && !hasFetched.accepted)
         fetchAcceptedShifts();
-      } else {
-        setLoading(false);
-      }
+      else setLoading(false);
     },
     [hasFetched, fetchOpenShifts, fetchAppliedShifts, fetchAcceptedShifts]
   );
 
-  // Initial load
   useEffect(() => {
     const initialFetch = async () => {
       setLoading(true);
@@ -161,142 +146,97 @@ const Screen = (props: Props) => {
   }, [fetchOpenShifts, fetchAppliedShifts, fetchAcceptedShifts]);
 
   return (
-    <View className="flex-1 justify-between">
-      <SafeAreaView className="bg-primary pb-7" />
+    <View style={styles.container}>
+      <SafeAreaView style={styles.safeArea} />
       <Header title="Open Shifts" />
 
-      {/* Tab Buttons */}
-      <View className="bg-white ">
-        <View className="flex-row mb-6 bg-[#F1F1F1] rounded-xl justify-around mt-4 mx-4 py-[5px] px-[4px]">
-          {TABS.map((tab, index) => (
-            <Pressable key={index} onPress={() => handleTabChange(tab)}>
-              <Text
-                className="py-4 px-4 rounded-2xl text-sm"
-                style={[
-                  styles.poppinsRegular,
-                  {
-                    fontSize: fontSize! + 2,
-                    color: activeTab === tab ? "#FFFFFF" : "#606060",
-                    fontWeight: activeTab === tab ? "600" : "400",
-                    backgroundColor:
-                      activeTab === tab ? "#27736E" : "transparent",
-                  },
-                ]}
-              >
-                {tab}
-              </Text>
-            </Pressable>
-          ))}
+      {/* Tabs */}
+      <View style={styles.tabContainer}>
+        <View style={styles.tabRow}>
+          {TABS.map((tab, index) => {
+            const isActive = activeTab === tab;
+            return (
+              <Pressable key={index} onPress={() => handleTabChange(tab)}>
+                <Text
+                  style={[
+                    styles.tabText,
+                    {
+                      backgroundColor: isActive ? "#27736E" : "transparent",
+                      color: isActive ? "#fff" : "#606060",
+                      fontWeight: isActive ? "600" : "400",
+                      fontSize: fontSize! + 2,
+                    },
+                  ]}
+                >
+                  {tab}
+                </Text>
+              </Pressable>
+            );
+          })}
         </View>
       </View>
+
       <ScrollView
-        className="flex-1 bg-white"
+        style={styles.scrollContainer}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
         {!loading && (
-          <View className="pr-4 flex-1 pl-4">
-            {activeTab === "Open Shifts" && (
-              <View className="pl-4">
-                {Object.entries(groupedOpenShifts).map(
-                  ([date, shifts]: any) => {
-                    const parsedDate = parse(date, "MM-dd-yyyy", new Date());
-                    const formattedDate = format(parsedDate, "EEE dd MMM");
+          <View style={styles.content}>
+            {["Open Shifts", "Applied", "Accepted"].map((type) => {
+              const grouped =
+                type === "Open Shifts"
+                  ? groupedOpenShifts
+                  : type === "Applied"
+                  ? groupedAppliedShifts
+                  : groupedAcceptedShifts;
 
-                    return (
-                      <View
-                        key={date}
-                        className="mb-4 border-b pb-4 border-b-[#E9E9E9]"
-                      >
-                        <Text className="text-[#27736E] text-xl mb-4">
-                          {formattedDate}
-                        </Text>
-                        <View className="gap-4">
-                          {shifts.map((shift: any, index: any) => (
-                            <OpenShift
-                              staffId={authState?.staffId || ""}
-                              key={index}
-                              shift={shift}
-                              tab={activeTab}
-                              onApplySuccess={() => {
-                                // Add to applied shifts and remove from open shifts
-                                setAppliedShifts((prev) => [...prev, shift]);
-                                setOpenShifts((prev) =>
-                                  prev.filter((s) => s.id !== shift.id)
-                                );
-                              }}
-                            />
-                          ))}
-                        </View>
-                      </View>
-                    );
-                  }
-                )}
-              </View>
-            )}
-            {activeTab === "Applied" && (
-              <View className="pl-4">
-                {Object.entries(groupedAppliedShifts).map(
-                  ([date, shifts]: any) => {
-                    const parsedDate = parse(date, "MM-dd-yyyy", new Date());
-                    const formattedDate = format(parsedDate, "EEE dd MMM");
+              if (activeTab !== type) return null;
 
-                    return (
-                      <View
-                        key={date}
-                        className="mb-4 border-b pb-4 border-b-[#E9E9E9]"
-                      >
-                        <Text className="text-[#27736E] text-xl mb-4">
-                          {formattedDate}
-                        </Text>
-                        <View className="gap-4">
-                          {shifts.map((shift: any, index: any) => (
-                            <OpenShift
-                              staffId={authState?.staffId || ""}
-                              key={index}
-                              shift={shift}
-                              tab={activeTab}
-                            />
-                          ))}
-                        </View>
-                      </View>
-                    );
-                  }
-                )}
-              </View>
-            )}
-            {activeTab === "Accepted" && (
-              <View className="pl-4">
-                {Object.entries(groupedAcceptedShifts).map(
-                  ([date, shifts]: any) => {
-                    const parsedDate = parse(date, "MM-dd-yyyy", new Date());
-                    const formattedDate = format(parsedDate, "EEE dd MMM");
+              return (
+                <View key={type} style={styles.section}>
+                  {Object.keys(grouped).length === 0 ? (
+                    <Text style={styles.emptyText}>
+                      {type === "Open Shifts"
+                        ? "No open shifts available."
+                        : type === "Applied"
+                        ? "You haven't applied to any shifts yet."
+                        : "No accepted shifts."}
+                    </Text>
+                  ) : (
+                    Object.entries(grouped).map(([date, shifts]: any) => {
+                      const parsedDate = parse(date, "MM-dd-yyyy", new Date());
+                      const formattedDate = isNaN(parsedDate.getTime())
+                        ? "Invalid Date"
+                        : format(parsedDate, "EEE dd MMM");
 
-                    return (
-                      <View
-                        key={date}
-                        className="mb-4 border-b pb-4 border-b-[#E9E9E9]"
-                      >
-                        <Text className="text-[#27736E] text-xl mb-4">
-                          {formattedDate}
-                        </Text>
-                        <View className="gap-4">
-                          {shifts.map((shift: any, index: any) => (
-                            <OpenShift
-                              staffId={authState?.staffId || ""}
-                              key={index}
-                              shift={shift}
-                              tab={activeTab}
-                            />
-                          ))}
+                      return (
+                        <View key={date} style={styles.shiftGroup}>
+                          <Text style={styles.dateText}>{formattedDate}</Text>
+                          <View style={styles.shiftList}>
+                            {shifts.map((shift: any, index: any) => (
+                              <OpenShift
+                                staffId={authState?.staffId || ""}
+                                key={index}
+                                shift={shift}
+                                tab={type}
+                                onApplySuccess={() => {
+                                  setAppliedShifts((prev) => [...prev, shift]);
+                                  setOpenShifts((prev) =>
+                                    prev.filter((s) => s.id !== shift.id)
+                                  );
+                                }}
+                              />
+                            ))}
+                          </View>
                         </View>
-                      </View>
-                    );
-                  }
-                )}
-              </View>
-            )}
+                      );
+                    })
+                  )}
+                </View>
+              );
+            })}
           </View>
         )}
       </ScrollView>
@@ -328,12 +268,10 @@ const OpenShift = ({
   const handleShiftApplication = async () => {
     try {
       setLoading(true);
-      const res = await applyFreeShift(shift.id, staffId);
+      await applyFreeShift(shift.id, staffId);
       Alert.alert("Success", "Shift application successful");
       toggleModal();
-      if (onApplySuccess) {
-        onApplySuccess();
-      }
+      if (onApplySuccess) onApplySuccess();
     } catch (error: any) {
       console.error(error.response?.data || error.message);
       Alert.alert("Error", "Failed to apply for shift");
@@ -343,32 +281,30 @@ const OpenShift = ({
   };
 
   return (
-    <View className="flex-row mt-2 mb-4 justify-between bg-[#F1F1F1] py-4 rounded-2xl px-3 items-center">
-      <View className="flex-row gap-7">
-        <Text className="text-sm text-[#175B57]">{shift?.time}</Text>
-        <Text className="text-sm text-[#175B57]">{shift?.date}</Text>
+    <View style={styles.shiftCard}>
+      <View style={styles.shiftDetails}>
+        <Text style={styles.shiftText}>{shift?.time}</Text>
+        <Text style={styles.shiftText}>{shift?.date}</Text>
       </View>
-      {tab == "Open Shifts" && (
-        <Pressable
-          onPress={toggleModal}
-          className="bg-[#ACACAC] text-white px-7 py-2 rounded-lg"
-        >
-          <Text className="text-sm  text-white">Apply</Text>
+      {tab === "Open Shifts" && (
+        <Pressable onPress={toggleModal} style={styles.applyButton}>
+          <Text style={styles.applyButtonText}>Apply</Text>
         </Pressable>
       )}
       <Modal
-        className="items-center justify-center  "
+        useNativeDriver
+        hideModalContentWhileAnimating
+        onBackButtonPress={toggleModal}
         isVisible={isModalVisible}
       >
-        <View className="justify-between h-[320px]  bg-[#175B57] px-8 py-12 rounded-[20px]">
-          <Text className="text-white text-2xl">
+        <View style={styles.modalContent}>
+          <Text style={styles.modalText}>
             Are you sure you want to apply for this shift?
           </Text>
-
-          <View className="flex-row justify-end gap-16">
+          <View style={styles.modalActions}>
             <Pressable
               onPress={handleShiftApplication}
-              className="items-center justify-center "
+              style={styles.modalIcon}
             >
               {loading ? <ActivityIndicator color="white" /> : <Check />}
             </Pressable>
@@ -383,6 +319,75 @@ const OpenShift = ({
 };
 
 const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: "space-between" },
+  safeArea: { backgroundColor: "#175B57", paddingBottom: 28 },
+  tabContainer: { backgroundColor: "white" },
+  tabRow: {
+    flexDirection: "row",
+    marginBottom: 24,
+    backgroundColor: "#F1F1F1",
+    borderRadius: 12,
+    justifyContent: "space-around",
+    marginHorizontal: 16,
+    paddingVertical: 5,
+    paddingHorizontal: 4,
+    marginTop: 16,
+  },
+  tabText: {
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    borderRadius: 16,
+    fontSize: 14,
+  },
+  scrollContainer: { flex: 1, backgroundColor: "white" },
+  content: { paddingHorizontal: 16, flex: 1 },
+  section: { paddingLeft: 16 },
+  shiftGroup: {
+    marginBottom: 16,
+    borderBottomWidth: 1,
+    paddingBottom: 16,
+    borderColor: "#E9E9E9",
+  },
+  dateText: { color: "#27736E", fontSize: 20, marginBottom: 16 },
+  shiftList: { gap: 16 },
+  shiftCard: {
+    flexDirection: "row",
+    marginTop: 8,
+    marginBottom: 16,
+    justifyContent: "space-between",
+    backgroundColor: "#F1F1F1",
+    paddingVertical: 16,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    alignItems: "center",
+  },
+  shiftDetails: { flexDirection: "row", gap: 28 },
+  shiftText: { fontSize: 14, color: "#175B57" },
+  applyButton: {
+    backgroundColor: "#ACACAC",
+    paddingHorizontal: 28,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  applyButtonText: { color: "white", fontSize: 14 },
+  modalContent: {
+    justifyContent: "space-between",
+    height: 320,
+    backgroundColor: "#175B57",
+    paddingHorizontal: 32,
+    paddingVertical: 48,
+    borderRadius: 20,
+  },
+  modalText: { color: "white", fontSize: 24 },
+  modalActions: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: 64,
+  },
+  modalIcon: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
   poppinsRegular: {
     fontFamily: "PoppinsRegular",
   },

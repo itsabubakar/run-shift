@@ -20,89 +20,55 @@ import { useAuth } from "@/context/AuthContext";
 const Screen = () => {
   const { fontSize, setFontSize, setShowProfilePicture, showProfilePicture } =
     useAppContext();
-  const [isChecked, setChecked] = useState(false);
-  const [pushNotifications, setPushNotifications] = useState(false);
-  const [fingerPrints, setFingerprints] = useState(false);
   const [cameraSetup, setCameraSetup] = useState(false);
-  // const [showProfilePictures, setShowProfilePictures] = useState(true)
-  const [weatherForecast, setWeatherForcast] = useState(false);
-  const [version, setVersion] = useState("1.1.1");
+  const [weatherForecast, setWeatherForecast] = useState(false);
+  const [version] = useState("1.1.1");
+
+  const { onLogout } = useAuth();
+  const router = useRouter();
 
   const copyToClipboard = async () => {
     await Clipboard.setStringAsync(version);
   };
-  const { onLogout } = useAuth();
-  const router = useRouter();
 
   const handleReset = () => {
     Alert.alert(
       "Confirm Reset",
       "Are you sure you want to log out and reset the app?",
       [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
+        { text: "Cancel", style: "cancel" },
         {
           text: "Yes",
           onPress: () => {
-            onLogout?.(); // Call the logout function
+            onLogout?.();
             router.replace("/");
           },
         },
       ]
     );
   };
+
   return (
-    <SafeAreaView className="flex-1 bg-primary ">
-      <View className="pt-4">
-        <Header title="settings" moreOptions={true} />
+    <SafeAreaView style={styles.container}>
+      <View style={styles.headerWrapper}>
+        <Header title="settings" />
       </View>
-      <ScrollView className="px-6 ">
-        {/* Push notifications */}
-        {/* <View className="flex-row items-start pt-8">
-          <View>
-            <Text
-              style={[styles.poppinsRegular, { fontSize: fontSize! + 10 }]}
-              className="text-[#21D0C6] text-2xl pb-2"
-            >
-              Push notifications
-            </Text>
-            <Text
-              style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}
-              className="text-white text-base"
-            >
-              Get push notification using this device
-            </Text>
-          </View>
 
-          <CheckBox
-            color={"#FFFFFF40"}
-            isCheck={pushNotifications}
-            onChecked={() => setPushNotifications(!pushNotifications)}
-          />
-        </View> */}
-
-        {/* font size slider */}
-        <View className=" items-start">
-          <View className="w-[90%]">
-            <Text
-              style={[styles.poppinsRegular, { fontSize: fontSize! + 10 }]}
-              className="text-[#21D0C6] text-2xl pb-2"
-            >
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Font Size Slider */}
+        {/* <View style={styles.section}>
+          <View style={styles.textWrapper}>
+            <Text style={[styles.heading, { fontSize: fontSize! + 10 }]}>
               Font size
             </Text>
-            <Text
-              style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}
-              className="text-white text-base leading-6"
-            >
+            <Text style={[styles.subText, { fontSize: fontSize! + 2 }]}>
               Enhance the text size across the entire app for improved
               visibility.
             </Text>
           </View>
 
           <Slider
-            style={{ width: 340, height: 80 }}
+            style={styles.slider}
             minimumValue={10}
             maximumValue={20}
             value={fontSize}
@@ -111,186 +77,132 @@ const Screen = () => {
             maximumTrackTintColor="#fefefe"
             onValueChange={(value) => setFontSize!(value)}
           />
-        </View>
-
-        {/* Login with fingerprint */}
-        {/* <View className="flex-row items-start pt-20">
-          <View className=" w-[90%]">
-            <Text
-              style={[styles.poppinsRegular, { fontSize: fontSize! + 10 }]}
-              className="text-[#21D0C6] text-2xl pb-2 leading-9"
-            >
-              Login with your fingerprints
-            </Text>
-            <Text
-              style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}
-              className="text-white text-base leading-6"
-            >
-              Your device processes and stores fingerprints, ensuring they are
-              never shared with Runshift.
-            </Text>
-          </View>
-
-          <CheckBox
-            color={"#FFFFFF40"}
-            isCheck={fingerPrints}
-            onChecked={() => setFingerprints(!fingerPrints)}
-          />
         </View> */}
 
-        {/* camera */}
-        <View className="flex-row items-start pt-20">
-          <View className=" w-[90%]">
-            <Text
-              style={[styles.poppinsRegular, { fontSize: fontSize! + 10 }]}
-              className="text-[#21D0C6] text-2xl pb-2"
-            >
+        {/* Camera */}
+        <View style={styles.miniSection}>
+          <View style={styles.textWrapper}>
+            <Text style={[styles.heading, { fontSize: fontSize! + 10 }]}>
               Camera
             </Text>
-            <Text
-              style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}
-              className="text-white text-base leading-6"
-            >
+            <Text style={[styles.subText, { fontSize: fontSize! + 2 }]}>
               Use the Android camera application for taking photos.
             </Text>
           </View>
-
           <CheckBox
-            color={"#FFFFFF40"}
+            color="#FFFFFF40"
             isCheck={cameraSetup}
             onChecked={() => setCameraSetup(!cameraSetup)}
           />
         </View>
 
-        {/* Show profile pictures */}
-        <View className="flex-row items-start pt-20">
-          <View className=" w-[90%]">
-            <Text
-              style={[styles.poppinsRegular, { fontSize: fontSize! + 10 }]}
-              className="text-[#21D0C6] text-2xl pb-2 leading-9"
-            >
+        {/* Show Profile Picture */}
+        <View style={styles.miniSection}>
+          <View style={styles.textWrapper}>
+            <Text style={[styles.heading, { fontSize: fontSize! + 10 }]}>
               Show profile pictures
             </Text>
-            <Text
-              style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}
-              className="text-white text-base leading-6"
-            >
+            <Text style={[styles.subText, { fontSize: fontSize! + 2 }]}>
               Utilize the Android camera application to capture photos.
             </Text>
           </View>
-
           <CheckBox
-            color={"#FFFFFF40"}
+            color="#FFFFFF40"
             isCheck={showProfilePicture}
             onChecked={() => setShowProfilePicture!(!showProfilePicture)}
           />
         </View>
 
-        {/* Weather forecast */}
-        {/* <View className="flex-row items-start pt-20">
-          <View className="w-[90%]">
-            <Text
-              style={[styles.poppinsRegular, { fontSize: fontSize! + 10 }]}
-              className="text-[#21D0C6] text-2xl pb-2 leading-9"
-            >
-              Weather forecast
-            </Text>
-            <Text
-              style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}
-              className="text-white text-base leading-6"
-            >
-              Display the predicted temperature and weather conditions on the
-              schedule when the forecast information is accessible.
-            </Text>
-            <Link asChild href={"/(shifts)/(settings)/weather"}>
-              <TouchableOpacity className="pt-3">
-                <Text
-                  style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}
-                  className="text-base text-[#21D0C6] underline"
-                >
-                  Weather settings
-                </Text>
-              </TouchableOpacity>
-            </Link>
-          </View>
-
-          <CheckBox
-            color={"#FFFFFF40"}
-            isCheck={weatherForecast}
-            onChecked={() => setWeatherForcast(!weatherForecast)}
-          />
-        </View> */}
-
-        {/* Reset the app */}
-        <View className=" items-start pt-20">
-          <View className=" w-[90%]">
-            <Text
-              style={[styles.poppinsRegular, { fontSize: fontSize! + 10 }]}
-              className="text-[#21D0C6] text-2xl pb-2 leading-9"
-            >
+        {/* Reset the App */}
+        <View style={styles.section}>
+          <View style={styles.textWrapper}>
+            <Text style={[styles.heading, { fontSize: fontSize! + 10 }]}>
               Reset the app
             </Text>
-            <Text
-              style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}
-              className="text-white text-base leading-6"
-            >
+            <Text style={[styles.subText, { fontSize: fontSize! + 2 }]}>
               Erase your data from this device and log out.
             </Text>
           </View>
-          <TouchableOpacity
-            onPress={handleReset}
-            className="mt-5 border-secondary border rounded-xl px-6 py-2"
-          >
-            <Text
-              style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}
-              className="text-white text-sm"
-            >
+          <TouchableOpacity style={styles.button} onPress={handleReset}>
+            <Text style={[styles.buttonText, { fontSize: fontSize! + 2 }]}>
               RESET
             </Text>
           </TouchableOpacity>
         </View>
 
-        {/* Version */}
-        <View className=" items-start py-20">
-          <Text
-            style={[styles.poppinsRegular, { fontSize: fontSize! + 10 }]}
-            className="text-[#21D0C6] text-2xl pb-2 leading-9"
-          >
+        {/* Version Info */}
+        <View style={[styles.section, { paddingBottom: 40 }]}>
+          <Text style={[styles.heading, { fontSize: fontSize! + 10 }]}>
             Version
           </Text>
-
-          <View className=" w-[90%]">
-            <Text
-              style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}
-              className="text-white text-base leading-6"
-            >
+          <View style={styles.textWrapper}>
+            <Text style={[styles.subText, { fontSize: fontSize! + 2 }]}>
               {version}
             </Text>
           </View>
-          <TouchableOpacity
-            onPress={copyToClipboard}
-            className="mt-5 border-secondary border rounded-xl px-6 py-2"
-          >
-            <Text
-              style={[styles.poppinsRegular, { fontSize: fontSize! + 2 }]}
-              className="text-white text-sm"
-            >
+          <TouchableOpacity style={styles.button} onPress={copyToClipboard}>
+            <Text style={[styles.buttonText, { fontSize: fontSize! + 2 }]}>
               COPY
             </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
+
       <StatusBar style="auto" />
     </SafeAreaView>
   );
 };
 
+export default Screen;
+
 const styles = StyleSheet.create({
-  poppinsRegular: {
+  container: {
+    flex: 1,
+    backgroundColor: "#175B57", // bg-primary
+  },
+  headerWrapper: {
+    paddingTop: 16,
+  },
+  scrollContent: {
+    paddingHorizontal: 24,
+    paddingBottom: 40,
+  },
+  section: {
+    marginTop: 40,
+    alignItems: "flex-start",
+  },
+  miniSection: {
+    marginTop: 40,
+    alignItems: "flex-start",
+    flexDirection: "row",
+  },
+  textWrapper: {
+    width: "90%",
+  },
+  heading: {
+    fontFamily: "PoppinsRegular",
+    color: "#21D0C6",
+    marginBottom: 8,
+  },
+  subText: {
+    fontFamily: "PoppinsRegular",
+    color: "#fff",
+    lineHeight: 24,
+  },
+  slider: {
+    width: 340,
+    height: 80,
+  },
+  button: {
+    marginTop: 20,
+    borderColor: "#21D0C6",
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+  },
+  buttonText: {
+    color: "#fff",
     fontFamily: "PoppinsRegular",
   },
-  poppinsSemiBold: {
-    fontFamily: "PoppinsSemiBold",
-  },
 });
-export default Screen;
